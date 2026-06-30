@@ -14,7 +14,6 @@ const KO_ROUND_PT: Record<string, string> = {
 
 function roundLabel(round: string): string {
   if (KO_ROUND_PT[round]) return KO_ROUND_PT[round];
-  // "Matchday N" — any number
   const md = round.match(/^Matchday\s+(\d+)$/i);
   if (md) return `Fase de Grupos · Rodada ${md[1]}`;
   return round;
@@ -22,211 +21,299 @@ function roundLabel(round: string): string {
 
 const CAZETV_URL = 'https://www.youtube.com/@CazeTV/streams';
 
+const WEEKDAY = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
 function parseKickoff(dateStr: string, timeStr: string): Date | null {
+  if (!timeStr) return null;
   const m = timeStr.match(/(\d+):(\d+)\s+UTC([+-]\d?\d?)/);
   if (!m) return null;
   const [, hh, mm, off] = m;
   const offsetH = parseInt(off, 10);
   const sign = offsetH >= 0 ? '+' : '-';
   const absH = String(Math.abs(offsetH)).padStart(2, '0');
-  const iso = `${dateStr}T${hh.padStart(2,'0')}:${mm}:00${sign}${absH}:00`;
+  const iso = `${dateStr}T${hh.padStart(2, '0')}:${mm}:00${sign}${absH}:00`;
   const d = new Date(iso);
   return isNaN(d.getTime()) ? null : d;
 }
 
-function formatDate(d: Date): string {
-  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-}
-
-function formatTime(d: Date): string {
-  return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-}
-
-function findESPNMatch(m: Match, liveMatches: ESPNMatch[]): ESPNMatch | null {
-  if (!liveMatches.length) return null;
-  return liveMatches.find(e => {
-    const h = e.home.name.toLowerCase();
-    const a = e.away.name.toLowerCase();
+function findESPNMatch(m: Match, espnAll: ESPNMatch[]): ESPNMatch | null {
+  if (!espnAll.length) return null;
+  return espnAll.find(e => {
+    const h  = e.home.name.toLowerCase();
+    const a  = e.away.name.toLowerCase();
     const t1 = m.team1.toLowerCase();
     const t2 = m.team2.toLowerCase();
     return (h.includes(t1) || t1.includes(h)) && (a.includes(t2) || t2.includes(a))
-      || (h.includes(t2) || t2.includes(h)) && (a.includes(t1) || t1.includes(a));
+      ||   (h.includes(t2) || t2.includes(h)) && (a.includes(t1) || t1.includes(a));
   }) ?? null;
 }
 
-function ScoreBadge({ score, live }: {
-  score?: { ft: [number, number]; p?: [number, number] };
-  live?: ESPNMatch | null;
-}) {
-  if (live && (live.status === 'live' || live.status === 'halftime')) {
-    const s1 = live.home.score ?? '–';
-    const s2 = live.away.score ?? '–';
+type MatchStatus = 'live' | 'upcoming' | 'finished';
+
+function getStatus(m: Match, espn: ESPNMatch | null): MatchStatus {
+  if (espn?.status === 'live' || espn?.status === 'halftime') return 'live';
+  if (m.score?.ft || espn?.status === 'final') return 'finished';
+  return 'upcoming';
+}
+
+// ── Date column ───────────────────────────────────────────────────────────────
+function DateCol({ kicked, status }: { kicked: Date | null; status: MatchStatus }) {
+  const isLive = status === 'live';
+  const isDone = status === 'finished';
+
+  if (isLive) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-        <span style={{ fontSize: 15, fontWeight: 900, color: '#f1f5f9', fontVariantNumeric: 'tabular-nums' }}>
-          {s1} : {s2}
+      <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
+          <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#ef4444', animation: 'livePulse 1.4s ease-in-out infinite', flexShrink: 0 }} />
+          <span style={{ fontSize: 9, fontWeight: 900, color: '#ef4444', letterSpacing: '0.06em' }}>AO VIVO</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!kicked) {
+    return <div style={{ width: 46, flexShrink: 0, textAlign: 'center', fontSize: 10, color: '#1e293b' }}>—</div>;
+  }
+
+  const day   = WEEKDAY[kicked.getDay()];
+  const date  = kicked.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  const time  = kicked.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  return (
+    <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
+      <div style={{ fontSize: 9, fontWeight: 700, color: isDone ? '#334155' : '#94a3b8', letterSpacing: '0.04em' }}>
+        {day} {date}
+      </div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: isDone ? '#334155' : '#64748b' }}>
+        {time}
+      </div>
+    </div>
+  );
+}
+
+// ── Score area ────────────────────────────────────────────────────────────────
+function ScoreCol({ m, espn, status }: { m: Match; espn: ESPNMatch | null; status: MatchStatus }) {
+  if (status === 'live' && espn) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+        <span style={{ fontSize: 16, fontWeight: 900, color: '#f1f5f9', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+          {espn.home.score ?? '–'} : {espn.away.score ?? '–'}
         </span>
         <span style={{ fontSize: 9, fontWeight: 800, color: '#ef4444', letterSpacing: '0.06em' }}>
-          {live.status === 'halftime' ? 'INT' : live.shortDetail}
+          {espn.status === 'halftime' ? 'INT' : espn.shortDetail}
         </span>
       </div>
     );
   }
 
-  if (score?.ft) {
+  if (status === 'finished' && m.score?.ft) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-        <span style={{ fontSize: 15, fontWeight: 900, color: '#e2e8f0', fontVariantNumeric: 'tabular-nums' }}>
-          {score.ft[0]} : {score.ft[1]}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+        <span style={{ fontSize: 15, fontWeight: 900, color: '#64748b', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+          {m.score.ft[0]} : {m.score.ft[1]}
         </span>
-        {score.p && (
-          <span style={{ fontSize: 9, color: '#64748b', fontWeight: 600 }}>
-            ({score.p[0]} : {score.p[1]} pen)
+        {m.score.p && (
+          <span style={{ fontSize: 8, color: '#334155', fontWeight: 600 }}>
+            ({m.score.p[0]}:{m.score.p[1]} pen)
           </span>
         )}
       </div>
     );
   }
 
-  return null;
+  return <span style={{ fontSize: 11, fontWeight: 600, color: '#1e293b' }}>×</span>;
 }
 
-function MatchRow({ m, liveMatches }: { m: Match; liveMatches: ESPNMatch[] }) {
-  const kicked = parseKickoff(m.date, m.time);
-  const espn   = findESPNMatch(m, liveMatches);
-  const isLive = espn?.status === 'live' || espn?.status === 'halftime';
-  const isFinal = !!m.score?.ft || espn?.status === 'final';
-  const hasScore = !!m.score?.ft;
+// ── Single match row ──────────────────────────────────────────────────────────
+function MatchRow({ m, espn, status, kicked }: {
+  m: Match; espn: ESPNMatch | null; status: MatchStatus; kicked: Date | null;
+}) {
+  const isLive = status === 'live';
+  const isDone = status === 'finished';
+  const nameColor = isDone ? '#475569' : '#e2e8f0';
 
-  return (
+  const row = (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px',
-      borderBottom: '1px solid rgba(30,41,59,0.4)',
-      background: isLive ? 'rgba(239,68,68,0.04)' : 'transparent',
+      display: 'flex', alignItems: 'center', gap: 8, padding: '9px 14px',
+      borderBottom: '1px solid rgba(30,41,59,0.35)',
+      background: isLive ? 'rgba(239,68,68,0.05)' : 'transparent',
+      cursor: isLive ? 'pointer' : 'default',
+      textDecoration: 'none',
     }}>
-      {/* Date + Time */}
-      <div style={{ width: 44, flexShrink: 0, textAlign: 'center' }}>
-        {kicked ? (
-          <>
-            <div style={{ fontSize: 10, fontWeight: 600, color: '#475569' }}>{formatDate(kicked)}</div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: isLive ? '#ef4444' : isFinal ? '#334155' : '#64748b' }}>
-              {isLive ? '● AO VIVO' : formatTime(kicked)}
-            </div>
-          </>
-        ) : (
-          <div style={{ fontSize: 10, color: '#334155' }}>—</div>
-        )}
-      </div>
+      <DateCol kicked={kicked} status={status} />
 
       {/* Team 1 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', minWidth: 0 }}>
-        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: '#e2e8f0', textAlign: 'right' }}>
+        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: nameColor, textAlign: 'right' }}>
           {teamPT(m.team1)}
         </span>
-        <Flag team={m.team1} className="w-7 h-5 rounded-sm shrink-0" />
+        <Flag team={m.team1} className="w-7 h-5 rounded-sm shrink-0" style={isDone ? { opacity: 0.5 } : undefined} />
       </div>
 
-      {/* Score or VS */}
-      <div style={{ width: 70, flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {(hasScore || isLive) ? (
-          <ScoreBadge score={m.score} live={espn} />
-        ) : (
-          <span style={{ fontSize: 11, fontWeight: 600, color: '#1e293b' }}>×</span>
-        )}
+      {/* Score */}
+      <div style={{ width: 72, flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <ScoreCol m={m} espn={espn} status={status} />
       </div>
 
       {/* Team 2 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-        <Flag team={m.team2} className="w-7 h-5 rounded-sm shrink-0" />
-        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: '#e2e8f0' }}>
+        <Flag team={m.team2} className="w-7 h-5 rounded-sm shrink-0" style={isDone ? { opacity: 0.5 } : undefined} />
+        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: nameColor }}>
           {teamPT(m.team2)}
         </span>
       </div>
 
-      {/* Live button OR nothing */}
+      {/* CazeTV badge for live */}
       {isLive ? (
-        <a
-          href={CAZETV_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            flexShrink: 0, fontSize: 9, fontWeight: 800, padding: '3px 7px',
-            borderRadius: 6, background: 'rgba(239,68,68,0.15)',
-            border: '1px solid rgba(239,68,68,0.4)', color: '#ef4444',
-            textDecoration: 'none', letterSpacing: '0.04em',
-          }}
-        >
-          CAZE
-        </a>
+        <span style={{
+          flexShrink: 0, fontSize: 8, fontWeight: 900, padding: '3px 6px',
+          borderRadius: 5, background: 'rgba(239,68,68,0.15)',
+          border: '1px solid rgba(239,68,68,0.35)', color: '#ef4444',
+          letterSpacing: '0.04em',
+        }}>
+          CAZE ▶
+        </span>
       ) : (
         <div style={{ width: 38, flexShrink: 0 }} />
       )}
     </div>
   );
+
+  return isLive
+    ? <a href={CAZETV_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'block', textDecoration: 'none' }}>{row}</a>
+    : row;
 }
 
+// ── Section header ────────────────────────────────────────────────────────────
+function SectionHeader({ label, color, count }: { label: string; color: string; count: number }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 8,
+      padding: '10px 14px 6px',
+      borderBottom: `1px solid ${color}22`,
+    }}>
+      <span style={{ fontSize: 10, fontWeight: 900, color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+        {label}
+      </span>
+      <span style={{
+        fontSize: 9, fontWeight: 700, color,
+        background: `${color}18`, border: `1px solid ${color}33`,
+        borderRadius: 4, padding: '1px 5px',
+      }}>
+        {count}
+      </span>
+    </div>
+  );
+}
+
+// ── Round sub-header ──────────────────────────────────────────────────────────
+function RoundSubHeader({ round }: { round: string }) {
+  return (
+    <div style={{
+      padding: '5px 14px', fontSize: 9, fontWeight: 800,
+      color: '#334155', letterSpacing: '0.1em', textTransform: 'uppercase',
+      borderBottom: '1px solid rgba(30,41,59,0.3)',
+      background: 'rgba(15,23,42,0.4)',
+    }}>
+      {roundLabel(round)}
+    </div>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 interface Props {
   matches: Match[];
   liveMatches: ESPNMatch[];
 }
 
+interface EnrichedMatch {
+  m: Match;
+  espn: ESPNMatch | null;
+  status: MatchStatus;
+  kicked: Date | null;
+}
+
 export function MatchesTab({ matches, liveMatches }: Props) {
-  // Group by round, maintaining order
-  const groups: { round: string; items: Match[] }[] = [];
-  for (const m of matches) {
-    const last = groups[groups.length - 1];
-    if (last && last.round === m.round) {
-      last.items.push(m);
-    } else {
-      groups.push({ round: m.round, items: [m] });
+  // Enrich each match
+  const enriched: EnrichedMatch[] = matches.map(m => {
+    const espn   = findESPNMatch(m, liveMatches);
+    const status = getStatus(m, espn);
+    const kicked = parseKickoff(m.date, m.time);
+    return { m, espn, status, kicked };
+  });
+
+  // Split by status
+  const live     = enriched.filter(e => e.status === 'live');
+  const upcoming = enriched
+    .filter(e => e.status === 'upcoming')
+    .sort((a, b) => (a.kicked?.getTime() ?? 0) - (b.kicked?.getTime() ?? 0));
+  const finished = enriched
+    .filter(e => e.status === 'finished')
+    .sort((a, b) => (b.kicked?.getTime() ?? 0) - (a.kicked?.getTime() ?? 0));
+
+  // Group by round within a section (preserves round labels)
+  function groupByRound(items: EnrichedMatch[]): { round: string; items: EnrichedMatch[] }[] {
+    const out: { round: string; items: EnrichedMatch[] }[] = [];
+    for (const e of items) {
+      const last = out[out.length - 1];
+      if (last && last.round === e.m.round) {
+        last.items.push(e);
+      } else {
+        out.push({ round: e.m.round, items: [e] });
+      }
     }
+    return out;
   }
 
-  const liveCount = liveMatches.filter(e => e.status === 'live' || e.status === 'halftime').length;
+  const upcomingGroups = groupByRound(upcoming);
+  const finishedGroups = groupByRound(finished);
+
+  const key = (e: EnrichedMatch, i: number) => `${e.m.team1}|${e.m.team2}|${e.m.date}|${i}`;
 
   return (
     <div style={{ maxWidth: 700, margin: '0 auto' }}>
-      {liveCount > 0 && (
-        <div style={{
-          margin: '0 0 12px', padding: '10px 16px',
-          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-          borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444', animation: 'livePulse 1.4s ease-in-out infinite' }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#ef4444' }}>
-              {liveCount} jogo{liveCount > 1 ? 's' : ''} ao vivo agora
-            </span>
-          </div>
-          <a
-            href={CAZETV_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: 11, fontWeight: 800, padding: '5px 12px', borderRadius: 8,
-              background: '#ef4444', color: '#fff', textDecoration: 'none', letterSpacing: '0.04em',
-            }}
-          >
-            Assistir na CazeTV →
-          </a>
-        </div>
-      )}
       <style>{`@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}`}</style>
 
-      {groups.map(({ round, items }) => (
-        <div key={round} style={{ marginBottom: 20 }}>
-          <div style={{
-            padding: '6px 14px', fontSize: 10, fontWeight: 800,
-            color: '#475569', letterSpacing: '0.1em', textTransform: 'uppercase',
-            borderBottom: '1px solid rgba(30,41,59,0.6)',
-          }}>
-            {roundLabel(round)}
-          </div>
-          {items.map((m, i) => (
-            <MatchRow key={`${m.team1}-${m.team2}-${m.date}-${i}`} m={m} liveMatches={liveMatches} />
+      {/* AO VIVO */}
+      {live.length > 0 && (
+        <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.2)' }}>
+          <SectionHeader label="Ao Vivo" color="#ef4444" count={live.length} />
+          {live.map((e, i) => (
+            <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked} />
           ))}
         </div>
-      ))}
+      )}
+
+      {/* PRÓXIMOS */}
+      {upcoming.length > 0 && (
+        <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(30,41,59,0.5)' }}>
+          <SectionHeader label="Próximos" color="#3b82f6" count={upcoming.length} />
+          {upcomingGroups.map(({ round, items }) => (
+            <div key={round}>
+              <RoundSubHeader round={round} />
+              {items.map((e, i) => (
+                <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked} />
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ENCERRADOS */}
+      {finished.length > 0 && (
+        <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(30,41,59,0.4)' }}>
+          <SectionHeader label="Encerrados" color="#475569" count={finished.length} />
+          {finishedGroups.map(({ round, items }) => (
+            <div key={round}>
+              <RoundSubHeader round={round} />
+              {items.map((e, i) => (
+                <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked} />
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
