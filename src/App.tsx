@@ -36,13 +36,15 @@ export default function App() {
   const { data: groupsData, isLoading: loadingGroups, error: errGroups } = useQuery({
     queryKey: ['groups'],
     queryFn: fetchGroups,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60_000,
+    refetchInterval: 3 * 60_000,  // re-fetch groups every 3min during tournament
   });
 
   const { data: matchesData, isLoading: loadingMatches, error: errMatches } = useQuery({
     queryKey: ['matches'],
     queryFn: fetchMatches,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60_000,
+    refetchInterval: 2 * 60_000,  // re-fetch match results every 2min
   });
 
   const { predictions, setPrediction } = usePredictions();
