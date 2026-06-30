@@ -169,10 +169,9 @@ interface CenterProps {
   byNum: Record<number, Match>;
   us: UserScores;
   onScore: (num: number, s: [number, number]) => void;
-  stats: Stats;
 }
 
-function CenterSection({ byNum, us, onScore }: Omit<CenterProps, 'stats'>) {
+function CenterSection({ byNum, us, onScore }: CenterProps) {
   const imgSize = 148;
 
   // Anchor: SF lines at TOTAL_H/2. Final card center sits there.
