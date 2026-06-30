@@ -1,0 +1,190 @@
+[
+  {
+    "name": "Canada",
+    "apiId": 5529
+  },
+  {
+    "name": "Mexico",
+    "apiId": 16
+  },
+  {
+    "name": "United States",
+    "apiId": 2384
+  },
+  {
+    "name": "Argentina",
+    "apiId": 26
+  },
+  {
+    "name": "Chile",
+    "apiId": 2383
+  },
+  {
+    "name": "Colombia",
+    "apiId": 8
+  },
+  {
+    "name": "Ecuador",
+    "apiId": 2382
+  },
+  {
+    "name": "Paraguay",
+    "apiId": 2380
+  },
+  {
+    "name": "Peru",
+    "apiId": 30
+  },
+  {
+    "name": "Uruguay",
+    "apiId": 7
+  },
+  {
+    "name": "Venezuela",
+    "apiId": 2379
+  },
+  {
+    "name": "Bolivia",
+    "apiId": 2381
+  },
+  {
+    "name": "Costa Rica",
+    "apiId": 29
+  },
+  {
+    "name": "El Salvador",
+    "apiId": 5159
+  },
+  {
+    "name": "Guatemala",
+    "apiId": 5161
+  },
+  {
+    "name": "Honduras",
+    "apiId": 4672
+  },
+  {
+    "name": "Jamaica",
+    "apiId": 2385
+  },
+  {
+    "name": "Panama",
+    "apiId": 11
+  },
+  {
+    "name": "Trinidad and Tobago",
+    "apiId": 5168
+  },
+  {
+    "name": "Morocco",
+    "apiId": 31
+  },
+  {
+    "name": "Cameroon",
+    "apiId": 1530
+  },
+  {
+    "name": "Egypt",
+    "apiId": 32
+  },
+  {
+    "name": "Ghana",
+    "apiId": 1504
+  },
+  {
+    "name": "Nigeria",
+    "apiId": 19
+  },
+  {
+    "name": "Senegal",
+    "apiId": 13
+  },
+  {
+    "name": "South Africa",
+    "apiId": 1531
+  },
+  {
+    "name": "Algeria",
+    "apiId": 1532
+  },
+  {
+    "name": "Tunisia",
+    "apiId": 28
+  },
+  {
+    "name": "Japan",
+    "apiId": 12
+  },
+  {
+    "name": "Korea Republic",
+    "apiId": 17
+  },
+  {
+    "name": "Saudi Arabia",
+    "apiId": 23
+  },
+  {
+    "name": "Australia",
+    "apiId": 20
+  },
+  {
+    "name": "Indonesia",
+    "apiId": 1571
+  },
+  {
+    "name": "Qatar",
+    "apiId": 1569
+  },
+  {
+    "name": "Germany",
+    "apiId": 25
+  },
+  {
+    "name": "England",
+    "apiId": 10
+  },
+  {
+    "name": "France",
+    "apiId": 2
+  },
+  {
+    "name": "Italy",
+    "apiId": 768
+  },
+  {
+    "name": "Netherlands",
+    "apiId": 1118
+  },
+  {
+    "name": "Portugal",
+    "apiId": 27
+  },
+  {
+    "name": "Spain",
+    "apiId": 9
+  },
+  {
+    "name": "Croatia",
+    "apiId": 3
+  },
+  {
+    "name": "Belgium",
+    "apiId": 1
+  },
+  {
+    "name": "Serbia",
+    "apiId": 14
+  },
+  {
+    "name": "Switzerland",
+    "apiId": 15
+  },
+  {
+    "name": "Ukraine",
+    "apiId": 772
+  },
+  {
+    "name": "New Zealand",
+    "apiId": 4673
+  }
+]

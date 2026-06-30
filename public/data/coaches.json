@@ -1,0 +1,1346 @@
+{
+  "Canada": {
+    "id": 1914,
+    "name": "J. Marsch",
+    "firstname": "Jesse Alan",
+    "lastname": "Marsch",
+    "age": 52,
+    "birth": {
+      "date": "1973-11-08",
+      "place": "Racine",
+      "country": "USA"
+    },
+    "nationality": "USA",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/1914.png",
+    "team": {
+      "id": 5529,
+      "name": "Canada",
+      "logo": "https://media.api-sports.io/football/teams/5529.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 5529,
+          "name": "Canada",
+          "logo": "https://media.api-sports.io/football/teams/5529.png"
+        },
+        "start": "2024-05-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 63,
+          "name": "Leeds United",
+          "logo": "https://media.api-sports.io/football/teams/63.png"
+        },
+        "start": "2022-02-01",
+        "end": "2023-02-01"
+      },
+      {
+        "team": {
+          "id": 173,
+          "name": "RB Leipzig",
+          "logo": "https://media.api-sports.io/football/teams/173.png"
+        },
+        "start": "2021-07-01",
+        "end": "2021-12-01"
+      },
+      {
+        "team": {
+          "id": 571,
+          "name": "Salzburg",
+          "logo": "https://media.api-sports.io/football/teams/571.png"
+        },
+        "start": "2019-07-01",
+        "end": "2021-06-01"
+      },
+      {
+        "team": {
+          "id": 1602,
+          "name": "New York RB",
+          "logo": "https://media.api-sports.io/football/teams/1602.png"
+        },
+        "start": "2015-01-01",
+        "end": "2018-07-01"
+      },
+      {
+        "team": {
+          "id": 1614,
+          "name": "Montréal",
+          "logo": "https://media.api-sports.io/football/teams/1614.png"
+        },
+        "start": "2012-01-01",
+        "end": "2012-11-01"
+      }
+    ]
+  },
+  "Mexico": {
+    "id": 339,
+    "name": "J. Aguirre",
+    "firstname": "Javier",
+    "lastname": "Aguirre Onaindía",
+    "age": 67,
+    "birth": {
+      "date": "1958-12-01",
+      "place": "Ciudad de México",
+      "country": "Mexico"
+    },
+    "nationality": "Mexico",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/339.png",
+    "team": {
+      "id": 16,
+      "name": "Mexico",
+      "logo": "https://media.api-sports.io/football/teams/16.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 16,
+          "name": "Mexico",
+          "logo": "https://media.api-sports.io/football/teams/16.png"
+        },
+        "start": "2024-07-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 798,
+          "name": "Mallorca",
+          "logo": "https://media.api-sports.io/football/teams/798.png"
+        },
+        "start": "2022-03-01",
+        "end": "2024-06-01"
+      },
+      {
+        "team": {
+          "id": 2282,
+          "name": "Monterrey",
+          "logo": "https://media.api-sports.io/football/teams/2282.png"
+        },
+        "start": "2020-12-01",
+        "end": "2022-02-01"
+      },
+      {
+        "team": {
+          "id": 537,
+          "name": "Leganes",
+          "logo": "https://media.api-sports.io/football/teams/537.png"
+        },
+        "start": "2019-11-01",
+        "end": "2020-07-01"
+      },
+      {
+        "team": {
+          "id": 32,
+          "name": "Egypt",
+          "logo": "https://media.api-sports.io/football/teams/32.png"
+        },
+        "start": "2018-08-01",
+        "end": "2019-07-01"
+      },
+      {
+        "team": {
+          "id": 2875,
+          "name": "Al Wahda",
+          "logo": "https://media.api-sports.io/football/teams/2875.png"
+        },
+        "start": "2015-07-01",
+        "end": "2017-06-01"
+      },
+      {
+        "team": {
+          "id": 12,
+          "name": "Japan",
+          "logo": "https://media.api-sports.io/football/teams/12.png"
+        },
+        "start": "2014-07-01",
+        "end": "2015-02-01"
+      },
+      {
+        "team": {
+          "id": 540,
+          "name": "Espanyol",
+          "logo": "https://media.api-sports.io/football/teams/540.png"
+        },
+        "start": "2012-11-01",
+        "end": "2014-06-01"
+      },
+      {
+        "team": {
+          "id": 732,
+          "name": "Real Zaragoza",
+          "logo": "https://media.api-sports.io/football/teams/732.png"
+        },
+        "start": "2010-11-01",
+        "end": "2011-12-01"
+      },
+      {
+        "team": {
+          "id": 16,
+          "name": "Mexico",
+          "logo": "https://media.api-sports.io/football/teams/16.png"
+        },
+        "start": "2009-04-01",
+        "end": "2010-06-01"
+      },
+      {
+        "team": {
+          "id": 530,
+          "name": "Atletico Madrid",
+          "logo": "https://media.api-sports.io/football/teams/530.png"
+        },
+        "start": "2006-07-01",
+        "end": "2009-02-01"
+      },
+      {
+        "team": {
+          "id": 727,
+          "name": "Osasuna",
+          "logo": "https://media.api-sports.io/football/teams/727.png"
+        },
+        "start": "2002-07-01",
+        "end": "2006-06-01"
+      },
+      {
+        "team": {
+          "id": 16,
+          "name": "Mexico",
+          "logo": "https://media.api-sports.io/football/teams/16.png"
+        },
+        "start": "2001-07-01",
+        "end": "2002-06-01"
+      },
+      {
+        "team": {
+          "id": 2292,
+          "name": "Pachuca",
+          "logo": "https://media.api-sports.io/football/teams/2292.png"
+        },
+        "start": "1998-07-01",
+        "end": "2001-06-01"
+      },
+      {
+        "team": {
+          "id": 2312,
+          "name": "Atlante",
+          "logo": "https://media.api-sports.io/football/teams/2312.png"
+        },
+        "start": "1996-02-01",
+        "end": "1996-06-01"
+      }
+    ]
+  },
+  "United States": {
+    "id": 13,
+    "name": "M. Pochettino",
+    "firstname": "Mauricio Roberto",
+    "lastname": "Pochettino Trossero",
+    "age": 53,
+    "birth": {
+      "date": "1972-03-02",
+      "place": "Murphy",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": "182 cm",
+    "weight": "80 kg",
+    "photo": "https://media.api-sports.io/football/coachs/13.png",
+    "team": {
+      "id": 2384,
+      "name": "United States",
+      "logo": "https://media.api-sports.io/football/teams/2384.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2384,
+          "name": "United States",
+          "logo": "https://media.api-sports.io/football/teams/2384.png"
+        },
+        "start": "2024-09-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 49,
+          "name": "Chelsea",
+          "logo": "https://media.api-sports.io/football/teams/49.png"
+        },
+        "start": "2023-07-01",
+        "end": "2024-05-01"
+      },
+      {
+        "team": {
+          "id": 85,
+          "name": "PSG",
+          "logo": "https://media.api-sports.io/football/teams/85.png"
+        },
+        "start": "2021-01-01",
+        "end": "2022-07-01"
+      },
+      {
+        "team": {
+          "id": 47,
+          "name": "Tottenham Hotspur",
+          "logo": "https://media.api-sports.io/football/teams/47.png"
+        },
+        "start": "2014-07-01",
+        "end": "2019-11-01"
+      },
+      {
+        "team": {
+          "id": 41,
+          "name": "Southampton",
+          "logo": "https://media.api-sports.io/football/teams/41.png"
+        },
+        "start": "2013-01-01",
+        "end": "2014-05-01"
+      },
+      {
+        "team": {
+          "id": 540,
+          "name": "Espanyol",
+          "logo": "https://media.api-sports.io/football/teams/540.png"
+        },
+        "start": "2009-01-01",
+        "end": "2012-11-01"
+      }
+    ]
+  },
+  "Argentina": {
+    "id": 326,
+    "name": "L. Scaloni",
+    "firstname": "Lionel Sebastián",
+    "lastname": "Scaloni",
+    "age": 47,
+    "birth": {
+      "date": "1978-05-16",
+      "place": "Rosario",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": "182 cm",
+    "weight": "80 kg",
+    "photo": "https://media.api-sports.io/football/coachs/326.png",
+    "team": {
+      "id": 26,
+      "name": "Argentina",
+      "logo": "https://media.api-sports.io/football/teams/26.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 26,
+          "name": "Argentina",
+          "logo": "https://media.api-sports.io/football/teams/26.png"
+        },
+        "start": "2018-08-01",
+        "end": null
+      }
+    ]
+  },
+  "Chile": {
+    "id": 328,
+    "name": "R. Gareca",
+    "firstname": "Ricardo Alberto",
+    "lastname": "Gareca Nardi",
+    "age": 67,
+    "birth": {
+      "date": "1958-02-10",
+      "place": "Tapiales",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/328.png",
+    "team": {
+      "id": 2383,
+      "name": "Chile",
+      "logo": "https://media.api-sports.io/football/teams/2383.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2383,
+          "name": "Chile",
+          "logo": "https://media.api-sports.io/football/teams/2383.png"
+        },
+        "start": "2024-01-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 438,
+          "name": "Vélez Sarsfield",
+          "logo": "https://media.api-sports.io/football/teams/438.png"
+        },
+        "start": "2023-03-01",
+        "end": "2023-06-01"
+      },
+      {
+        "team": {
+          "id": 30,
+          "name": "Peru",
+          "logo": "https://media.api-sports.io/football/teams/30.png"
+        },
+        "start": "2015-03-01",
+        "end": "2022-07-01"
+      },
+      {
+        "team": {
+          "id": 121,
+          "name": "Palmeiras",
+          "logo": "https://media.api-sports.io/football/teams/121.png"
+        },
+        "start": "2014-05-01",
+        "end": "2014-09-01"
+      },
+      {
+        "team": {
+          "id": 438,
+          "name": "Vélez Sarsfield",
+          "logo": "https://media.api-sports.io/football/teams/438.png"
+        },
+        "start": "2009-07-01",
+        "end": "2013-12-01"
+      }
+    ]
+  },
+  "Colombia": {
+    "id": 14213,
+    "name": "N.  Lorenzo",
+    "firstname": "Néstor Gabriel",
+    "lastname": "Lorenzo",
+    "age": 59,
+    "birth": {
+      "date": "1966-02-28",
+      "place": "Buenos Aires",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": "185 cm",
+    "weight": "79 kg",
+    "photo": "https://media.api-sports.io/football/coachs/14213.png",
+    "team": {
+      "id": 8,
+      "name": "Colombia",
+      "logo": "https://media.api-sports.io/football/teams/8.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 8,
+          "name": "Colombia",
+          "logo": "https://media.api-sports.io/football/teams/8.png"
+        },
+        "start": "2022-07-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 2554,
+          "name": "Melgar",
+          "logo": "https://media.api-sports.io/football/teams/2554.png"
+        },
+        "start": "2021-01-01",
+        "end": "2022-07-01"
+      }
+    ]
+  },
+  "Ecuador": {
+    "id": 856,
+    "name": "S. Beccacece",
+    "firstname": "Sebastián Andrés",
+    "lastname": "Beccacece",
+    "age": 45,
+    "birth": {
+      "date": "1980-12-17",
+      "place": "Rosario",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/856.png",
+    "team": {
+      "id": 2382,
+      "name": "Ecuador",
+      "logo": "https://media.api-sports.io/football/teams/2382.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2382,
+          "name": "Ecuador",
+          "logo": "https://media.api-sports.io/football/teams/2382.png"
+        },
+        "start": "2024-08-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 2382,
+          "name": "Ecuador",
+          "logo": "https://media.api-sports.io/football/teams/2382.png"
+        },
+        "start": "2023-09-01",
+        "end": "2026-05-01"
+      },
+      {
+        "team": {
+          "id": 797,
+          "name": "Elche",
+          "logo": "https://media.api-sports.io/football/teams/797.png"
+        },
+        "start": "2023-03-01",
+        "end": "2024-06-01"
+      },
+      {
+        "team": {
+          "id": 442,
+          "name": "Defensa y Justicia",
+          "logo": "https://media.api-sports.io/football/teams/442.png"
+        },
+        "start": "2021-02-01",
+        "end": "2022-09-01"
+      },
+      {
+        "team": {
+          "id": 436,
+          "name": "Racing Club",
+          "logo": "https://media.api-sports.io/football/teams/436.png"
+        },
+        "start": "2019-12-01",
+        "end": "2021-01-01"
+      },
+      {
+        "team": {
+          "id": 453,
+          "name": "Independiente",
+          "logo": "https://media.api-sports.io/football/teams/453.png"
+        },
+        "start": "2019-05-01",
+        "end": "2019-10-01"
+      },
+      {
+        "team": {
+          "id": 442,
+          "name": "Defensa y Justicia",
+          "logo": "https://media.api-sports.io/football/teams/442.png"
+        },
+        "start": "2018-07-01",
+        "end": "2019-05-01"
+      },
+      {
+        "team": {
+          "id": 442,
+          "name": "Defensa y Justicia",
+          "logo": "https://media.api-sports.io/football/teams/442.png"
+        },
+        "start": "2016-11-01",
+        "end": "2017-06-01"
+      },
+      {
+        "team": {
+          "id": 2323,
+          "name": "Universidad de Chile",
+          "logo": "https://media.api-sports.io/football/teams/2323.png"
+        },
+        "start": "2016-01-01",
+        "end": "2016-09-01"
+      }
+    ]
+  },
+  "Paraguay": {
+    "id": 861,
+    "name": "G. Alfaro",
+    "firstname": "Gustavo Julio",
+    "lastname": "Alfaro",
+    "age": 63,
+    "birth": {
+      "date": "1962-08-14",
+      "place": "Rafaela",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/861.png",
+    "team": {
+      "id": 2380,
+      "name": "Paraguay",
+      "logo": "https://media.api-sports.io/football/teams/2380.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2380,
+          "name": "Paraguay",
+          "logo": "https://media.api-sports.io/football/teams/2380.png"
+        },
+        "start": "2024-08-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 29,
+          "name": "Costa Rica",
+          "logo": "https://media.api-sports.io/football/teams/29.png"
+        },
+        "start": "2023-11-01",
+        "end": "2024-08-01"
+      },
+      {
+        "team": {
+          "id": 2380,
+          "name": "Paraguay",
+          "logo": "https://media.api-sports.io/football/teams/2380.png"
+        },
+        "start": "2023-09-01",
+        "end": "2023-11-01"
+      },
+      {
+        "team": {
+          "id": 2382,
+          "name": "Ecuador",
+          "logo": "https://media.api-sports.io/football/teams/2382.png"
+        },
+        "start": "2020-08-01",
+        "end": "2023-02-01"
+      },
+      {
+        "team": {
+          "id": 451,
+          "name": "Boca Juniors",
+          "logo": "https://media.api-sports.io/football/teams/451.png"
+        },
+        "start": "2019-01-01",
+        "end": "2019-12-01"
+      },
+      {
+        "team": {
+          "id": 445,
+          "name": "Huracán",
+          "logo": "https://media.api-sports.io/football/teams/445.png"
+        },
+        "start": "2017-07-01",
+        "end": "2018-12-01"
+      },
+      {
+        "team": {
+          "id": 434,
+          "name": "Gimnasia La Plata",
+          "logo": "https://media.api-sports.io/football/teams/434.png"
+        },
+        "start": "2016-03-01",
+        "end": "2017-05-01"
+      },
+      {
+        "team": {
+          "id": 452,
+          "name": "Tigre",
+          "logo": "https://media.api-sports.io/football/teams/452.png"
+        },
+        "start": "2014-09-01",
+        "end": "2015-11-01"
+      },
+      {
+        "team": {
+          "id": 459,
+          "name": "Arsenal",
+          "logo": "https://media.api-sports.io/football/teams/459.png"
+        },
+        "start": "2010-07-01",
+        "end": "2014-04-01"
+      }
+    ]
+  },
+  "Peru": {
+    "id": 1010,
+    "name": "J. Reynoso",
+    "firstname": "Juan Máximo",
+    "lastname": "Reynoso Guzmán",
+    "age": 56,
+    "birth": {
+      "date": "1969-12-28",
+      "place": "Lima",
+      "country": "Peru"
+    },
+    "nationality": "Peru",
+    "height": "181 cm",
+    "weight": "89 kg",
+    "photo": "https://media.api-sports.io/football/coachs/1010.png",
+    "team": {
+      "id": 30,
+      "name": "Peru",
+      "logo": "https://media.api-sports.io/football/teams/30.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 30,
+          "name": "Peru",
+          "logo": "https://media.api-sports.io/football/teams/30.png"
+        },
+        "start": "2022-08-01",
+        "end": "2023-12-01"
+      },
+      {
+        "team": {
+          "id": 17664,
+          "name": "LIGA MX All-Stars",
+          "logo": "https://media.api-sports.io/football/teams/17664.png"
+        },
+        "start": "2021-08-01",
+        "end": "2021-08-01"
+      },
+      {
+        "team": {
+          "id": 2295,
+          "name": "Cruz Azul",
+          "logo": "https://media.api-sports.io/football/teams/2295.png"
+        },
+        "start": "2020-01-01",
+        "end": "2022-05-01"
+      },
+      {
+        "team": {
+          "id": 2291,
+          "name": "Puebla",
+          "logo": "https://media.api-sports.io/football/teams/2291.png"
+        },
+        "start": "2019-08-01",
+        "end": "2020-12-01"
+      },
+      {
+        "team": {
+          "id": 10013,
+          "name": "Cusco",
+          "logo": "https://media.api-sports.io/football/teams/10013.png"
+        },
+        "start": "2019-03-01",
+        "end": "2019-08-01"
+      },
+      {
+        "team": {
+          "id": 2547,
+          "name": "Real Garcilaso",
+          "logo": "https://media.api-sports.io/football/teams/2547.png"
+        },
+        "start": "2019-03-01",
+        "end": "2019-08-01"
+      },
+      {
+        "team": {
+          "id": 2554,
+          "name": "Melgar",
+          "logo": "https://media.api-sports.io/football/teams/2554.png"
+        },
+        "start": "2013-12-01",
+        "end": "2017-10-01"
+      },
+      {
+        "team": {
+          "id": 15928,
+          "name": "Cruz Azul Hidalgo",
+          "logo": "https://media.api-sports.io/football/teams/15928.png"
+        },
+        "start": "2013-01-01",
+        "end": "2013-11-01"
+      },
+      {
+        "team": {
+          "id": 2546,
+          "name": "Sporting Cristal",
+          "logo": "https://media.api-sports.io/football/teams/2546.png"
+        },
+        "start": "2011-04-01",
+        "end": "2011-12-01"
+      },
+      {
+        "team": {
+          "id": 2559,
+          "name": "Juan Aurich",
+          "logo": "https://media.api-sports.io/football/teams/2559.png"
+        },
+        "start": "2010-08-01",
+        "end": "2010-12-01"
+      }
+    ]
+  },
+  "Uruguay": {
+    "id": 105,
+    "name": "M. Bielsa",
+    "firstname": "Marcelo Alberto",
+    "lastname": "Bielsa Caldera",
+    "age": 70,
+    "birth": {
+      "date": "1955-07-21",
+      "place": "Rosario",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/105.png",
+    "team": {
+      "id": 10185,
+      "name": "Uruguay U23",
+      "logo": "https://media.api-sports.io/football/teams/10185.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 10185,
+          "name": "Uruguay U23",
+          "logo": "https://media.api-sports.io/football/teams/10185.png"
+        },
+        "start": "2024-01-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 7,
+          "name": "Uruguay",
+          "logo": "https://media.api-sports.io/football/teams/7.png"
+        },
+        "start": "2023-05-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 63,
+          "name": "Leeds United",
+          "logo": "https://media.api-sports.io/football/teams/63.png"
+        },
+        "start": "2018-06-01",
+        "end": "2022-02-01"
+      },
+      {
+        "team": {
+          "id": 79,
+          "name": "Lille",
+          "logo": "https://media.api-sports.io/football/teams/79.png"
+        },
+        "start": "2017-06-01",
+        "end": "2017-12-01"
+      },
+      {
+        "team": {
+          "id": 81,
+          "name": "Marseille",
+          "logo": "https://media.api-sports.io/football/teams/81.png"
+        },
+        "start": "2014-07-01",
+        "end": "2015-08-01"
+      },
+      {
+        "team": {
+          "id": 531,
+          "name": "Athletic Bilbao",
+          "logo": "https://media.api-sports.io/football/teams/531.png"
+        },
+        "start": "2011-07-01",
+        "end": "2013-06-01"
+      },
+      {
+        "team": {
+          "id": 2383,
+          "name": "Chile",
+          "logo": "https://media.api-sports.io/football/teams/2383.png"
+        },
+        "start": "2007-08-01",
+        "end": "2011-01-01"
+      },
+      {
+        "team": {
+          "id": 26,
+          "name": "Argentina",
+          "logo": "https://media.api-sports.io/football/teams/26.png"
+        },
+        "start": "1998-09-01",
+        "end": "2004-09-01"
+      },
+      {
+        "team": {
+          "id": 540,
+          "name": "Espanyol",
+          "logo": "https://media.api-sports.io/football/teams/540.png"
+        },
+        "start": "1998-07-01",
+        "end": "1998-09-01"
+      },
+      {
+        "team": {
+          "id": 438,
+          "name": "Vélez Sarsfield",
+          "logo": "https://media.api-sports.io/football/teams/438.png"
+        },
+        "start": "1997-07-01",
+        "end": "1998-06-01"
+      },
+      {
+        "team": {
+          "id": 2287,
+          "name": "Club América",
+          "logo": "https://media.api-sports.io/football/teams/2287.png"
+        },
+        "start": "1995-07-01",
+        "end": "1996-03-01"
+      },
+      {
+        "team": {
+          "id": 2283,
+          "name": "Atlas",
+          "logo": "https://media.api-sports.io/football/teams/2283.png"
+        },
+        "start": "1993-07-01",
+        "end": "1995-01-01"
+      },
+      {
+        "team": {
+          "id": 457,
+          "name": "Newell's Old Boys",
+          "logo": "https://media.api-sports.io/football/teams/457.png"
+        },
+        "start": "1992-01-01",
+        "end": "1993-06-01"
+      }
+    ]
+  },
+  "Venezuela": {
+    "id": 3037,
+    "name": "J. Pekerman",
+    "firstname": "José Néstor",
+    "lastname": "Pekerman",
+    "age": 76,
+    "birth": {
+      "date": "1949-09-03",
+      "place": "Villaguay",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/3037.png",
+    "team": {
+      "id": 2379,
+      "name": "Venezuela",
+      "logo": "https://media.api-sports.io/football/teams/2379.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2379,
+          "name": "Venezuela",
+          "logo": "https://media.api-sports.io/football/teams/2379.png"
+        },
+        "start": "2021-12-01",
+        "end": "2023-03-01"
+      },
+      {
+        "team": {
+          "id": 8,
+          "name": "Colombia",
+          "logo": "https://media.api-sports.io/football/teams/8.png"
+        },
+        "start": "2012-01-01",
+        "end": "2018-08-01"
+      },
+      {
+        "team": {
+          "id": 26,
+          "name": "Argentina",
+          "logo": "https://media.api-sports.io/football/teams/26.png"
+        },
+        "start": "2004-09-01",
+        "end": "2006-07-01"
+      }
+    ]
+  },
+  "Bolivia": {
+    "id": 14704,
+    "name": "U. Saucedo",
+    "firstname": "Ulises",
+    "lastname": "Saucedo",
+    "age": 129,
+    "birth": {
+      "date": "1896-03-03",
+      "place": null,
+      "country": "Bolivia"
+    },
+    "nationality": "Bolivia",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/14704.png",
+    "team": {
+      "id": 2381,
+      "name": "Bolivia",
+      "logo": "https://media.api-sports.io/football/teams/2381.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2381,
+          "name": "Bolivia",
+          "logo": "https://media.api-sports.io/football/teams/2381.png"
+        },
+        "start": "1930-07-01",
+        "end": "1930-07-01"
+      }
+    ]
+  },
+  "Costa Rica": {
+    "id": 1685,
+    "name": "M. Herrera",
+    "firstname": "Miguel Ernesto",
+    "lastname": "Herrera Aguirre",
+    "age": 57,
+    "birth": {
+      "date": "1968-03-18",
+      "place": "Cuautepec de Hinojosa",
+      "country": "Mexico"
+    },
+    "nationality": "Mexico",
+    "height": "170 cm",
+    "weight": "80 kg",
+    "photo": "https://media.api-sports.io/football/coachs/1685.png",
+    "team": {
+      "id": 29,
+      "name": "Costa Rica",
+      "logo": "https://media.api-sports.io/football/teams/29.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 29,
+          "name": "Costa Rica",
+          "logo": "https://media.api-sports.io/football/teams/29.png"
+        },
+        "start": "2025-01-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 2280,
+          "name": "Tijuana",
+          "logo": "https://media.api-sports.io/football/teams/2280.png"
+        },
+        "start": "2023-02-01",
+        "end": "2024-06-01"
+      },
+      {
+        "team": {
+          "id": 2279,
+          "name": "Tigres UANL",
+          "logo": "https://media.api-sports.io/football/teams/2279.png"
+        },
+        "start": "2021-07-01",
+        "end": "2022-12-01"
+      },
+      {
+        "team": {
+          "id": 2287,
+          "name": "Club América",
+          "logo": "https://media.api-sports.io/football/teams/2287.png"
+        },
+        "start": "2017-05-01",
+        "end": "2020-12-01"
+      },
+      {
+        "team": {
+          "id": 2280,
+          "name": "Tijuana",
+          "logo": "https://media.api-sports.io/football/teams/2280.png"
+        },
+        "start": "2015-12-01",
+        "end": "2017-05-01"
+      },
+      {
+        "team": {
+          "id": 16,
+          "name": "Mexico",
+          "logo": "https://media.api-sports.io/football/teams/16.png"
+        },
+        "start": "2013-10-01",
+        "end": "2015-07-01"
+      },
+      {
+        "team": {
+          "id": 2287,
+          "name": "Club América",
+          "logo": "https://media.api-sports.io/football/teams/2287.png"
+        },
+        "start": "2011-11-01",
+        "end": "2013-12-01"
+      },
+      {
+        "team": {
+          "id": 2312,
+          "name": "Atlante",
+          "logo": "https://media.api-sports.io/football/teams/2312.png"
+        },
+        "start": "2011-01-01",
+        "end": "2011-11-01"
+      },
+      {
+        "team": {
+          "id": 15938,
+          "name": "Tecos",
+          "logo": "https://media.api-sports.io/football/teams/15938.png"
+        },
+        "start": "2008-09-01",
+        "end": "2010-09-01"
+      }
+    ]
+  },
+  "El Salvador": {
+    "id": 322,
+    "name": "H. Gómez",
+    "firstname": "Hernán Darío",
+    "lastname": "Gómez Jaramillo",
+    "age": 69,
+    "birth": {
+      "date": "1956-02-03",
+      "place": "Medellín",
+      "country": "Colombia"
+    },
+    "nationality": "Colombia",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/322.png",
+    "team": {
+      "id": 5159,
+      "name": "El Salvador",
+      "logo": "https://media.api-sports.io/football/teams/5159.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 5159,
+          "name": "El Salvador",
+          "logo": "https://media.api-sports.io/football/teams/5159.png"
+        },
+        "start": "2025-02-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 1144,
+          "name": "Águilas Doradas",
+          "logo": "https://media.api-sports.io/football/teams/1144.png"
+        },
+        "start": "2024-01-01",
+        "end": "2024-03-01"
+      },
+      {
+        "team": {
+          "id": 1135,
+          "name": "Junior",
+          "logo": "https://media.api-sports.io/football/teams/1135.png"
+        },
+        "start": "2023-03-01",
+        "end": "2023-08-01"
+      },
+      {
+        "team": {
+          "id": 4672,
+          "name": "Honduras",
+          "logo": "https://media.api-sports.io/football/teams/4672.png"
+        },
+        "start": "2021-10-01",
+        "end": "2022-04-01"
+      },
+      {
+        "team": {
+          "id": 1128,
+          "name": "Independiente Medellín",
+          "logo": "https://media.api-sports.io/football/teams/1128.png"
+        },
+        "start": "2020-12-01",
+        "end": "2021-09-01"
+      },
+      {
+        "team": {
+          "id": 2382,
+          "name": "Ecuador",
+          "logo": "https://media.api-sports.io/football/teams/2382.png"
+        },
+        "start": "2018-08-01",
+        "end": "2019-07-01"
+      },
+      {
+        "team": {
+          "id": 11,
+          "name": "Panama",
+          "logo": "https://media.api-sports.io/football/teams/11.png"
+        },
+        "start": "2014-02-01",
+        "end": "2018-07-01"
+      },
+      {
+        "team": {
+          "id": 1128,
+          "name": "Independiente Medellín",
+          "logo": "https://media.api-sports.io/football/teams/1128.png"
+        },
+        "start": "2012-02-01",
+        "end": "2013-04-01"
+      },
+      {
+        "team": {
+          "id": 8,
+          "name": "Colombia",
+          "logo": "https://media.api-sports.io/football/teams/8.png"
+        },
+        "start": "2010-05-01",
+        "end": "2011-08-01"
+      },
+      {
+        "team": {
+          "id": 5161,
+          "name": "Guatemala",
+          "logo": "https://media.api-sports.io/football/teams/5161.png"
+        },
+        "start": "2006-04-01",
+        "end": "2008-02-01"
+      },
+      {
+        "team": {
+          "id": 2382,
+          "name": "Ecuador",
+          "logo": "https://media.api-sports.io/football/teams/2382.png"
+        },
+        "start": "1999-10-01",
+        "end": "2004-07-01"
+      },
+      {
+        "team": {
+          "id": 8,
+          "name": "Colombia",
+          "logo": "https://media.api-sports.io/football/teams/8.png"
+        },
+        "start": "1995-01-01",
+        "end": "1998-06-01"
+      }
+    ]
+  },
+  "Guatemala": {
+    "id": 1011,
+    "name": "L. Tena",
+    "firstname": "Luis Fernando",
+    "lastname": "Tena Garduño",
+    "age": 67,
+    "birth": {
+      "date": "1958-01-20",
+      "place": "Ciudad de México",
+      "country": "Mexico"
+    },
+    "nationality": "Mexico",
+    "height": "180 cm",
+    "weight": "90 kg",
+    "photo": "https://media.api-sports.io/football/coachs/1011.png",
+    "team": {
+      "id": 5161,
+      "name": "Guatemala",
+      "logo": "https://media.api-sports.io/football/teams/5161.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 5161,
+          "name": "Guatemala",
+          "logo": "https://media.api-sports.io/football/teams/5161.png"
+        },
+        "start": "2022-03-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 5161,
+          "name": "Guatemala",
+          "logo": "https://media.api-sports.io/football/teams/5161.png"
+        },
+        "start": "2021-11-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 2298,
+          "name": "Juárez",
+          "logo": "https://media.api-sports.io/football/teams/2298.png"
+        },
+        "start": "2020-11-01",
+        "end": "2021-03-01"
+      },
+      {
+        "team": {
+          "id": 2278,
+          "name": "Guadalajara",
+          "logo": "https://media.api-sports.io/football/teams/2278.png"
+        },
+        "start": "2019-09-01",
+        "end": "2020-08-01"
+      },
+      {
+        "team": {
+          "id": 2290,
+          "name": "Querétaro",
+          "logo": "https://media.api-sports.io/football/teams/2290.png"
+        },
+        "start": "2017-10-01",
+        "end": "2018-06-01"
+      },
+      {
+        "team": {
+          "id": 2289,
+          "name": "León",
+          "logo": "https://media.api-sports.io/football/teams/2289.png"
+        },
+        "start": "2016-02-01",
+        "end": "2016-08-01"
+      },
+      {
+        "team": {
+          "id": 2295,
+          "name": "Cruz Azul",
+          "logo": "https://media.api-sports.io/football/teams/2295.png"
+        },
+        "start": "2013-12-01",
+        "end": "2015-05-01"
+      },
+      {
+        "team": {
+          "id": 16,
+          "name": "Mexico",
+          "logo": "https://media.api-sports.io/football/teams/16.png"
+        },
+        "start": "2013-09-01",
+        "end": "2013-09-01"
+      },
+      {
+        "team": {
+          "id": 10178,
+          "name": "Mexico U23",
+          "logo": "https://media.api-sports.io/football/teams/10178.png"
+        },
+        "start": "2012-03-01",
+        "end": "2012-08-01"
+      },
+      {
+        "team": {
+          "id": null,
+          "name": "Mexico U22",
+          "logo": null
+        },
+        "start": "2011-10-01",
+        "end": "2011-12-01"
+      }
+    ]
+  }
+}
