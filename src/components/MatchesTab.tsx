@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Flag } from './Flag';
 import { teamPT } from '../data/teamNames';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
-import { resolveRef, type UserScores } from '../store/knockout';
+import { resolveRef } from '../store/knockout';
 import cazeTvLogo from '../assets/cazetv.png';
 
 const KO_ROUND_PT: Record<string, string> = {
@@ -259,11 +259,6 @@ interface EnrichedMatch {
 }
 
 export function MatchesTab({ matches, liveMatches }: Props) {
-  const [koUs] = useState<UserScores>(() => {
-    try { return JSON.parse(localStorage.getItem('wc2026_ko') ?? '{}'); }
-    catch { return {}; }
-  });
-
   const koByNum = useMemo(() => {
     const map: Record<number, Match> = {};
     for (const m of matches) if (!m.group && m.num) map[m.num] = m;
@@ -271,7 +266,7 @@ export function MatchesTab({ matches, liveMatches }: Props) {
   }, [matches]);
 
   function resolveTeam(ref: string): string | null {
-    return resolveRef(ref, koByNum, koUs, liveMatches);
+    return resolveRef(ref, koByNum, {}, liveMatches);
   }
 
   // Enrich each match
