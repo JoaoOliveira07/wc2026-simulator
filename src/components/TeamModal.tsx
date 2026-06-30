@@ -177,13 +177,27 @@ function PlayerPin({ player, onHover, yOffset = 0 }: { player: AFPlayer; onHover
         flexShrink: 0,
       }}>
         {player.photo ? (
-          <img src={player.photo} alt={player.name}
+          <img src={player.photo} alt={player.name} loading="lazy"
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            onError={e => {
+              const img = e.target as HTMLImageElement;
+              img.style.display = 'none';
+              const sil = img.nextElementSibling as HTMLElement | null;
+              if (sil) sil.style.display = 'flex';
+            }}
           />
-        ) : (
-          <div style={{ width: '100%', height: '100%', background: '#1e3a1e' }} />
-        )}
+        ) : null}
+        {/* Silhouette fallback — shown when no photo or onError */}
+        <div style={{
+          width: '100%', height: '100%', background: '#1e3a1e',
+          display: player.photo ? 'none' : 'flex',
+          alignItems: 'center', justifyContent: 'center',
+        }}>
+          <svg width="30" height="36" viewBox="0 0 30 36" fill="none">
+            <circle cx="15" cy="11" r="8" fill="rgba(255,255,255,0.12)" />
+            <ellipse cx="15" cy="30" rx="13" ry="9" fill="rgba(255,255,255,0.08)" />
+          </svg>
+        </div>
 
         {/* Bottom gradient */}
         <div style={{
