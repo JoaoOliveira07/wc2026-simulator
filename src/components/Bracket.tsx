@@ -163,22 +163,6 @@ function HorizLine({ phase }: { phase: Phase }) {
   );
 }
 
-// ── Statistics ────────────────────────────────────────────────────────────────
-interface Stats { played: number; goals: number; avg: string; koGoals: number; koPlayed: number }
-
-function computeStats(allMatches: Match[]): Stats {
-  const played    = allMatches.filter(m => m.score?.ft);
-  const goals     = played.reduce((s, m) => s + m.score!.ft![0] + m.score!.ft![1], 0);
-  const koPlayed  = played.filter(m => !m.group);
-  const koGoals   = koPlayed.reduce((s, m) => s + m.score!.ft![0] + m.score!.ft![1], 0);
-  return {
-    played: played.length,
-    goals,
-    avg: played.length ? (goals / played.length).toFixed(1) : '—',
-    koGoals,
-    koPlayed: koPlayed.length,
-  };
-}
 
 // ── Center trophy section ─────────────────────────────────────────────────────
 interface CenterProps {
@@ -201,8 +185,6 @@ function CenterSection({ byNum, us, onScore }: Omit<CenterProps, 'stats'>) {
   // 3rd place compact below Final
   const thirdLabelY  = finalCardTop + CARD_H + 8;
   const thirdCardTop = thirdLabelY + 14;
-
-  const sfColor = PHASE_PALETTE['sf'].forkColor;
 
   const miniLabel: React.CSSProperties = {
     position: 'absolute', left: 0, right: 0, textAlign: 'center',

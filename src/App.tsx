@@ -8,7 +8,7 @@ import { GroupCard } from './components/GroupCard';
 import { Bracket } from './components/Bracket';
 import { TeamModal } from './components/TeamModal';
 import { LiveBanner } from './components/LiveBanner';
-import type { Prediction, Match } from './types';
+import type { Match } from './types';
 
 type Tab = 'groups' | 'bracket';
 

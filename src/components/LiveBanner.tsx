@@ -1,26 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchESPNToday, type ESPNMatch } from '../data/espnApi';
 
-const MOCK_MATCHES: ESPNMatch[] = [
-  {
-    id: 'm1', date: new Date().toISOString(), status: 'live',
-    clock: '67:00', period: 2, shortDetail: "67'",
-    home: { name: 'Brasil', abbr: 'BRA', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/13.png', score: '2' },
-    away: { name: 'Alemanha', abbr: 'GER', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/11.png', score: '1' },
-  },
-  {
-    id: 'm2', date: new Date(Date.now() + 3 * 3600_000).toISOString(), status: 'scheduled',
-    clock: '', period: 0, shortDetail: '',
-    home: { name: 'Argentina', abbr: 'ARG', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/9.png', score: null },
-    away: { name: 'França', abbr: 'FRA', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/7.png', score: null },
-  },
-  {
-    id: 'm3', date: new Date(Date.now() - 2 * 3600_000).toISOString(), status: 'final',
-    clock: '', period: 2, shortDetail: 'FT',
-    home: { name: 'Espanha', abbr: 'ESP', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/164.png', score: '1' },
-    away: { name: 'Portugal', abbr: 'POR', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/10.png', score: '0' },
-  },
-];
 
 function statusColor(s: ESPNMatch['status']): string {
   if (s === 'live' || s === 'halftime') return '#ef4444';
@@ -112,7 +92,7 @@ function TeamLogo({ src, abbr }: { src: string; abbr: string }) {
 }
 
 export function LiveBanner() {
-  const { data: matches = [], isError } = useQuery({
+  const { data: matches = [] } = useQuery({
     queryKey: ['espn_today'],
     queryFn: fetchESPNToday,
     staleTime: 0,
