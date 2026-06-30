@@ -114,17 +114,26 @@ function HorizLine({ phase }: { phase: Phase }) {
 
 
 // ── Live match detection ──────────────────────────────────────────────────────
+function matchTeams(t1: string | null, t2: string | null, e: ESPNMatch): boolean {
+  if (!t1 || !t2) return false;
+  const h  = e.home.name.toLowerCase();
+  const a  = e.away.name.toLowerCase();
+  const r1 = t1.toLowerCase();
+  const r2 = t2.toLowerCase();
+  return (h.includes(r1) || r1.includes(h)) && (a.includes(r2) || r2.includes(a))
+    ||   (h.includes(r2) || r2.includes(h)) && (a.includes(r1) || r1.includes(a));
+}
+
 function findLiveESPN(t1: string | null, t2: string | null, liveMatches: ESPNMatch[]): ESPNMatch | null {
   if (!t1 || !t2 || !liveMatches.length) return null;
-  return liveMatches.find(e => {
-    if (e.status !== 'live' && e.status !== 'halftime') return false;
-    const h  = e.home.name.toLowerCase();
-    const a  = e.away.name.toLowerCase();
-    const r1 = t1.toLowerCase();
-    const r2 = t2.toLowerCase();
-    return (h.includes(r1) || r1.includes(h)) && (a.includes(r2) || r2.includes(a))
-      ||   (h.includes(r2) || r2.includes(h)) && (a.includes(r1) || r1.includes(a));
-  }) ?? null;
+  return liveMatches.find(e =>
+    (e.status === 'live' || e.status === 'halftime') && matchTeams(t1, t2, e),
+  ) ?? null;
+}
+
+function findESPNByTeams(t1: string | null, t2: string | null, espnAll: ESPNMatch[]): ESPNMatch | null {
+  if (!t1 || !t2 || !espnAll.length) return null;
+  return espnAll.find(e => matchTeams(t1, t2, e)) ?? null;
 }
 
 // ── Center trophy section ─────────────────────────────────────────────────────
@@ -213,12 +222,13 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird, liveMatches
     return <div style={{ height: CARD_H, border: '1px solid rgba(30,41,59,0.4)', borderRadius: 12, background: pal.idle }} />;
   }
 
-  const t1 = resolveRef(match.team1, byNum, us);
-  const t2 = resolveRef(match.team2, byNum, us);
-  const played    = !!match.score?.ft;
+  const t1 = resolveRef(match.team1, byNum, us, liveMatches ?? []);
+  const t2 = resolveRef(match.team2, byNum, us, liveMatches ?? []);
+  const espnMatch = findESPNByTeams(t1, t2, liveMatches ?? []);
+  const played    = !!match.score?.ft || espnMatch?.status === 'final';
   const canEdit   = !played && !!(t1 && t2);
   const userScore = us[matchNum];
-  const winner    = getWinner(matchNum, byNum, us);
+  const winner    = getWinner(matchNum, byNum, us, liveMatches ?? []);
   const isActive  = canEdit && !winner;
 
   // Live ESPN match detection
@@ -226,10 +236,11 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird, liveMatches
   const isLive    = !!liveEspn;
 
   // Determine if t1 maps to home or away in ESPN
-  const isHomeT1  = liveEspn ? liveEspn.home.name.toLowerCase().includes((t1 ?? '').toLowerCase()) : false;
-  const liveScore1 = liveEspn ? Number(isHomeT1 ? liveEspn.home.score : liveEspn.away.score) : undefined;
-  const liveScore2 = liveEspn ? Number(isHomeT1 ? liveEspn.away.score : liveEspn.home.score) : undefined;
-  const tentativeWinner = (liveScore1 !== undefined && liveScore2 !== undefined && liveScore1 !== liveScore2)
+  const espnForScore = espnMatch;
+  const isHomeT1  = espnForScore ? espnForScore.home.name.toLowerCase().includes((t1 ?? '').toLowerCase()) : false;
+  const liveScore1 = espnForScore && espnForScore.home.score != null ? Number(isHomeT1 ? espnForScore.home.score : espnForScore.away.score) : undefined;
+  const liveScore2 = espnForScore && espnForScore.away.score != null ? Number(isHomeT1 ? espnForScore.away.score : espnForScore.home.score) : undefined;
+  const tentativeWinner = isLive && liveScore1 !== undefined && liveScore2 !== undefined && liveScore1 !== liveScore2
     ? (liveScore1 > liveScore2 ? t1 : t2) : null;
 
   let border: string;
@@ -292,7 +303,9 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird, liveMatches
         const isTentative = isLive && isW;
 
         const sc = played
-          ? (i === 0 ? match.score!.ft![0] : match.score!.ft![1])
+          ? (match.score?.ft
+              ? (i === 0 ? match.score.ft[0] : match.score.ft[1])
+              : (i === 0 ? liveScore1 : liveScore2))
           : isLive
             ? (i === 0 ? liveScore1 : liveScore2)
             : userScore?.[i as 0 | 1];
@@ -410,7 +423,7 @@ export function Bracket({ matches, liveMatches }: Props) {
     return map;
   }, [ko]);
 
-  const champion = resolveWinner(FINAL_NUM, byNum, us);
+  const champion = resolveWinner(FINAL_NUM, byNum, us, liveMatches);
 
   const handleScore = (num: number, s: [number, number]) => {
     setUs((prev) => {
@@ -422,7 +435,7 @@ export function Bracket({ matches, liveMatches }: Props) {
 
   const handleSimulate = () => {
     setUs((prev) => {
-      const next = simulate(ko, byNum, prev);
+      const next = simulate(ko, byNum, prev, liveMatches);
       localStorage.setItem('wc2026_ko', JSON.stringify(next));
       return next;
     });

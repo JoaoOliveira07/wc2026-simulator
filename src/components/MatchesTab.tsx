@@ -107,19 +107,26 @@ function ScoreCol({ m, espn, status }: { m: Match; espn: ESPNMatch | null; statu
     );
   }
 
-  if (status === 'finished' && m.score?.ft) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-        <span style={{ fontSize: 15, fontWeight: 900, color: '#64748b', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
-          {m.score.ft[0]} : {m.score.ft[1]}
-        </span>
-        {m.score.p && (
-          <span style={{ fontSize: 8, color: '#334155', fontWeight: 600 }}>
-            ({m.score.p[0]}:{m.score.p[1]} pen)
+  if (status === 'finished') {
+    const ft = m.score?.ft;
+    const espnFt = espn && espn.status === 'final'
+      ? [Number(espn.home.score) || 0, Number(espn.away.score) || 0] as [number, number]
+      : null;
+    const score = ft ?? espnFt;
+    if (score) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+          <span style={{ fontSize: 15, fontWeight: 900, color: '#64748b', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+            {score[0]} : {score[1]}
           </span>
-        )}
-      </div>
-    );
+          {m.score?.p && (
+            <span style={{ fontSize: 8, color: '#334155', fontWeight: 600 }}>
+              ({m.score.p[0]}:{m.score.p[1]} pen)
+            </span>
+          )}
+        </div>
+      );
+    }
   }
 
   return <span style={{ fontSize: 11, fontWeight: 600, color: '#1e293b' }}>×</span>;
@@ -258,7 +265,7 @@ export function MatchesTab({ matches, liveMatches }: Props) {
   }, [matches]);
 
   function resolveTeam(ref: string): string | null {
-    return resolveRef(ref, koByNum, koUs);
+    return resolveRef(ref, koByNum, koUs, liveMatches);
   }
 
   // Enrich each match
