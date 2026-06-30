@@ -181,10 +181,9 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
           background: '#fff',
           border: '1px solid rgba(255,255,255,0.15)',
           padding: '3px 6px',
-          display: 'flex', alignItems: 'center', gap: 4,
+          display: 'flex', alignItems: 'center',
         }}>
           <img src={cazeTvLogo} alt="CazeTV" style={{ height: 14, width: 'auto', display: 'block' }} />
-          <span style={{ fontSize: 8, fontWeight: 900, color: '#ef4444', letterSpacing: '0.04em' }}>▶</span>
         </div>
       ) : (
         <div style={{ width: 44, flexShrink: 0 }} />
