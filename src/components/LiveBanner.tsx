@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchESPNToday, type ESPNMatch } from '../data/espnApi';
 
+const CAZETV_URL = 'https://www.youtube.com/@CazeTV/streams';
+
 
 function statusColor(s: ESPNMatch['status']): string {
   if (s === 'live' || s === 'halftime') return '#ef4444';
@@ -10,27 +12,25 @@ function statusColor(s: ESPNMatch['status']): string {
 
 function MatchChip({ m }: { m: ESPNMatch }) {
   const isLive = m.status === 'live' || m.status === 'halftime';
-  const isFinal = m.status === 'final';
   const dotColor = statusColor(m.status);
 
   const localTime = new Date(m.date).toLocaleTimeString('pt-BR', {
     hour: '2-digit', minute: '2-digit',
   });
 
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 8,
-      padding: '6px 12px',
-      borderRadius: 10,
-      background: isLive
-        ? 'rgba(239,68,68,0.08)'
-        : isFinal
-          ? 'rgba(15,23,42,0.6)'
-          : 'rgba(15,23,42,0.6)',
-      border: `1px solid ${isLive ? 'rgba(239,68,68,0.25)' : 'rgba(30,41,59,0.7)'}`,
-      flexShrink: 0,
-      cursor: 'default',
-    }}>
+  const chipStyle: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', gap: 8,
+    padding: '6px 12px',
+    borderRadius: 10,
+    background: isLive ? 'rgba(239,68,68,0.08)' : 'rgba(15,23,42,0.6)',
+    border: `1px solid ${isLive ? 'rgba(239,68,68,0.25)' : 'rgba(30,41,59,0.7)'}`,
+    flexShrink: 0,
+    cursor: isLive ? 'pointer' : 'default',
+    textDecoration: 'none',
+  };
+
+  const inner = (
+    <>
       {/* Team logos or abbr */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
         <TeamLogo src={m.home.logo} abbr={m.home.abbr} />
@@ -77,8 +77,17 @@ function MatchChip({ m }: { m: ESPNMatch }) {
             : ''}
         </span>
       </div>
-    </div>
+    </>
   );
+
+  if (isLive) {
+    return (
+      <a href={CAZETV_URL} target="_blank" rel="noopener noreferrer" style={chipStyle}>
+        {inner}
+      </a>
+    );
+  }
+  return <div style={chipStyle}>{inner}</div>;
 }
 
 function TeamLogo({ src, abbr }: { src: string; abbr: string }) {
@@ -93,7 +102,7 @@ function TeamLogo({ src, abbr }: { src: string; abbr: string }) {
 
 export function LiveBanner() {
   const { data: matches = [] } = useQuery({
-    queryKey: ['espn_today'],
+    queryKey: ['espn-today'],
     queryFn: fetchESPNToday,
     staleTime: 0,
     refetchInterval: 60_000,   // poll every 60s
@@ -132,21 +141,37 @@ export function LiveBanner() {
         ) : (
           <>
             {/* Label */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
-              {hasLive && (
+            {hasLive ? (
+              <a
+                href={CAZETV_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0,
+                  textDecoration: 'none',
+                }}
+              >
                 <div style={{
                   width: 7, height: 7, borderRadius: '50%', background: '#ef4444',
                   animation: 'livePulse 1.4s ease-in-out infinite',
                 }} />
-              )}
-              <span style={{
-                fontSize: 9, fontWeight: 800, letterSpacing: '0.1em',
-                color: hasLive ? '#ef4444' : '#475569',
-                textTransform: 'uppercase',
-              }}>
-                {hasLive ? 'Ao vivo' : 'Hoje'}
-              </span>
-            </div>
+                <span style={{
+                  fontSize: 9, fontWeight: 800, letterSpacing: '0.1em',
+                  color: '#ef4444', textTransform: 'uppercase',
+                }}>
+                  Ao vivo
+                </span>
+              </a>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+                <span style={{
+                  fontSize: 9, fontWeight: 800, letterSpacing: '0.1em',
+                  color: '#475569', textTransform: 'uppercase',
+                }}>
+                  Hoje
+                </span>
+              </div>
+            )}
             <div style={{ width: 1, height: 16, background: '#1e293b', flexShrink: 0 }} />
             <div style={{ display: 'flex', gap: 6, overflowX: 'auto', flex: 1, scrollbarWidth: 'none' }}>
               {sorted.map(m => <MatchChip key={m.id} m={m} />)}

@@ -3,10 +3,7 @@ import { teamPT } from '../data/teamNames';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
 
-const ROUND_PT: Record<string, string> = {
-  'Matchday 1': 'Fase de Grupos · Rodada 1',
-  'Matchday 2': 'Fase de Grupos · Rodada 2',
-  'Matchday 3': 'Fase de Grupos · Rodada 3',
+const KO_ROUND_PT: Record<string, string> = {
   'Round of 32': 'Fase 16',
   'Round of 16': 'Oitavas de Final',
   'Quarter-finals': 'Quartas de Final',
@@ -15,15 +12,26 @@ const ROUND_PT: Record<string, string> = {
   'Final': 'Final',
 };
 
-const CAZETV_URL = 'https://cazé.tv';
+function roundLabel(round: string): string {
+  if (KO_ROUND_PT[round]) return KO_ROUND_PT[round];
+  // "Matchday N" — any number
+  const md = round.match(/^Matchday\s+(\d+)$/i);
+  if (md) return `Fase de Grupos · Rodada ${md[1]}`;
+  return round;
+}
+
+const CAZETV_URL = 'https://www.youtube.com/@CazeTV/streams';
 
 function parseKickoff(dateStr: string, timeStr: string): Date | null {
-  const m = timeStr.match(/(\d+):(\d+)\s+UTC([+-]\d+)/);
+  const m = timeStr.match(/(\d+):(\d+)\s+UTC([+-]\d?\d?)/);
   if (!m) return null;
   const [, hh, mm, off] = m;
-  const offsetH = parseInt(off);
-  const iso = `${dateStr}T${hh.padStart(2,'0')}:${mm}:00${offsetH >= 0 ? '+' : ''}${String(Math.abs(offsetH)).padStart(2,'0')}:00`;
-  try { return new Date(iso); } catch { return null; }
+  const offsetH = parseInt(off, 10);
+  const sign = offsetH >= 0 ? '+' : '-';
+  const absH = String(Math.abs(offsetH)).padStart(2, '0');
+  const iso = `${dateStr}T${hh.padStart(2,'0')}:${mm}:00${sign}${absH}:00`;
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? null : d;
 }
 
 function formatDate(d: Date): string {
@@ -212,7 +220,7 @@ export function MatchesTab({ matches, liveMatches }: Props) {
             color: '#475569', letterSpacing: '0.1em', textTransform: 'uppercase',
             borderBottom: '1px solid rgba(30,41,59,0.6)',
           }}>
-            {ROUND_PT[round] ?? round}
+            {roundLabel(round)}
           </div>
           {items.map((m, i) => (
             <MatchRow key={`${m.team1}-${m.team2}-${m.date}-${i}`} m={m} liveMatches={liveMatches} />
