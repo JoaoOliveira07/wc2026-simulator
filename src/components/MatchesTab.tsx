@@ -145,6 +145,11 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
   const displayTeam1 = resolvedTeam1 ?? m.team1;
   const displayTeam2 = resolvedTeam2 ?? m.team2;
 
+  const hasResolvedTeams = !!displayTeam1 && !!displayTeam2
+    && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L')
+    && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L');
+  const showCazetv = (isLive || isUpcoming) && hasResolvedTeams;
+
   const row = (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 8, padding: '9px 14px',
@@ -182,26 +187,24 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
         </span>
       </div>
 
-      {/* CazeTV badge for live & upcoming */}
-      {(isLive || status === 'upcoming') ? (
-        <a href={CAZETV_URL} target="_blank" rel="noopener noreferrer"
-          style={{
-            flexShrink: 0, borderRadius: 6, overflow: 'hidden',
-            background: '#fff',
-            border: '1px solid rgba(255,255,255,0.15)',
-            padding: '3px 6px',
-            display: 'flex', alignItems: 'center',
-            cursor: 'pointer',
-          }}>
+      {/* CazeTV badge for live & upcoming with resolved teams */}
+      {showCazetv ? (
+        <div style={{
+          flexShrink: 0, borderRadius: 6, overflow: 'hidden',
+          background: '#fff',
+          border: '1px solid rgba(255,255,255,0.15)',
+          padding: '3px 6px',
+          display: 'flex', alignItems: 'center',
+        }}>
           <img src={cazeTvLogo} alt="CazeTV" style={{ height: 14, width: 'auto', display: 'block' }} />
-        </a>
+        </div>
       ) : (
         <div style={{ width: 44, flexShrink: 0 }} />
       )}
     </div>
   );
 
-  return (isLive || isUpcoming)
+  return (isLive || showCazetv)
     ? <a href={CAZETV_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'block', textDecoration: 'none' }}>{row}</a>
     : row;
 }
