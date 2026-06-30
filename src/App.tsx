@@ -1,16 +1,18 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Layers, Trophy } from 'lucide-react';
+import { Layers, Trophy, CalendarDays } from 'lucide-react';
 import { fetchGroups, fetchMatches } from './data/api';
+import { fetchESPNToday } from './data/espnApi';
 import { usePredictions } from './store/usePredictions';
 import { calcStandings } from './store/standings';
 import { GroupCard } from './components/GroupCard';
 import { Bracket } from './components/Bracket';
 import { TeamModal } from './components/TeamModal';
 import { LiveBanner } from './components/LiveBanner';
+import { MatchesTab } from './components/MatchesTab';
 import type { Match } from './types';
 
-type Tab = 'groups' | 'bracket';
+type Tab = 'groups' | 'bracket' | 'jogos';
 
 function predKey(m: Match) {
   return `${m.team1}|${m.team2}|${m.date}`;
@@ -45,6 +47,14 @@ export default function App() {
     queryFn: fetchMatches,
     staleTime: 60_000,
     refetchInterval: 2 * 60_000,  // re-fetch match results every 2min
+  });
+
+  const { data: espnData = [] } = useQuery({
+    queryKey: ['espn-today'],
+    queryFn: fetchESPNToday,
+    staleTime: 60_000,
+    refetchInterval: 60_000,
+    retry: 1,
   });
 
   const { predictions, setPrediction } = usePredictions();
@@ -97,7 +107,7 @@ export default function App() {
             <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
               <button
                 onClick={() => setTab('groups')}
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
                 style={tab === 'groups'
                   ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
                   : { color: '#475569' }}
@@ -106,8 +116,18 @@ export default function App() {
                 Grupos
               </button>
               <button
+                onClick={() => setTab('jogos')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                style={tab === 'jogos'
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
+                  : { color: '#475569' }}
+              >
+                <CalendarDays size={11} />
+                Jogos
+              </button>
+              <button
                 onClick={() => setTab('bracket')}
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
                 style={tab === 'bracket'
                   ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
                   : { color: '#475569' }}
@@ -149,6 +169,16 @@ export default function App() {
               Fase de Grupos
             </button>
             <button
+              onClick={() => setTab('jogos')}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
+              style={tab === 'jogos'
+                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
+                : { color: '#475569' }}
+            >
+              <CalendarDays size={12} />
+              Confrontos
+            </button>
+            <button
               onClick={() => setTab('bracket')}
               className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
               style={tab === 'bracket'
@@ -188,7 +218,7 @@ export default function App() {
         <LiveBanner />
       </header>
 
-      <main className={`mx-auto ${tab === 'bracket' ? 'px-2 w-full pt-3' : 'max-w-screen-2xl px-4 py-6'}`}>
+      <main className={`mx-auto ${tab === 'bracket' ? 'px-2 w-full pt-3' : tab === 'jogos' ? 'max-w-screen-2xl px-4 pt-4 pb-6' : 'max-w-screen-2xl px-4 py-6'}`}>
         {loading && (
           <div className="flex items-center justify-center py-32 gap-3">
             <div className="w-6 h-6 border-2 border-slate-700 border-t-emerald-500 rounded-full animate-spin" />
@@ -235,8 +265,12 @@ export default function App() {
               </div>
             )}
 
+            {tab === 'jogos' && (
+              <MatchesTab matches={matchesData.matches} liveMatches={espnData} />
+            )}
+
             {tab === 'bracket' && (
-              <Bracket matches={matchesData.matches} />
+              <Bracket matches={matchesData.matches} liveMatches={espnData} />
             )}
           </>
         )}

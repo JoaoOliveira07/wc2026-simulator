@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Trophy, Zap, Trash2, ChevronRight } from 'lucide-react';
 import type { Match } from '../types';
+import type { ESPNMatch } from '../data/espnApi';
 import { Flag } from './Flag';
 import { ScoreInput } from './ScoreInput';
 import trofeuImg from '../assets/trofeu_copa.png';
@@ -72,7 +73,7 @@ const PHASE_PALETTE: Record<Phase, {
             forkColor:'#1e2d3d' },
 };
 
-interface Props { matches: Match[] }
+interface Props { matches: Match[]; liveMatches?: ESPNMatch[] }
 type UserScores = Record<number, [number, number]>;
 
 // ── Score helpers ─────────────────────────────────────────────────────────────
@@ -164,14 +165,29 @@ function HorizLine({ phase }: { phase: Phase }) {
 }
 
 
+// ── Live match detection ──────────────────────────────────────────────────────
+function findLiveESPN(t1: string | null, t2: string | null, liveMatches: ESPNMatch[]): ESPNMatch | null {
+  if (!t1 || !t2 || !liveMatches.length) return null;
+  return liveMatches.find(e => {
+    if (e.status !== 'live' && e.status !== 'halftime') return false;
+    const h  = e.home.name.toLowerCase();
+    const a  = e.away.name.toLowerCase();
+    const r1 = t1.toLowerCase();
+    const r2 = t2.toLowerCase();
+    return (h.includes(r1) || r1.includes(h)) && (a.includes(r2) || r2.includes(a))
+      ||   (h.includes(r2) || r2.includes(h)) && (a.includes(r1) || r1.includes(a));
+  }) ?? null;
+}
+
 // ── Center trophy section ─────────────────────────────────────────────────────
 interface CenterProps {
   byNum: Record<number, Match>;
   us: UserScores;
   onScore: (num: number, s: [number, number]) => void;
+  liveMatches?: ESPNMatch[];
 }
 
-function CenterSection({ byNum, us, onScore }: CenterProps) {
+function CenterSection({ byNum, us, onScore, liveMatches }: CenterProps) {
   const imgSize = 148;
 
   // Anchor: SF lines at TOTAL_H/2. Final card center sits there.
@@ -217,13 +233,13 @@ function CenterSection({ byNum, us, onScore }: CenterProps) {
 
       {/* Final card */}
       <div style={{ position: 'absolute', top: finalCardTop, left: 4, right: 4, height: CARD_H }}>
-        <KoCard matchNum={FINAL_NUM} byNum={byNum} us={us} onScore={onScore} isChampion />
+        <KoCard matchNum={FINAL_NUM} byNum={byNum} us={us} onScore={onScore} isChampion liveMatches={liveMatches} />
       </div>
 
       {/* 3° Lugar */}
       <div style={{ ...miniLabel, top: thirdLabelY, color: '#374151' }}>3° Lugar</div>
       <div style={{ position: 'absolute', top: thirdCardTop, left: 4, right: 4, height: CARD_H }}>
-        <KoCard matchNum={THIRD_NUM} byNum={byNum} us={us} onScore={onScore} isThird />
+        <KoCard matchNum={THIRD_NUM} byNum={byNum} us={us} onScore={onScore} isThird liveMatches={liveMatches} />
       </div>
     </div>
   );
@@ -237,9 +253,10 @@ interface KoCardProps {
   onScore: (num: number, s: [number, number]) => void;
   isChampion?: boolean;
   isThird?: boolean;
+  liveMatches?: ESPNMatch[];
 }
 
-function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird }: KoCardProps) {
+function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird, liveMatches }: KoCardProps) {
   const match = byNum[matchNum];
   const phase = isChampion ? 'final' : isThird ? 'third' : getPhase(matchNum);
   const pal   = PHASE_PALETTE[phase];
@@ -256,11 +273,26 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird }: KoCardPro
   const winner    = getWinner(matchNum, byNum, us);
   const isActive  = canEdit && !winner;
 
+  // Live ESPN match detection
+  const liveEspn  = !played ? findLiveESPN(t1, t2, liveMatches ?? []) : null;
+  const isLive    = !!liveEspn;
+
+  // Determine if t1 maps to home or away in ESPN
+  const isHomeT1  = liveEspn ? liveEspn.home.name.toLowerCase().includes((t1 ?? '').toLowerCase()) : false;
+  const liveScore1 = liveEspn ? Number(isHomeT1 ? liveEspn.home.score : liveEspn.away.score) : undefined;
+  const liveScore2 = liveEspn ? Number(isHomeT1 ? liveEspn.away.score : liveEspn.home.score) : undefined;
+  const tentativeWinner = (liveScore1 !== undefined && liveScore2 !== undefined && liveScore1 !== liveScore2)
+    ? (liveScore1 > liveScore2 ? t1 : t2) : null;
+
   let border: string;
   let shadow: string;
   let bg: string;
 
-  if (winner) {
+  if (isLive) {
+    border = 'rgba(239,68,68,0.55)';
+    shadow = '0 0 18px rgba(239,68,68,0.2)';
+    bg     = 'rgba(239,68,68,0.05)';
+  } else if (winner) {
     border = pal.winnerBorder;
     shadow = pal.winnerShadow;
     bg     = pal.winner;
@@ -287,21 +319,43 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird }: KoCardPro
       height: CARD_H, background: bg, borderRadius: 12, overflow: 'hidden',
       border: `1px solid ${border}`,
       boxShadow: shadow,
+      position: 'relative',
       transition: 'box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease',
     }}>
+      {/* Live pulsing dot */}
+      {isLive && (
+        <div style={{
+          position: 'absolute', top: 5, right: 7, zIndex: 2,
+          display: 'flex', alignItems: 'center', gap: 3,
+        }}>
+          <div style={{
+            width: 5, height: 5, borderRadius: '50%', background: '#ef4444',
+            animation: 'livePulse 1.4s ease-in-out infinite',
+          }} />
+          <span style={{ fontSize: 7, fontWeight: 900, color: '#ef4444', letterSpacing: '0.08em' }}>
+            {liveEspn?.status === 'halftime' ? 'INT' : liveEspn?.shortDetail ?? 'AO VIVO'}
+          </span>
+        </div>
+      )}
+
       {([t1, t2] as const).map((team, i) => {
-        const isW = !!(winner && winner === team);
-        const sc  = played
+        const effectiveWinner = isLive ? tentativeWinner : winner;
+        const isW = !!(effectiveWinner && effectiveWinner === team);
+        const isTentative = isLive && isW;
+
+        const sc = played
           ? (i === 0 ? match.score!.ft![0] : match.score!.ft![1])
-          : userScore?.[i as 0 | 1];
+          : isLive
+            ? (i === 0 ? liveScore1 : liveScore2)
+            : userScore?.[i as 0 | 1];
 
         let rowBg = 'transparent';
-        if (isW) {
-          rowBg = isChampion ? 'rgba(234,179,8,0.13)' : 'rgba(34,197,94,0.09)';
-        }
+        if (isW && !isTentative) rowBg = isChampion ? 'rgba(234,179,8,0.13)' : 'rgba(34,197,94,0.09)';
+        if (isTentative) rowBg = 'rgba(239,68,68,0.07)';
 
         let nameColor = team ? '#e2e8f0' : '#1f2937';
-        if (isW) nameColor = isChampion ? '#fde68a' : '#86efac';
+        if (isW && !isTentative) nameColor = isChampion ? '#fde68a' : '#86efac';
+        if (isTentative) nameColor = '#fca5a5';
 
         return (
           <div
@@ -325,7 +379,7 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird }: KoCardPro
               {team ? teamPT(team) : '—'}
             </span>
 
-            {isW && (
+            {isW && !isTentative && (
               <span style={{ animation: 'bracketPop 0.4s ease' }} className="shrink-0">
                 {isChampion
                   ? <Trophy size={11} style={{ color: '#eab308' }} />
@@ -334,7 +388,11 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird }: KoCardPro
               </span>
             )}
 
-            {played ? (
+            {isTentative && (
+              <ChevronRight size={11} style={{ color: '#ef4444', opacity: 0.5 }} className="shrink-0" />
+            )}
+
+            {(played || isLive) ? (
               <span className="font-bold tabular-nums shrink-0"
                 style={{ fontSize: 14, minWidth: 18, textAlign: 'right', color: isW ? nameColor : '#475569' }}>
                 {sc ?? 0}
@@ -356,9 +414,10 @@ interface ColProps {
   us: UserScores;
   onScore: (num: number, s: [number, number]) => void;
   label?: string;
+  liveMatches?: ESPNMatch[];
 }
 
-function BracketCol({ nums, byNum, us, onScore, label }: ColProps) {
+function BracketCol({ nums, byNum, us, onScore, label, liveMatches }: ColProps) {
   const n = nums.length;
   const rowSpan = TOTAL_H / n;
 
@@ -377,7 +436,7 @@ function BracketCol({ nums, byNum, us, onScore, label }: ColProps) {
         const top = i * rowSpan + (rowSpan - CARD_H) / 2;
         return (
           <div key={num} style={{ position: 'absolute', top, left: 0, right: 0, height: CARD_H }}>
-            <KoCard matchNum={num} byNum={byNum} us={us} onScore={onScore} />
+            <KoCard matchNum={num} byNum={byNum} us={us} onScore={onScore} liveMatches={liveMatches} />
           </div>
         );
       })}
@@ -386,7 +445,7 @@ function BracketCol({ nums, byNum, us, onScore, label }: ColProps) {
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export function Bracket({ matches }: Props) {
+export function Bracket({ matches, liveMatches }: Props) {
   const [us, setUs] = useState<UserScores>(() => {
     try { return JSON.parse(localStorage.getItem('wc2026_ko') ?? '{}'); }
     catch { return {}; }
@@ -425,6 +484,7 @@ export function Bracket({ matches }: Props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <style>{`@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}`}</style>
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         {champion && (
@@ -479,25 +539,25 @@ export function Bracket({ matches }: Props) {
           paddingTop: 32, paddingBottom: 20, paddingLeft: 20, paddingRight: 20,
           gap: 0, minWidth: 1280,
         }}>
-          <BracketCol nums={L_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" />
+          <BracketCol nums={L_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" liveMatches={liveMatches} />
           <BracketFork fromCount={8} phase="r16" />
-          <BracketCol nums={L_R16} byNum={byNum} us={us} onScore={handleScore} label="Oitavas" />
+          <BracketCol nums={L_R16} byNum={byNum} us={us} onScore={handleScore} label="Oitavas" liveMatches={liveMatches} />
           <BracketFork fromCount={4} phase="qf" />
-          <BracketCol nums={L_QF}  byNum={byNum} us={us} onScore={handleScore} label="Quartas" />
+          <BracketCol nums={L_QF}  byNum={byNum} us={us} onScore={handleScore} label="Quartas" liveMatches={liveMatches} />
           <BracketFork fromCount={2} phase="sf" />
-          <BracketCol nums={L_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" />
+          <BracketCol nums={L_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" liveMatches={liveMatches} />
           <HorizLine phase="sf" />
 
-          <CenterSection byNum={byNum} us={us} onScore={handleScore} />
+          <CenterSection byNum={byNum} us={us} onScore={handleScore} liveMatches={liveMatches} />
 
           <HorizLine phase="sf" />
-          <BracketCol nums={R_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" />
+          <BracketCol nums={R_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" liveMatches={liveMatches} />
           <BracketFork fromCount={2} rtl phase="sf" />
-          <BracketCol nums={R_QF}  byNum={byNum} us={us} onScore={handleScore} label="Quartas" />
+          <BracketCol nums={R_QF}  byNum={byNum} us={us} onScore={handleScore} label="Quartas" liveMatches={liveMatches} />
           <BracketFork fromCount={4} rtl phase="qf" />
-          <BracketCol nums={R_R16} byNum={byNum} us={us} onScore={handleScore} label="Oitavas" />
+          <BracketCol nums={R_R16} byNum={byNum} us={us} onScore={handleScore} label="Oitavas" liveMatches={liveMatches} />
           <BracketFork fromCount={8} rtl phase="r16" />
-          <BracketCol nums={R_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" />
+          <BracketCol nums={R_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" liveMatches={liveMatches} />
         </div>
       </div>
     </div>
