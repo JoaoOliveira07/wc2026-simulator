@@ -473,11 +473,11 @@ export function Bracket({ matches }: Props) {
       </div>
 
       {/* Bracket */}
-      <div className="bracket-scroll overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' as const }}>
+      <div className="bracket-scroll" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const, width: '100%', maxWidth: '100vw' }}>
         <div style={{
-          display: 'flex', alignItems: 'flex-start',
+          display: 'inline-flex', alignItems: 'flex-start',
           paddingTop: 32, paddingBottom: 20, paddingLeft: 20, paddingRight: 20,
-          gap: 0, width: '100%', minWidth: 1280,
+          gap: 0, minWidth: 1280,
         }}>
           <BracketCol nums={L_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" />
           <BracketFork fromCount={8} phase="r16" />

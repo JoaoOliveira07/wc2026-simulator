@@ -72,7 +72,7 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden">
       {/* Header */}
       <header
         className="border-b border-slate-800/60 sticky top-0 z-10 backdrop-blur-md"
