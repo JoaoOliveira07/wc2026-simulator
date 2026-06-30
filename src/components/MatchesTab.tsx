@@ -2,6 +2,7 @@ import { Flag } from './Flag';
 import { teamPT } from '../data/teamNames';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
+import cazeTvLogo from '../assets/cazetv.png';
 
 const KO_ROUND_PT: Record<string, string> = {
   'Round of 32': 'Fase 16',
@@ -57,16 +58,14 @@ function getStatus(m: Match, espn: ESPNMatch | null): MatchStatus {
 }
 
 // ── Date column ───────────────────────────────────────────────────────────────
-function DateCol({ kicked, status, espn }: { kicked: Date | null; status: MatchStatus; espn: ESPNMatch | null }) {
+function DateCol({ kicked, status }: { kicked: Date | null; status: MatchStatus }) {
   const isLive = status === 'live';
   const isDone = status === 'finished';
 
   if (isLive) {
-    const clock = espn?.status === 'halftime' ? 'INT' : (espn?.shortDetail ?? '');
     return (
-      <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ef4444', animation: 'livePulse 1.4s ease-in-out infinite', margin: '0 auto 2px' }} />
-        {clock && <span style={{ fontSize: 10, fontWeight: 800, color: '#ef4444' }}>{clock}</span>}
+      <div style={{ width: 46, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#ef4444', animation: 'livePulse 1.4s ease-in-out infinite' }} />
       </div>
     );
   }
@@ -140,7 +139,7 @@ function MatchRow({ m, espn, status, kicked }: {
       cursor: isLive ? 'pointer' : 'default',
       textDecoration: 'none',
     }}>
-      <DateCol kicked={kicked} status={status} espn={espn} />
+      <DateCol kicked={kicked} status={status} />
 
       {/* Team 1 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', minWidth: 0 }}>
@@ -165,16 +164,18 @@ function MatchRow({ m, espn, status, kicked }: {
 
       {/* CazeTV badge for live */}
       {isLive ? (
-        <span style={{
-          flexShrink: 0, fontSize: 8, fontWeight: 900, padding: '3px 6px',
-          borderRadius: 5, background: 'rgba(239,68,68,0.15)',
-          border: '1px solid rgba(239,68,68,0.35)', color: '#ef4444',
-          letterSpacing: '0.04em',
+        <div style={{
+          flexShrink: 0, borderRadius: 6, overflow: 'hidden',
+          background: '#fff',
+          border: '1px solid rgba(255,255,255,0.15)',
+          padding: '3px 6px',
+          display: 'flex', alignItems: 'center', gap: 4,
         }}>
-          CAZE ▶
-        </span>
+          <img src={cazeTvLogo} alt="CazeTV" style={{ height: 14, width: 'auto', display: 'block' }} />
+          <span style={{ fontSize: 8, fontWeight: 900, color: '#ef4444', letterSpacing: '0.04em' }}>▶</span>
+        </div>
       ) : (
-        <div style={{ width: 38, flexShrink: 0 }} />
+        <div style={{ width: 44, flexShrink: 0 }} />
       )}
     </div>
   );
