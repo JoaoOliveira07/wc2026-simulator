@@ -57,17 +57,16 @@ function getStatus(m: Match, espn: ESPNMatch | null): MatchStatus {
 }
 
 // ── Date column ───────────────────────────────────────────────────────────────
-function DateCol({ kicked, status }: { kicked: Date | null; status: MatchStatus }) {
+function DateCol({ kicked, status, espn }: { kicked: Date | null; status: MatchStatus; espn: ESPNMatch | null }) {
   const isLive = status === 'live';
   const isDone = status === 'finished';
 
   if (isLive) {
+    const clock = espn?.status === 'halftime' ? 'INT' : (espn?.shortDetail ?? '');
     return (
       <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
-          <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#ef4444', animation: 'livePulse 1.4s ease-in-out infinite', flexShrink: 0 }} />
-          <span style={{ fontSize: 9, fontWeight: 900, color: '#ef4444', letterSpacing: '0.06em' }}>AO VIVO</span>
-        </div>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ef4444', animation: 'livePulse 1.4s ease-in-out infinite', margin: '0 auto 2px' }} />
+        {clock && <span style={{ fontSize: 10, fontWeight: 800, color: '#ef4444' }}>{clock}</span>}
       </div>
     );
   }
@@ -141,7 +140,7 @@ function MatchRow({ m, espn, status, kicked }: {
       cursor: isLive ? 'pointer' : 'default',
       textDecoration: 'none',
     }}>
-      <DateCol kicked={kicked} status={status} />
+      <DateCol kicked={kicked} status={status} espn={espn} />
 
       {/* Team 1 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', minWidth: 0 }}>
