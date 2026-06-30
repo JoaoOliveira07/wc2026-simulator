@@ -483,10 +483,11 @@ export function Bracket({ matches, liveMatches }: Props) {
   const handleClear = () => { setUs({}); localStorage.removeItem('wc2026_ko'); };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
       <style>{`@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}`}</style>
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-3">
+
+      {/* Toolbar — constrained to bracket width so buttons stay flush */}
+      <div className="flex flex-wrap items-center gap-3" style={{ width: '100%', maxWidth: 1760, padding: '0 20px' }}>
         {champion && (
           <div className="flex items-center gap-3 rounded-xl px-4 py-2"
             style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)', animation: 'bracketPop 0.4s ease' }}>
@@ -527,15 +528,16 @@ export function Bracket({ matches, liveMatches }: Props) {
       </div>
 
       {/* Mobile scroll hint */}
-      <div className="flex sm:hidden items-center gap-1 px-1 pb-1" style={{ color: '#334155', fontSize: 10 }}>
+      <div className="flex sm:hidden items-center gap-1 px-1" style={{ color: '#334155', fontSize: 10, width: '100%' }}>
         <ChevronRight size={10} />
         <span>Role para ver o bracket completo</span>
       </div>
 
-      {/* Bracket */}
-      <div className="bracket-scroll" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const, width: '100%', maxWidth: '100vw' }}>
+      {/* Bracket — display:flex on scroll container enables margin:auto centering */}
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const, display: 'flex', width: '100%', maxWidth: '100vw' }}>
         <div style={{
-          display: 'inline-flex', alignItems: 'flex-start',
+          display: 'flex', alignItems: 'flex-start',
+          marginLeft: 'auto', marginRight: 'auto',
           paddingTop: 32, paddingBottom: 20, paddingLeft: 20, paddingRight: 20,
           gap: 0, minWidth: 1280,
         }}>
