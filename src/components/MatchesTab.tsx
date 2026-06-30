@@ -1,7 +1,9 @@
+import { useState, useMemo } from 'react';
 import { Flag } from './Flag';
 import { teamPT } from '../data/teamNames';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
+import { resolveRef, type UserScores } from '../store/knockout';
 import cazeTvLogo from '../assets/cazetv.png';
 
 const KO_ROUND_PT: Record<string, string> = {
@@ -124,12 +126,16 @@ function ScoreCol({ m, espn, status }: { m: Match; espn: ESPNMatch | null; statu
 }
 
 // ── Single match row ──────────────────────────────────────────────────────────
-function MatchRow({ m, espn, status, kicked }: {
+function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
   m: Match; espn: ESPNMatch | null; status: MatchStatus; kicked: Date | null;
+  resolvedTeam1?: string | null; resolvedTeam2?: string | null;
 }) {
   const isLive = status === 'live';
   const isDone = status === 'finished';
   const nameColor = isDone ? '#475569' : '#e2e8f0';
+
+  const displayTeam1 = resolvedTeam1 ?? m.team1;
+  const displayTeam2 = resolvedTeam2 ?? m.team2;
 
   const row = (
     <div style={{
@@ -143,10 +149,13 @@ function MatchRow({ m, espn, status, kicked }: {
 
       {/* Team 1 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', minWidth: 0 }}>
-        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: nameColor, textAlign: 'right' }}>
-          {teamPT(m.team1)}
+        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L') ? nameColor : '#1e293b', textAlign: 'right' }}>
+          {displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L') ? teamPT(displayTeam1) : displayTeam1 ?? '—'}
         </span>
-        <Flag team={m.team1} className="w-7 h-5 rounded-sm shrink-0" style={isDone ? { opacity: 0.5 } : undefined} />
+        {displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L')
+          ? <Flag team={displayTeam1} className="w-7 h-5 rounded-sm shrink-0" style={isDone ? { opacity: 0.5 } : undefined} />
+          : <span className="w-7 h-5 rounded-sm shrink-0 inline-block" style={{ background: 'rgba(15,23,42,0.7)' }} />
+        }
       </div>
 
       {/* Score */}
@@ -156,9 +165,12 @@ function MatchRow({ m, espn, status, kicked }: {
 
       {/* Team 2 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-        <Flag team={m.team2} className="w-7 h-5 rounded-sm shrink-0" style={isDone ? { opacity: 0.5 } : undefined} />
-        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: nameColor }}>
-          {teamPT(m.team2)}
+        {displayTeam2 && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L')
+          ? <Flag team={displayTeam2} className="w-7 h-5 rounded-sm shrink-0" style={isDone ? { opacity: 0.5 } : undefined} />
+          : <span className="w-7 h-5 rounded-sm shrink-0 inline-block" style={{ background: 'rgba(15,23,42,0.7)' }} />
+        }
+        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: displayTeam2 && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L') ? nameColor : '#1e293b' }}>
+          {displayTeam2 && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L') ? teamPT(displayTeam2) : displayTeam2 ?? '—'}
         </span>
       </div>
 
@@ -235,6 +247,21 @@ interface EnrichedMatch {
 }
 
 export function MatchesTab({ matches, liveMatches }: Props) {
+  const [koUs] = useState<UserScores>(() => {
+    try { return JSON.parse(localStorage.getItem('wc2026_ko') ?? '{}'); }
+    catch { return {}; }
+  });
+
+  const koByNum = useMemo(() => {
+    const map: Record<number, Match> = {};
+    for (const m of matches) if (!m.group && m.num) map[m.num] = m;
+    return map;
+  }, [matches]);
+
+  function resolveTeam(ref: string): string | null {
+    return resolveRef(ref, koByNum, koUs);
+  }
+
   // Enrich each match
   const enriched: EnrichedMatch[] = matches.map(m => {
     const espn   = findESPNMatch(m, liveMatches);
@@ -280,7 +307,8 @@ export function MatchesTab({ matches, liveMatches }: Props) {
         <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.2)' }}>
           <SectionHeader label="Ao Vivo" color="#ef4444" count={live.length} />
           {live.map((e, i) => (
-            <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked} />
+            <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked}
+              resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} />
           ))}
         </div>
       )}
@@ -293,7 +321,8 @@ export function MatchesTab({ matches, liveMatches }: Props) {
             <div key={round}>
               <RoundSubHeader round={round} />
               {items.map((e, i) => (
-                <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked} />
+                <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked}
+                  resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} />
               ))}
             </div>
           ))}
@@ -308,7 +337,8 @@ export function MatchesTab({ matches, liveMatches }: Props) {
             <div key={round}>
               <RoundSubHeader round={round} />
               {items.map((e, i) => (
-                <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked} />
+                <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked}
+                  resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} />
               ))}
             </div>
           ))}
