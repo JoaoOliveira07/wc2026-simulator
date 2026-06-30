@@ -15,11 +15,20 @@ export interface ESPNMatch {
 
 const BASE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
 
-function parseStatus(name: string): ESPNStatus {
-  if (name === 'STATUS_IN_PROGRESS') return 'live';
-  if (name === 'STATUS_HALFTIME')    return 'halftime';
-  if (name === 'STATUS_FINAL' || name === 'STATUS_FULL_TIME') return 'final';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseStatus(type: any, statusPeriod: number): ESPNStatus {
+  const name  = type.name  ?? '';
+  const state = type.state ?? '';   // 'pre' | 'in' | 'post'
+
+  // state is more reliable than name
+  if (state === 'post' || type.completed) return 'final';
+  if (state === 'in') {
+    if (name === 'STATUS_HALFTIME') return 'halftime';
+    return 'live';
+  }
   if (name === 'STATUS_POSTPONED' || name === 'STATUS_CANCELED') return 'postponed';
+  // fallback: if period > 0 and not post → still live
+  if (statusPeriod > 0 && state !== 'post') return 'live';
   return 'scheduled';
 }
 
@@ -32,7 +41,7 @@ function mapEvent(ev: any): ESPNMatch {
   const home   = comps.find((c: any) => c.homeAway === 'home') ?? comps[0] ?? {};
   const away   = comps.find((c: any) => c.homeAway === 'away') ?? comps[1] ?? {};
 
-  const st = parseStatus(type.name ?? '');
+  const st = parseStatus(type, status.period ?? 0);
 
   return {
     id:          ev.id,
