@@ -138,6 +138,7 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
   resolvedTeam1?: string | null; resolvedTeam2?: string | null;
 }) {
   const isLive = status === 'live';
+  const isUpcoming = status === 'upcoming';
   const isDone = status === 'finished';
   const nameColor = isDone ? '#475569' : '#e2e8f0';
 
@@ -149,7 +150,7 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
       display: 'flex', alignItems: 'center', gap: 8, padding: '9px 14px',
       borderBottom: '1px solid rgba(30,41,59,0.35)',
       background: isLive ? 'rgba(239,68,68,0.05)' : 'transparent',
-      cursor: isLive ? 'pointer' : 'default',
+      cursor: (isLive || isUpcoming) ? 'pointer' : 'default',
       textDecoration: 'none',
     }}>
       <DateCol kicked={kicked} status={status} />
@@ -181,24 +182,26 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
         </span>
       </div>
 
-      {/* CazeTV badge for live */}
-      {isLive ? (
-        <div style={{
-          flexShrink: 0, borderRadius: 6, overflow: 'hidden',
-          background: '#fff',
-          border: '1px solid rgba(255,255,255,0.15)',
-          padding: '3px 6px',
-          display: 'flex', alignItems: 'center',
-        }}>
+      {/* CazeTV badge for live & upcoming */}
+      {(isLive || status === 'upcoming') ? (
+        <a href={CAZETV_URL} target="_blank" rel="noopener noreferrer"
+          style={{
+            flexShrink: 0, borderRadius: 6, overflow: 'hidden',
+            background: '#fff',
+            border: '1px solid rgba(255,255,255,0.15)',
+            padding: '3px 6px',
+            display: 'flex', alignItems: 'center',
+            cursor: 'pointer',
+          }}>
           <img src={cazeTvLogo} alt="CazeTV" style={{ height: 14, width: 'auto', display: 'block' }} />
-        </div>
+        </a>
       ) : (
         <div style={{ width: 44, flexShrink: 0 }} />
       )}
     </div>
   );
 
-  return isLive
+  return (isLive || isUpcoming)
     ? <a href={CAZETV_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'block', textDecoration: 'none' }}>{row}</a>
     : row;
 }
