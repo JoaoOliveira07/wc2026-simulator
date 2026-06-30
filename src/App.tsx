@@ -78,11 +78,50 @@ export default function App() {
         className="border-b border-slate-800/60 sticky top-0 z-10 backdrop-blur-md"
         style={{ background: 'rgba(2,6,23,0.96)' }}
       >
+        {/* Mobile: 2-row */}
+        <div className="md:hidden px-4">
+          <div className="flex items-center h-11 gap-2.5">
+            <div
+              className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+              style={{ background: 'linear-gradient(135deg,#16a34a,#065f46)' }}
+            >
+              <FootballIcon size={14} />
+            </div>
+            <span className="font-black text-white text-sm">Copa 2026</span>
+            <span className="text-slate-700 text-xs">·</span>
+            <span className="text-slate-500 text-xs font-medium">Simulador</span>
+          </div>
+          <div className="flex justify-center pb-2">
+            <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
+              <button
+                onClick={() => setTab('groups')}
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                style={tab === 'groups'
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
+                  : { color: '#475569' }}
+              >
+                <Layers size={11} />
+                Grupos
+              </button>
+              <button
+                onClick={() => setTab('bracket')}
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                style={tab === 'bracket'
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
+                  : { color: '#475569' }}
+              >
+                <Trophy size={11} />
+                Chaveamento
+              </button>
+            </nav>
+          </div>
+        </div>
+
+        {/* Desktop: 3-col grid */}
         <div
-          className="max-w-screen-2xl mx-auto px-5"
-          style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', height: 56 }}
+          className="hidden md:grid max-w-screen-2xl mx-auto px-5"
+          style={{ gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', height: 56 }}
         >
-          {/* Left: Brand */}
           <div className="flex items-center gap-2.5">
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
@@ -91,21 +130,12 @@ export default function App() {
               <FootballIcon size={17} />
             </div>
             <div className="leading-none">
-              <span className="font-black text-white" style={{ fontSize: 14, letterSpacing: '-0.01em' }}>
-                Copa 2026
-              </span>
+              <span className="font-black text-white" style={{ fontSize: 14, letterSpacing: '-0.01em' }}>Copa 2026</span>
               <span className="ml-2 font-medium" style={{ fontSize: 11, color: '#334155' }}>·</span>
-              <span className="ml-2 font-semibold" style={{ fontSize: 11, color: '#475569' }}>
-                Simulador
-              </span>
+              <span className="ml-2 font-semibold" style={{ fontSize: 11, color: '#475569' }}>Simulador</span>
             </div>
           </div>
-
-          {/* Center: Tabs — always fixed, never shifts */}
-          <nav
-            className="flex gap-1 rounded-xl p-1"
-            style={{ background: '#0f172a', border: '1px solid #1e293b' }}
-          >
+          <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
             <button
               onClick={() => setTab('groups')}
               className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
@@ -127,11 +157,9 @@ export default function App() {
               Chaveamento
             </button>
           </nav>
-
-          {/* Right: Progress — fixed width slot, never shifts nav */}
           <div className="flex justify-end">
             {!loading && !error && (
-              <div className="hidden md:flex flex-col gap-1" style={{ width: 200 }}>
+              <div className="flex flex-col gap-1" style={{ width: 200 }}>
                 <div className="flex items-center justify-between">
                   <span style={{ fontSize: 10, color: '#334155', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                     Fase de Grupos

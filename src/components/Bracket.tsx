@@ -443,26 +443,33 @@ export function Bracket({ matches }: Props) {
         <div className="ml-auto flex gap-2">
           <button
             onClick={handleSimulate}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all"
+            className="flex items-center gap-1.5 rounded-lg font-bold transition-all"
             style={{
+              padding: '6px 10px',
               background: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
               border: '1px solid rgba(59,130,246,0.4)',
-              color: '#fff',
+              color: '#fff', fontSize: 12,
               boxShadow: '0 0 16px rgba(37,99,235,0.35), 0 2px 4px rgba(0,0,0,0.4)',
             }}
           >
             <Zap size={13} />
-            Simular Aleatório
+            <span className="hidden sm:inline">Simular Aleatório</span>
           </button>
           <button
             onClick={handleClear}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold"
-            style={{ background: '#1e293b', border: '1px solid #334155', color: '#64748b' }}
+            className="flex items-center gap-1.5 rounded-lg font-semibold"
+            style={{ padding: '6px 10px', background: '#1e293b', border: '1px solid #334155', color: '#64748b', fontSize: 12 }}
           >
             <Trash2 size={13} />
-            Limpar
+            <span className="hidden sm:inline">Limpar</span>
           </button>
         </div>
+      </div>
+
+      {/* Mobile scroll hint */}
+      <div className="flex sm:hidden items-center gap-1 px-1 pb-1" style={{ color: '#334155', fontSize: 10 }}>
+        <ChevronRight size={10} />
+        <span>Role para ver o bracket completo</span>
       </div>
 
       {/* Bracket */}
