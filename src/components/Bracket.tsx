@@ -420,6 +420,9 @@ export function Bracket({ matches, liveMatches }: Props) {
   });
   const [shareStatus, setShareStatus] = useState<'idle' | 'sharing' | 'shared'>('idle');
   const bracketRef = useRef<HTMLDivElement>(null);
+  // Blob pré-capturado em background — permite passar a imagem ao navigator.share()
+  // como primeiro await (obrigatório no iOS para manter o contexto de gesto)
+  const capturedBlobRef = useRef<Blob | null>(null);
 
   const ko = useMemo(
     () => matches.filter((m) => !m.group).sort((a, b) => (a.num ?? 0) - (b.num ?? 0)),
@@ -450,6 +453,29 @@ export function Bracket({ matches, liveMatches }: Props) {
     prevChampion.current = champion ?? null;
   }, [champion]);
 
+  // Pré-captura o screenshot em background sempre que os scores mudam.
+  // Assim, quando o utilizador clica "Compartilhar", a imagem já está pronta
+  // e pode ser passada ao navigator.share() como primeiro await (iOS).
+  useEffect(() => {
+    if (!bracketRef.current) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const el = bracketRef.current;
+        if (!el || cancelled) return;
+        const blob = await toBlob(el, {
+          backgroundColor: '#020617',
+          pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+          cacheBust: false,
+        });
+        if (!cancelled) capturedBlobRef.current = blob ?? null;
+      } catch {
+        // silencioso — fallback para texto+URL no share
+      }
+    }, 800);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [us]);
+
   const handleScore = (num: number, s: [number, number]) => {
     setUs((prev) => {
       const next = { ...prev, [num]: s };
@@ -468,87 +494,58 @@ export function Bracket({ matches, liveMatches }: Props) {
 
   const handleClear = () => { setUs({}); localStorage.removeItem('wc2026_ko'); };
 
-  const captureImage = async (): Promise<Blob> => {
-    const el = bracketRef.current!;
-    // Tenta até 2 vezes (html-to-image às vezes falha na 1ª por imagens ainda a carregar)
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const blob = await toBlob(el, {
-          backgroundColor: '#020617',
-          pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-          cacheBust: true,
-          skipAutoScale: false,
-        });
-        if (blob) return blob;
-      } catch (err) {
-        if (attempt === 1) throw err;
-        await new Promise(r => setTimeout(r, 300));
-      }
-    }
-    throw new Error('toBlob returned null');
-  };
-
   const handleShare = async () => {
-    if (!bracketRef.current || shareStatus === 'sharing') return;
+    if (shareStatus === 'sharing') return;
     setShareStatus('sharing');
 
     const preds = JSON.parse(localStorage.getItem('wc2026_predictions') ?? '{}');
     const shareURL = buildShareURL(preds, us);
     const shareText = 'Confira minha simulação da Copa 2026';
 
-    // Detectar capacidades antes de qualquer await
+    // Capacidades detectadas sincronamente (sem await)
     const hasMobileShare = typeof navigator.share === 'function';
     const probeFile = new File([], 'x.png', { type: 'image/png' });
     const canShareFiles = hasMobileShare && (navigator.canShare?.({ files: [probeFile] }) ?? false);
 
+    // Blob pré-capturado disponível sincronamente
+    const preBlob = capturedBlobRef.current;
+
     try {
-      if (hasMobileShare && !canShareFiles) {
-        // iOS Safari: navigator.share() DEVE ser o primeiro await (limitação de gesto).
-        // Partilha texto + URL imediatamente, depois tenta capturar e abrir a imagem.
-        try {
-          await navigator.share({ title: shareText, text: shareText, url: shareURL });
-        } catch (err) {
-          if (err instanceof Error && err.name === 'AbortError') return;
+      if (hasMobileShare) {
+        if (preBlob && canShareFiles) {
+          // Imagem já pronta → File criado sincronamente → navigator.share é o PRIMEIRO await.
+          // Funciona em iOS porque não há nenhum await antes deste ponto.
+          const imageFile = new File([preBlob], 'copa2026.png', { type: 'image/png' });
+          try {
+            await navigator.share({ files: [imageFile], title: shareText, text: shareText, url: shareURL });
+            return;
+          } catch (err) {
+            if (err instanceof Error && err.name === 'AbortError') return;
+            // Fallback: share só texto+URL
+          }
         }
-        // Após o share sheet fechar, captura e tenta download
-        try {
-          const blob = await captureImage();
-          const objUrl = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = objUrl;
-          a.download = 'copa2026.png';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(objUrl), 10_000);
-        } catch { /* download silently ignored */ }
+        // Sem imagem ou canShareFiles=false → share texto+URL (primeiro await → funciona no iOS)
+        await navigator.share({ title: shareText, text: shareText, url: shareURL });
         return;
       }
 
-      const blob = await captureImage();
-      const imageFile = new File([blob], 'copa2026.png', { type: 'image/png' });
+      // Desktop: usa blob pré-capturado ou captura agora
+      const blob = preBlob ?? (bracketRef.current ? await toBlob(bracketRef.current, {
+        backgroundColor: '#020617',
+        pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+      }) : null);
 
-      if (canShareFiles) {
-        // Android Chrome: partilha com imagem + texto + link
-        try {
-          await navigator.share({ files: [imageFile], title: shareText, text: shareText, url: shareURL });
-        } catch (err) {
-          if (err instanceof Error && err.name === 'AbortError') return;
-          // Fallback: sem imagem
-          await navigator.share({ title: shareText, text: shareText, url: shareURL });
-        }
-        return;
+      if (blob) {
+        const objUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objUrl;
+        a.download = `copa2026-chave${champion ? '-' + champion.toLowerCase().replace(/\s/g, '_') : ''}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(objUrl), 10_000);
       }
 
-      // Desktop: download da imagem + copia texto com link
-      const objUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = objUrl;
-      a.download = `copa2026-chave${champion ? '-' + champion.toLowerCase().replace(/\s/g, '_') : ''}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(objUrl), 10_000);
       try {
         await navigator.clipboard.writeText(`${shareText}: ${shareURL}`);
       } catch {
@@ -560,7 +557,6 @@ export function Bracket({ matches, liveMatches }: Props) {
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') return;
       console.error('Share failed:', err);
-      // Última salvaguarda: mostra o link
       window.prompt('Copie o link da sua simulação:', shareURL);
     } finally {
       setShareStatus(s => s === 'sharing' ? 'idle' : s);
