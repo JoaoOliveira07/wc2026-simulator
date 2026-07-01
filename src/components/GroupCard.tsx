@@ -115,6 +115,11 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
         <span className="ml-auto text-xs text-slate-500">{groupMatches.filter(m => m.score?.ft).length}/{groupMatches.length} jogos</span>
       </div>
 
+      {phrase && (
+        <div className="px-4 py-1.5 text-xs" style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#94a3b8' }}>
+          {phrase}
+        </div>
+      )}
 
       {/* Standings */}
       <div className="px-3 pt-3 pb-2">
