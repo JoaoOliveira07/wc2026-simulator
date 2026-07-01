@@ -5,6 +5,7 @@ import { Flag } from './Flag';
 import { fetchSquad, fetchCoach } from '../data/apiFootball';
 import type { AFPlayer } from '../data/apiFootball';
 import { teamPT } from '../data/teamNames';
+import { FormationEditor } from './FormationEditor';
 
 // ── Position helpers ─────────────────────────────────────────────────────────
 
@@ -119,7 +120,7 @@ function PlayerTooltip({ player }: { player: AFPlayer }) {
         border: `1.5px solid ${col.border}`, background: '#1e293b',
       }}>
         {player.photo && (
-          <img src={player.photo} alt={player.name}
+          <img src={player.photo} alt={player.name} referrerPolicy="no-referrer"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
@@ -177,7 +178,7 @@ function PlayerPin({ player, onHover, yOffset = 0 }: { player: AFPlayer; onHover
         flexShrink: 0,
       }}>
         {player.photo ? (
-          <img src={player.photo} alt={player.name} loading="lazy"
+          <img src={player.photo} alt={player.name} referrerPolicy="no-referrer"
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
             onError={e => {
               const img = e.target as HTMLImageElement;
@@ -367,7 +368,7 @@ function PlayerCard({ player }: { player: AFPlayer }) {
         boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
       }}>
         {player.photo && (
-          <img src={player.photo} alt={player.name}
+          <img src={player.photo} alt={player.name} referrerPolicy="no-referrer"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
@@ -430,7 +431,7 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
 
 // ── Modal ────────────────────────────────────────────────────────────────────
 
-type ModalTab = 'lineup' | 'squad';
+type ModalTab = 'lineup' | 'squad' | 'editor';
 
 interface Props {
   team: string | null;
@@ -511,7 +512,7 @@ export function TeamModal({ team, onClose }: Props) {
               ) : coach ? (
                 <>
                   {coach.photo && (
-                    <img src={coach.photo} alt={coach.name}
+                    <img src={coach.photo} alt={coach.name} referrerPolicy="no-referrer"
                       style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', border: '1px solid #334155' }}
                       onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
@@ -556,6 +557,9 @@ export function TeamModal({ team, onClose }: Props) {
             <TabBtn active={activeTab === 'squad'} onClick={() => setActiveTab('squad')}>
               Elenco ({squad.length})
             </TabBtn>
+            <TabBtn active={activeTab === 'editor'} onClick={() => setActiveTab('editor')}>
+              Editor
+            </TabBtn>
           </div>
         )}
 
@@ -583,6 +587,10 @@ export function TeamModal({ team, onClose }: Props) {
             <>
               {activeTab === 'lineup' && (
                 <FormationPitch squad={squad} />
+              )}
+
+              {activeTab === 'editor' && (
+                <FormationEditor team={team} squad={squad} />
               )}
 
               {activeTab === 'squad' && (
