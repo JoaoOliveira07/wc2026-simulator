@@ -1,5 +1,7 @@
-import { useState, useMemo } from 'react';
-import { Trophy, Zap, Trash2, ChevronRight } from 'lucide-react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { Trophy, Zap, Trash2, ChevronRight, Share2, Check } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import html2canvas from 'html2canvas';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
 import { teamsMatch } from '../data/espnApi';
@@ -8,6 +10,7 @@ import { ScoreInput } from './ScoreInput';
 import trofeuImg from '../assets/trofeu_copa.png';
 import { teamPT } from '../data/teamNames';
 import { getWinner, resolveRef, resolveWinner, simulate, type UserScores } from '../store/knockout';
+import { buildShareURL } from '../utils/shareState';
 
 // ── Layout constants ─────────────────────────────────────────────────────────
 const ROW_H   = 108;
@@ -140,19 +143,16 @@ interface CenterProps {
   us: UserScores;
   onScore: (num: number, s: [number, number]) => void;
   liveMatches?: ESPNMatch[];
+  hasChampion?: boolean;
 }
 
-function CenterSection({ byNum, us, onScore, liveMatches }: CenterProps) {
+function CenterSection({ byNum, us, onScore, liveMatches, hasChampion }: CenterProps) {
   const imgSize = 148;
 
-  // Anchor: SF lines at TOTAL_H/2. Final card center sits there.
-  const lineY        = TOTAL_H / 2;          // 432
-  const finalCardTop = lineY - CARD_H / 2;   // 384
+  const lineY        = TOTAL_H / 2;
+  const finalCardTop = lineY - CARD_H / 2;
+  const trophyTop = (finalCardTop - imgSize) / 2;
 
-  // Trophy fills space above final card, centered in that space
-  const trophyTop = (finalCardTop - imgSize) / 2;  // vertically centered above final
-
-  // 3rd place compact below Final
   const thirdLabelY  = finalCardTop + CARD_H + 8;
   const thirdCardTop = thirdLabelY + 14;
 
@@ -164,7 +164,7 @@ function CenterSection({ byNum, us, onScore, liveMatches }: CenterProps) {
   return (
     <div style={{ width: CENTER_W, height: TOTAL_H, position: 'relative', flexShrink: 0 }}>
 
-      {/* "FINAL" column header — same position as other column labels */}
+      {/* "FINAL" column header */}
       <div style={{
         position: 'absolute', top: -24, left: 0, right: 0,
         textAlign: 'center', fontSize: 10, fontWeight: 800,
@@ -174,14 +174,20 @@ function CenterSection({ byNum, us, onScore, liveMatches }: CenterProps) {
         Final
       </div>
 
-      {/* Trophy — large, centered in upper half */}
+      {/* Trophy — pulses when champion is known */}
       <div style={{ position: 'absolute', top: trophyTop, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
         <img
           src={trofeuImg}
           alt="Troféu"
           style={{
             width: imgSize, height: imgSize,
-            filter: 'drop-shadow(0 0 16px rgba(234,179,8,0.55)) drop-shadow(0 4px 10px rgba(0,0,0,0.6))',
+            animation: hasChampion
+              ? 'championGlow 2s ease-in-out infinite'
+              : undefined,
+            filter: hasChampion
+              ? undefined
+              : 'drop-shadow(0 0 16px rgba(234,179,8,0.55)) drop-shadow(0 4px 10px rgba(0,0,0,0.6))',
+            transition: 'filter 0.5s ease',
           }}
         />
       </div>
@@ -229,11 +235,9 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird, liveMatches
   const winner    = getWinner(matchNum, byNum, us, liveMatches ?? []);
   const isActive  = canEdit && !winner;
 
-  // Live ESPN match detection
   const liveEspn  = !played ? findLiveESPN(t1, t2, liveMatches ?? []) : null;
   const isLive    = !!liveEspn;
 
-  // Determine if t1 maps to home or away in ESPN
   const espnForScore = espnMatch;
   const isHomeT1  = espnForScore ? espnForScore.home.name.toLowerCase().includes((t1 ?? '').toLowerCase()) : false;
   const liveScore1 = espnForScore && espnForScore.home.score != null ? Number(isHomeT1 ? espnForScore.home.score : espnForScore.away.score) : undefined;
@@ -329,7 +333,7 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird, liveMatches
           >
             {team
               ? <Flag team={team} className="w-7 h-5 rounded-sm shrink-0"
-                  style={{ animation: team ? 'bracketPop 0.35s ease' : undefined }} />
+                  style={{ animation: 'bracketPop 0.35s ease' }} />
               : <span className="w-7 h-5 rounded-sm shrink-0 inline-block" style={{ background: 'rgba(15,23,42,0.7)' }} />
             }
 
@@ -414,6 +418,8 @@ export function Bracket({ matches, liveMatches }: Props) {
     try { return JSON.parse(localStorage.getItem('wc2026_ko') ?? '{}'); }
     catch { return {}; }
   });
+  const [shareStatus, setShareStatus] = useState<'idle' | 'sharing' | 'shared'>('idle');
+  const bracketRef = useRef<HTMLDivElement>(null);
 
   const ko = useMemo(
     () => matches.filter((m) => !m.group).sort((a, b) => (a.num ?? 0) - (b.num ?? 0)),
@@ -426,7 +432,23 @@ export function Bracket({ matches, liveMatches }: Props) {
     return map;
   }, [ko]);
 
-  const champion = resolveWinner(FINAL_NUM, byNum, us, liveMatches);
+  const champion = useMemo(
+    () => resolveWinner(FINAL_NUM, byNum, us, liveMatches),
+    [byNum, us, liveMatches],
+  );
+
+  // Fire confetti when champion is first determined
+  const prevChampion = useRef<string | null>(null);
+  useEffect(() => {
+    if (champion && champion !== prevChampion.current) {
+      confetti({ particleCount: 180, spread: 75, origin: { y: 0.55 }, colors: ['#FFD700', '#FFA500', '#fff', '#22c55e', '#fbbf24'] });
+      setTimeout(() => {
+        confetti({ particleCount: 90, angle: 60, spread: 50, origin: { x: 0 }, colors: ['#FFD700', '#FFA500', '#fff'] });
+        confetti({ particleCount: 90, angle: 120, spread: 50, origin: { x: 1 }, colors: ['#FFD700', '#FFA500', '#fff'] });
+      }, 350);
+    }
+    prevChampion.current = champion ?? null;
+  }, [champion]);
 
   const handleScore = (num: number, s: [number, number]) => {
     setUs((prev) => {
@@ -446,9 +468,60 @@ export function Bracket({ matches, liveMatches }: Props) {
 
   const handleClear = () => { setUs({}); localStorage.removeItem('wc2026_ko'); };
 
+  const handleShare = async () => {
+    if (!bracketRef.current || shareStatus === 'sharing') return;
+    setShareStatus('sharing');
+    try {
+      const preds = JSON.parse(localStorage.getItem('wc2026_predictions') ?? '{}');
+      const shareURL = buildShareURL(preds, us);
+      const shareText = 'Confira minha simulação da Copa 2026';
+
+      const canvas = await html2canvas(bracketRef.current, {
+        backgroundColor: '#020617',
+        scale: 1.5,
+        useCORS: true,
+        logging: false,
+      });
+
+      const blob = await new Promise<Blob>((res, rej) =>
+        canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob failed')), 'image/png'),
+      );
+
+      const imageFile = new File([blob], 'copa2026.png', { type: 'image/png' });
+
+      // Mobile: Web Share API com imagem + link + texto
+      if (navigator.canShare?.({ files: [imageFile] })) {
+        await navigator.share({
+          files: [imageFile],
+          title: shareText,
+          text: shareText,
+          url: shareURL,
+        });
+      } else {
+        // Desktop: baixa a imagem e copia o link para a área de transferência
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `copa2026-chave${champion ? '-' + champion.toLowerCase().replace(/\s/g, '_') : ''}.png`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        try {
+          await navigator.clipboard.writeText(`${shareText}: ${shareURL}`);
+        } catch {
+          window.prompt('Copie o link da sua simulação:', shareURL);
+        }
+        setShareStatus('shared');
+        setTimeout(() => setShareStatus('idle'), 2500);
+      }
+    } catch (err) {
+      console.error('Share failed:', err);
+    } finally {
+      setShareStatus(s => s === 'sharing' ? 'idle' : s);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-      {/* Toolbar — constrained to bracket width so buttons stay flush */}
+      {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3" style={{ width: '100%', maxWidth: 1760, padding: '0 20px' }}>
         {champion && (
           <div className="flex items-center gap-3 rounded-xl px-4 py-2"
@@ -473,15 +546,37 @@ export function Bracket({ matches, liveMatches }: Props) {
               border: '1px solid rgba(59,130,246,0.4)',
               color: '#fff', fontSize: 12,
               boxShadow: '0 0 16px rgba(37,99,235,0.35), 0 2px 4px rgba(0,0,0,0.4)',
+              cursor: 'pointer',
             }}
           >
             <Zap size={13} />
             <span className="hidden sm:inline">Simular Aleatório</span>
           </button>
           <button
+            onClick={handleShare}
+            disabled={shareStatus === 'sharing'}
+            className="flex items-center gap-1.5 rounded-lg font-semibold transition-all"
+            style={{
+              padding: '6px 10px',
+              background: shareStatus === 'shared' ? 'rgba(34,197,94,0.15)' : shareStatus === 'sharing' ? 'rgba(99,102,241,0.2)' : '#1e293b',
+              border: shareStatus === 'shared' ? '1px solid rgba(34,197,94,0.4)' : shareStatus === 'sharing' ? '1px solid rgba(99,102,241,0.5)' : '1px solid #334155',
+              color: shareStatus === 'shared' ? '#86efac' : shareStatus === 'sharing' ? '#a5b4fc' : '#94a3b8',
+              fontSize: 12,
+              cursor: shareStatus === 'sharing' ? 'wait' : 'pointer',
+              transition: 'all 0.25s ease',
+              opacity: shareStatus === 'sharing' ? 0.7 : 1,
+            }}
+            title="Compartilhar simulação"
+          >
+            {shareStatus === 'shared' ? <Check size={13} /> : <Share2 size={13} />}
+            <span className="hidden sm:inline">
+              {shareStatus === 'sharing' ? 'Aguarde…' : shareStatus === 'shared' ? 'Copiado!' : 'Compartilhar'}
+            </span>
+          </button>
+          <button
             onClick={handleClear}
             className="flex items-center gap-1.5 rounded-lg font-semibold"
-            style={{ padding: '6px 10px', background: '#1e293b', border: '1px solid #334155', color: '#64748b', fontSize: 12 }}
+            style={{ padding: '6px 10px', background: '#1e293b', border: '1px solid #334155', color: '#64748b', fontSize: 12, cursor: 'pointer' }}
           >
             <Trash2 size={13} />
             <span className="hidden sm:inline">Limpar</span>
@@ -495,13 +590,14 @@ export function Bracket({ matches, liveMatches }: Props) {
         <span>Role para ver o bracket completo</span>
       </div>
 
-      {/* Bracket — display:flex on scroll container enables margin:auto centering */}
+      {/* Bracket scroll container */}
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const, display: 'flex', width: '100%', maxWidth: '100vw' }}>
-        <div style={{
+        <div ref={bracketRef} style={{
           display: 'flex', alignItems: 'flex-start',
           marginLeft: 'auto', marginRight: 'auto',
           paddingTop: 32, paddingBottom: 20, paddingLeft: 20, paddingRight: 20,
           gap: 0, minWidth: 1280,
+          background: '#020617',
         }}>
           <BracketCol nums={L_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" liveMatches={liveMatches} />
           <BracketFork fromCount={8} phase="r16" />
@@ -512,7 +608,7 @@ export function Bracket({ matches, liveMatches }: Props) {
           <BracketCol nums={L_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" liveMatches={liveMatches} />
           <HorizLine phase="sf" />
 
-          <CenterSection byNum={byNum} us={us} onScore={handleScore} liveMatches={liveMatches} />
+          <CenterSection byNum={byNum} us={us} onScore={handleScore} liveMatches={liveMatches} hasChampion={!!champion} />
 
           <HorizLine phase="sf" />
           <BracketCol nums={R_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" liveMatches={liveMatches} />
