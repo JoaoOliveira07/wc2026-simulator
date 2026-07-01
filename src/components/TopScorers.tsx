@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Trophy } from 'lucide-react';
 import { fetchTopScorers } from '../data/apiFootball';
 import type { AFTopScorer } from '../data/apiFootballTypes';
+import type { TopScorersResult } from '../data/apiFootball';
 import { Flag } from './Flag';
 
 const MEDAL = ['🥇', '🥈', '🥉'];
@@ -126,12 +127,16 @@ function SkeletonRow({ delay }: { delay: number }) {
 }
 
 export function TopScorers() {
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery<TopScorersResult>({
     queryKey: ['topscorers'],
     queryFn: fetchTopScorers,
     staleTime: 60 * 60 * 1000,
     retry: 1,
   });
+
+  const scorers = data?.scorers ?? [];
+  const season  = data?.season ?? 2026;
+  const isHistorical = season !== 2026;
 
   return (
     <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 4px', animation: 'fadeSlideUp 0.25s ease both' }}>
@@ -155,8 +160,20 @@ export function TopScorers() {
           }}>
             ARTILHEIROS
           </h2>
-          <div style={{ fontSize: 11, color: '#475569', fontWeight: 600, marginTop: 3 }}>
-            Copa do Mundo 2026
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+            <span style={{ fontSize: 11, color: '#475569', fontWeight: 600 }}>
+              Copa do Mundo {season}
+            </span>
+            {isHistorical && (
+              <span style={{
+                fontSize: 9, fontWeight: 800, letterSpacing: '0.06em',
+                padding: '2px 6px', borderRadius: 4,
+                background: 'rgba(100,116,139,0.18)', color: '#64748b',
+                border: '1px solid rgba(100,116,139,0.25)',
+              }}>
+                HISTÓRICO
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -175,20 +192,11 @@ export function TopScorers() {
           <p style={{ color: '#475569', fontSize: 14, margin: 0 }}>
             Dados de artilharia não disponíveis no momento.
           </p>
-          {error instanceof Error && (
-            <p style={{
-              color: '#334155', fontSize: 11, marginTop: 6,
-              background: 'rgba(30,41,59,0.6)', borderRadius: 6,
-              padding: '4px 10px', display: 'inline-block',
-              fontFamily: 'monospace',
-            }}>
-              {error.message}
-            </p>
-          )}
           <br />
           <button
             onClick={() => {
               localStorage.removeItem('af:topscorers:2026');
+              localStorage.removeItem('af:topscorers:2022');
               refetch();
             }}
             style={{
@@ -205,21 +213,18 @@ export function TopScorers() {
         </div>
       )}
 
-      {data && data.length === 0 && !isLoading && (
+      {!error && scorers.length === 0 && !isLoading && (
         <div style={{ textAlign: 'center', padding: '64px 0' }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>⚽</div>
           <p style={{ color: '#475569', fontSize: 14 }}>
             Ainda não há dados de artilharia disponíveis.
           </p>
-          <p style={{ color: '#334155', fontSize: 12, marginTop: 4 }}>
-            Os dados serão atualizados durante a Copa do Mundo 2026.
-          </p>
         </div>
       )}
 
-      {data && data.length > 0 && (
+      {scorers.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-          {data.slice(0, 20).map((scorer, i) => (
+          {scorers.slice(0, 20).map((scorer, i) => (
             <ScorerRow key={scorer.player.id} scorer={scorer} rank={i + 1} />
           ))}
         </div>
