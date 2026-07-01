@@ -139,36 +139,44 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
         </table>
       </div>
 
-      {/* Confrontos — colapsável */}
+      {/* Confrontos — colapsável com animação */}
       <button
         onClick={() => setMatchesOpen(o => !o)}
-        className="flex items-center justify-between w-full px-4 py-2 text-xs font-semibold transition-colors"
+        className="flex items-center justify-between w-full px-4 py-2 text-xs font-semibold"
         style={{
           borderTop: '1px solid rgba(255,255,255,0.06)',
           color: matchesOpen ? '#94a3b8' : '#475569',
           background: matchesOpen ? 'rgba(255,255,255,0.02)' : 'transparent',
           cursor: 'pointer',
+          transition: 'color 0.2s ease, background 0.2s ease',
         }}
       >
         <span>Confrontos</span>
         <ChevronDown
           size={13}
-          style={{ transform: matchesOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}
+          style={{ transform: matchesOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)' }}
         />
       </button>
 
-      {matchesOpen && (
-        <div className="px-1 pb-2">
-          {groupMatches.map((m) => (
-            <MatchRow
-              key={`${m.team1}-${m.team2}-${m.date}`}
-              match={m}
-              predictions={predictions}
-              onPredict={onPredict}
-            />
-          ))}
+      {/* Grid-template-rows trick: 0fr→1fr anima abertura e fecho suavemente */}
+      <div style={{
+        display: 'grid',
+        gridTemplateRows: matchesOpen ? '1fr' : '0fr',
+        transition: 'grid-template-rows 0.3s cubic-bezier(0.4,0,0.2,1)',
+      }}>
+        <div style={{ overflow: 'hidden' }}>
+          <div className="px-1 pb-2">
+            {groupMatches.map((m) => (
+              <MatchRow
+                key={`${m.team1}-${m.team2}-${m.date}`}
+                match={m}
+                predictions={predictions}
+                onPredict={onPredict}
+              />
+            ))}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
