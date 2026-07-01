@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Plus, RotateCcw, ArrowLeftRight } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Plus, RotateCcw, Pencil } from 'lucide-react';
 import type { AFPlayer } from '../data/apiFootball';
 import {
   FORMATIONS, DEFAULT_FORMATION, getFormation, getSlotKeys,
@@ -31,6 +31,7 @@ function autoPopulate(squad: AFPlayer[], config: FormationConfig): Record<string
   for (const key of Object.keys(byType) as PositionType[]) {
     byType[key].sort((a, b) => (a.number ?? 99) - (b.number ?? 99));
   }
+
   const counters: Record<PositionType, number> = { gk: 0, df: 0, mf: 0, fw: 0 };
   const slots: Record<string, number> = {};
   for (const slot of getSlotKeys(config)) {
@@ -43,12 +44,9 @@ function autoPopulate(squad: AFPlayer[], config: FormationConfig): Record<string
 
 // ── Slot components ───────────────────────────────────────────────────────────
 
-function EmptySlot({
-  type, onClick, isPendingDrop,
-}: { type: PositionType; onClick: () => void; isPendingDrop: boolean }) {
+function EmptySlot({ type, onClick }: { type: PositionType; onClick: () => void }) {
   const col = POS_COLORS[type];
   const [hovered, setHovered] = useState(false);
-  const active = hovered || isPendingDrop;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, width: 64 }}>
@@ -58,16 +56,15 @@ function EmptySlot({
         onMouseLeave={() => setHovered(false)}
         style={{
           width: 54, height: 66, borderRadius: 9, cursor: 'pointer',
-          border: `2px dashed ${active ? col.text : col.border}`,
-          background: active ? col.bg : 'rgba(0,0,0,0.2)',
+          border: `2px dashed ${hovered ? col.text : col.border}`,
+          background: hovered ? col.bg : 'rgba(0,0,0,0.2)',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3,
           transition: 'all 0.15s',
-          transform: active ? 'scale(1.06)' : 'scale(1)',
-          boxShadow: isPendingDrop ? `0 0 12px ${col.border}` : 'none',
+          transform: hovered ? 'scale(1.06)' : 'scale(1)',
         }}
       >
-        <Plus size={16} style={{ color: active ? col.text : col.border }} />
-        <span style={{ fontSize: 7, fontWeight: 900, color: active ? col.text : col.border, letterSpacing: '0.06em' }}>
+        <Plus size={16} style={{ color: hovered ? col.text : col.border }} />
+        <span style={{ fontSize: 7, fontWeight: 900, color: hovered ? col.text : col.border, letterSpacing: '0.06em' }}>
           {type.toUpperCase()}
         </span>
       </div>
@@ -76,9 +73,7 @@ function EmptySlot({
   );
 }
 
-function FilledSlot({
-  player, type, isSelected, onClick,
-}: { player: AFPlayer; type: PositionType; isSelected: boolean; onClick: () => void }) {
+function FilledSlot({ player, type, onClick }: { player: AFPlayer; type: PositionType; onClick: () => void }) {
   const [hovered, setHovered] = useState(false);
   const col = POS_COLORS[type];
   const short = type.toUpperCase();
@@ -93,14 +88,10 @@ function FilledSlot({
       <div style={{
         width: 54, height: 66, borderRadius: 9, overflow: 'hidden', position: 'relative',
         background: '#1a2e1a',
-        boxShadow: isSelected
-          ? '0 8px 28px rgba(0,0,0,0.9), 0 0 0 2.5px #4ade80, 0 0 18px rgba(74,222,128,0.5)'
-          : hovered
-            ? `0 8px 24px rgba(0,0,0,0.8), 0 0 0 2px ${col.text}`
-            : `0 3px 12px rgba(0,0,0,0.65), 0 0 0 1.5px ${col.border}`,
-        transform: isSelected
-          ? 'scale(1.12) translateY(-4px)'
-          : hovered ? 'scale(1.08) translateY(-3px)' : 'scale(1)',
+        boxShadow: hovered
+          ? `0 8px 24px rgba(0,0,0,0.8), 0 0 0 2px ${col.text}`
+          : `0 3px 12px rgba(0,0,0,0.65), 0 0 0 1.5px ${col.border}`,
+        transform: hovered ? 'scale(1.08) translateY(-3px)' : 'scale(1)',
         transition: 'all 0.2s',
         flexShrink: 0,
       }}>
@@ -137,25 +128,14 @@ function FilledSlot({
           pointerEvents: 'none',
         }} />
 
-        {/* Selected overlay — swap icon */}
-        {isSelected && (
+        {/* Hover swap overlay */}
+        {hovered && (
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'rgba(74,222,128,0.18)',
+            background: 'rgba(0,0,0,0.45)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <ArrowLeftRight size={18} style={{ color: '#4ade80' }} />
-          </div>
-        )}
-
-        {/* Hover overlay when not selected */}
-        {hovered && !isSelected && (
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'rgba(0,0,0,0.4)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <ArrowLeftRight size={16} style={{ color: '#fff', opacity: 0.8 }} />
+            <Pencil size={18} style={{ color: '#fff' }} />
           </div>
         )}
 
@@ -172,7 +152,7 @@ function FilledSlot({
       {/* Name */}
       <span style={{
         fontSize: 9.5, fontWeight: 800,
-        color: isSelected ? '#4ade80' : hovered ? '#ffffff' : '#e2e8f0',
+        color: hovered ? '#ffffff' : '#e2e8f0',
         textAlign: 'center', lineHeight: 1.1,
         letterSpacing: '0.04em', textTransform: 'uppercase',
         width: 64, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -185,7 +165,7 @@ function FilledSlot({
   );
 }
 
-// ── Pitch background ──────────────────────────────────────────────────────────
+// ── Pitch background (shared visual) ─────────────────────────────────────────
 
 function PitchBackground() {
   return (
@@ -221,7 +201,7 @@ interface Props {
   squad: AFPlayer[];
 }
 
-interface SlotRef {
+interface PickerTarget {
   slotKey: string;
   type: PositionType;
 }
@@ -244,10 +224,7 @@ export function FormationEditor({ team, squad }: Props) {
     return autoPopulate(squad, getFormation(DEFAULT_FORMATION));
   });
 
-  // selectedSlot = first click (awaiting second click to swap)
-  const [selectedSlot, setSelectedSlot] = useState<SlotRef | null>(null);
-  // pickerTarget = open squad picker modal for this slot
-  const [pickerTarget, setPickerTarget] = useState<SlotRef | null>(null);
+  const [pickerTarget, setPickerTarget] = useState<PickerTarget | null>(null);
 
   const config = getFormation(formation);
 
@@ -259,63 +236,23 @@ export function FormationEditor({ team, squad }: Props) {
 
   const usedIds = useMemo(() => new Set(Object.values(slots)), [slots]);
 
-  // Escape cancels selection
-  useEffect(() => {
-    const h = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setSelectedSlot(null); setPickerTarget(null); }
-    };
-    window.addEventListener('keydown', h);
-    return () => window.removeEventListener('keydown', h);
-  }, []);
-
-  function saveSlots(f: string, s: Record<string, number>) {
+  function save(f: string, s: Record<string, number>) {
     try { localStorage.setItem(storageKey, JSON.stringify({ formation: f, slots: s })); } catch {}
   }
 
   function handleFormationChange(newId: string) {
-    const newSlots = autoPopulate(squad, getFormation(newId));
+    const newConfig = getFormation(newId);
+    const newSlots = autoPopulate(squad, newConfig);
     setFormation(newId);
     setSlots(newSlots);
-    setSelectedSlot(null);
-    saveSlots(newId, newSlots);
-  }
-
-  // Unified click handler for any slot on the pitch
-  function handleSlotClick(slotKey: string, type: PositionType) {
-    const hasPlayer = slots[slotKey] != null;
-
-    if (selectedSlot) {
-      if (selectedSlot.key === slotKey) {
-        // Tap same slot again → open picker to change player
-        setSelectedSlot(null);
-        setPickerTarget({ slotKey, type });
-      } else {
-        // Swap (or move if target is empty)
-        const newSlots = { ...slots };
-        const playerA = newSlots[selectedSlot.key];
-        const playerB = newSlots[slotKey];
-        if (playerA != null) newSlots[slotKey] = playerA; else delete newSlots[slotKey];
-        if (playerB != null) newSlots[selectedSlot.key] = playerB; else delete newSlots[selectedSlot.key];
-        setSlots(newSlots);
-        saveSlots(formation, newSlots);
-        setSelectedSlot(null);
-      }
-    } else {
-      if (hasPlayer) {
-        // First tap on filled slot → select for swap
-        setSelectedSlot({ slotKey, type });
-      } else {
-        // Tap empty slot → open picker to add player
-        setPickerTarget({ slotKey, type });
-      }
-    }
+    save(newId, newSlots);
   }
 
   function handlePlayerSelect(player: AFPlayer | null) {
     if (!pickerTarget) return;
     const newSlots = { ...slots };
     if (player) {
-      // Move from old slot if already placed (no duplicates)
+      // If already in another slot, vacate it first (move, don't duplicate)
       for (const key of Object.keys(newSlots)) {
         if (newSlots[key] === player.id && key !== pickerTarget.slotKey) {
           delete newSlots[key];
@@ -327,17 +264,17 @@ export function FormationEditor({ team, squad }: Props) {
       delete newSlots[pickerTarget.slotKey];
     }
     setSlots(newSlots);
-    saveSlots(formation, newSlots);
+    save(formation, newSlots);
     setPickerTarget(null);
   }
 
   function handleReset() {
     const newSlots = autoPopulate(squad, config);
     setSlots(newSlots);
-    setSelectedSlot(null);
-    saveSlots(formation, newSlots);
+    save(formation, newSlots);
   }
 
+  // Reverse rows so FW is rendered at top, GK at bottom
   const reversedRows = [...config.rows.entries()].reverse();
 
   return (
@@ -345,8 +282,17 @@ export function FormationEditor({ team, squad }: Props) {
 
       {/* Formation picker */}
       <div style={{ position: 'relative' }}>
-        <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 20, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(to right, #0d1117 30%, transparent)' }} />
-        <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 20, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(to left, #0d1117 30%, transparent)' }} />
+        {/* Left fade */}
+        <div style={{
+          position: 'absolute', left: 0, top: 0, bottom: 0, width: 20, zIndex: 1, pointerEvents: 'none',
+          background: 'linear-gradient(to right, #0d1117 30%, transparent)',
+        }} />
+        {/* Right fade */}
+        <div style={{
+          position: 'absolute', right: 0, top: 0, bottom: 0, width: 20, zIndex: 1, pointerEvents: 'none',
+          background: 'linear-gradient(to left, #0d1117 30%, transparent)',
+        }} />
+
         <div className="hide-scrollbar" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingLeft: 2, paddingRight: 2 }}>
           {FORMATIONS.map(f => {
             const active = formation === f.id;
@@ -371,22 +317,11 @@ export function FormationEditor({ team, squad }: Props) {
         </div>
       </div>
 
-      {/* Swap mode hint */}
-      {selectedSlot && (
-        <div style={{
-          textAlign: 'center', fontSize: 11, color: '#4ade80', fontWeight: 600,
-          background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.2)',
-          borderRadius: 8, padding: '5px 10px',
-          animation: 'fadeSlideUp 0.15s ease both',
-        }}>
-          Clique em outro jogador para trocar · toque novamente para editar
-        </div>
-      )}
-
       {/* Pitch */}
       <div style={{ position: 'relative', borderRadius: 14 }}>
         <PitchBackground />
 
+        {/* Slot grid — above background, fixed height for consistent pitch size */}
         <div style={{
           position: 'relative', zIndex: 1,
           height: 460,
@@ -400,8 +335,16 @@ export function FormationEditor({ team, squad }: Props) {
               key: `r${rowIdx}_${colIdx}`,
               type: row.type,
             }));
+
             return (
-              <div key={rowIdx} style={{ display: 'flex', justifyContent: row.count === 1 ? 'center' : 'space-evenly', alignItems: 'flex-end' }}>
+              <div
+                key={rowIdx}
+                style={{
+                  display: 'flex',
+                  justifyContent: row.count === 1 ? 'center' : 'space-evenly',
+                  alignItems: 'flex-end',
+                }}
+              >
                 {rowSlots.map(({ key, type }) => {
                   const playerId = slots[key];
                   const player = playerId != null ? playerById[playerId] : undefined;
@@ -411,8 +354,7 @@ export function FormationEditor({ team, squad }: Props) {
                         key={key}
                         player={player}
                         type={type}
-                        isSelected={selectedSlot?.key === key}
-                        onClick={() => handleSlotClick(key, type)}
+                        onClick={() => setPickerTarget({ slotKey: key, type })}
                       />
                     );
                   }
@@ -420,8 +362,7 @@ export function FormationEditor({ team, squad }: Props) {
                     <EmptySlot
                       key={key}
                       type={type}
-                      isPendingDrop={selectedSlot !== null}
-                      onClick={() => handleSlotClick(key, type)}
+                      onClick={() => setPickerTarget({ slotKey: key, type })}
                     />
                   );
                 })}
@@ -430,9 +371,16 @@ export function FormationEditor({ team, squad }: Props) {
           })}
         </div>
 
-        {/* Bottom bar */}
-        <div style={{ position: 'absolute', bottom: 10, left: 14, right: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em', pointerEvents: 'none' }}>
+        {/* Bottom bar: formation label + reset */}
+        <div style={{
+          position: 'absolute', bottom: 10, left: 14, right: 14,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <span style={{
+            fontSize: 10, fontWeight: 800,
+            color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em',
+            pointerEvents: 'none',
+          }}>
             {formation}
           </span>
           <button
@@ -442,10 +390,17 @@ export function FormationEditor({ team, squad }: Props) {
               padding: '3px 8px', borderRadius: 6,
               fontSize: 9, fontWeight: 700, cursor: 'pointer',
               background: 'rgba(0,0,0,0.4)', color: 'rgba(255,255,255,0.4)',
-              border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.15s',
+              border: '1px solid rgba(255,255,255,0.1)',
+              transition: 'all 0.15s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#f1f5f9'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; }}
+            onMouseEnter={e => {
+              e.currentTarget.style.color = '#f1f5f9';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.color = 'rgba(255,255,255,0.4)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+            }}
           >
             <RotateCcw size={10} /> Resetar
           </button>
