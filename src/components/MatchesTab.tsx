@@ -27,6 +27,14 @@ const CAZETV_URL = 'https://www.youtube.com/@CazeTV/streams';
 
 const WEEKDAY = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
+function isToday(d: Date | null): boolean {
+  if (!d) return false;
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate();
+}
+
 function parseKickoff(dateStr: string, timeStr: string): Date | null {
   if (!timeStr) return null;
   const m = timeStr.match(/(\d+):(\d+)\s+UTC([+-]\d?\d?)/);
@@ -57,7 +65,7 @@ function getStatus(m: Match, espn: ESPNMatch | null): MatchStatus {
 }
 
 // ── Date column ───────────────────────────────────────────────────────────────
-function DateCol({ kicked, status }: { kicked: Date | null; status: MatchStatus }) {
+function DateCol({ kicked, status, today }: { kicked: Date | null; status: MatchStatus; today?: boolean }) {
   const isLive = status === 'live';
   const isDone = status === 'finished';
 
@@ -76,6 +84,15 @@ function DateCol({ kicked, status }: { kicked: Date | null; status: MatchStatus 
   const day   = WEEKDAY[kicked.getDay()];
   const date  = kicked.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
   const time  = kicked.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  if (today && status === 'upcoming') {
+    return (
+      <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
+        <div style={{ fontSize: 8, fontWeight: 800, color: '#f59e0b', letterSpacing: '0.08em' }}>HOJE</div>
+        <div style={{ fontSize: 12, fontWeight: 800, color: '#fbbf24' }}>{time}</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
@@ -130,9 +147,9 @@ function ScoreCol({ m, espn, status }: { m: Match; espn: ESPNMatch | null; statu
 }
 
 // ── Single match row ──────────────────────────────────────────────────────────
-function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
+function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2, today }: {
   m: Match; espn: ESPNMatch | null; status: MatchStatus; kicked: Date | null;
-  resolvedTeam1?: string | null; resolvedTeam2?: string | null;
+  resolvedTeam1?: string | null; resolvedTeam2?: string | null; today?: boolean;
 }) {
   const isLive = status === 'live';
   const isUpcoming = status === 'upcoming';
@@ -147,15 +164,21 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2 }: {
     && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L');
   const showCazetv = (isLive || isUpcoming) && hasResolvedTeams;
 
+  const rowBg = isLive
+    ? 'rgba(239,68,68,0.05)'
+    : today
+    ? 'rgba(245,158,11,0.05)'
+    : 'transparent';
+
   const row = (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 8, padding: '9px 14px',
       borderBottom: '1px solid rgba(30,41,59,0.35)',
-      background: isLive ? 'rgba(239,68,68,0.05)' : 'transparent',
+      background: rowBg,
       cursor: (isLive || isUpcoming) ? 'pointer' : 'default',
       textDecoration: 'none',
     }}>
-      <DateCol kicked={kicked} status={status} />
+      <DateCol kicked={kicked} status={status} today={today} />
 
       {/* Team 1 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', minWidth: 0 }}>
@@ -244,6 +267,23 @@ function RoundSubHeader({ round }: { round: string }) {
   );
 }
 
+// ── Today sub-header ──────────────────────────────────────────────────────────
+function TodaySubHeader({ round }: { round: string }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 6,
+      padding: '4px 14px',
+      borderBottom: '1px solid rgba(245,158,11,0.15)',
+      background: 'rgba(245,158,11,0.07)',
+    }}>
+      <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#f59e0b', flexShrink: 0 }} />
+      <span style={{ fontSize: 9, fontWeight: 800, color: '#f59e0b', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+        Hoje · {roundLabel(round)}
+      </span>
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 interface Props {
   matches: Match[];
@@ -299,7 +339,10 @@ export function MatchesTab({ matches, liveMatches }: Props) {
     return out;
   }
 
-  const upcomingGroups = groupByRound(upcoming);
+  const todayUpcoming  = upcoming.filter(e => isToday(e.kicked));
+  const laterUpcoming  = upcoming.filter(e => !isToday(e.kicked));
+  const todayGroups    = groupByRound(todayUpcoming);
+  const laterGroups    = groupByRound(laterUpcoming);
   const finishedGroups = groupByRound(finished);
 
   const key = (e: EnrichedMatch, i: number) => `${e.m.team1}|${e.m.team2}|${e.m.date}|${i}`;
@@ -321,7 +364,18 @@ export function MatchesTab({ matches, liveMatches }: Props) {
       {upcoming.length > 0 && (
         <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(30,41,59,0.5)' }}>
           <SectionHeader label="Próximos" color="#3b82f6" count={upcoming.length} />
-          {upcomingGroups.map(({ round, items }) => (
+          {/* Today's upcoming matches — highlighted */}
+          {todayGroups.map(({ round, items }) => (
+            <div key={`today-${round}`}>
+              <TodaySubHeader round={round} />
+              {items.map((e, i) => (
+                <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked}
+                  resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} today />
+              ))}
+            </div>
+          ))}
+          {/* Future matches */}
+          {laterGroups.map(({ round, items }) => (
             <div key={round}>
               <RoundSubHeader round={round} />
               {items.map((e, i) => (
