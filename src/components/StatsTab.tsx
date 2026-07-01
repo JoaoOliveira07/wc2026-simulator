@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { TrendingUp, Shuffle, Shield, Target, Zap, AlertTriangle, Award, Trophy, Activity } from 'lucide-react';
+import { TrendingUp, Shuffle, Shield, Target, Zap, Award, Trophy, Activity } from 'lucide-react';
 import type { Group, Match, Predictions } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
 import type { UserScores } from '../store/knockout';
@@ -33,10 +33,9 @@ interface StatCardProps {
   iconColor: string;
   valueColor?: string;
   delay?: number;
-  wide?: boolean;
 }
 
-function StatCard({ label, value, sub, icon, iconBg, iconColor, valueColor = '#f1f5f9', delay = 0, wide }: StatCardProps) {
+function StatCard({ label, value, sub, icon, iconBg, iconColor, valueColor = '#f1f5f9', delay = 0 }: StatCardProps) {
   return (
     <div style={{
       background: 'linear-gradient(145deg, rgba(15,23,42,0.95), rgba(10,16,32,0.95))',
@@ -46,7 +45,6 @@ function StatCard({ label, value, sub, icon, iconBg, iconColor, valueColor = '#f
       display: 'flex', flexDirection: 'column', gap: 10,
       animation: 'statsCountUp 0.45s ease both',
       animationDelay: `${delay}s`,
-      gridColumn: wide ? 'span 2' : undefined,
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -83,6 +81,38 @@ function StatCard({ label, value, sub, icon, iconBg, iconColor, valueColor = '#f
   );
 }
 
+// Card with team (flag + name + value) — used for attack & defense rows
+function TeamStatCard({
+  label, team, value, unit, iconBg, iconColor, icon, delay,
+}: {
+  label: string; team: string; value: number; unit: string;
+  iconBg: string; iconColor: string; icon: React.ReactNode; delay: number;
+}) {
+  return (
+    <div style={{
+      background: 'linear-gradient(145deg, rgba(15,23,42,0.95), rgba(10,16,32,0.95))',
+      border: '1px solid rgba(30,41,59,0.7)',
+      borderRadius: 18, padding: '20px 22px',
+      animation: 'statsCountUp 0.45s ease both', animationDelay: `${delay}s`,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+        <div style={{ width: 34, height: 34, borderRadius: 10, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 4px 12px ${iconBg}88`, flexShrink: 0 }}>
+          <span style={{ color: iconColor, display: 'flex' }}>{icon}</span>
+        </div>
+        <span style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>{label}</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Flag team={team} className="w-9 h-6 rounded-sm shrink-0" />
+        <span style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{teamPT(team)}</span>
+        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+          <div style={{ fontWeight: 900, color: iconColor, fontSize: 22, lineHeight: 1 }}>{value}</div>
+          <div style={{ fontSize: 10, color: '#374151', fontWeight: 600 }}>{unit}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
   const ko = readKO();
 
@@ -100,42 +130,77 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
     [byNum, espnAll],
   );
 
-  const groupStats = useMemo(() => {
-    const groupMatches = matches.filter(m => m.group);
+  // ── Aggregate goals from ALL matches (groups + knockout) ──────────────────
+  const allStats = useMemo(() => {
+    const teamGoals: Record<string, number> = {};
+    const teamConceded: Record<string, number> = {};
+    const teamGames: Record<string, number> = {};
     let totalGoals = 0;
     let matchesWithScore = 0;
     let biggestWin = 0;
     let biggestWinner = '';
     let biggestLoser = '';
-    const teamGoals: Record<string, number> = {};
-    const teamConceded: Record<string, number> = {};
 
-    for (const m of groupMatches) {
-      const score = m.score?.ft;
-      const pred = predictions[`${m.team1}|${m.team2}|${m.date}`];
-      const s = score ?? (pred ? [pred.score1, pred.score2] as [number, number] : null);
-      if (!s) continue;
+    function addResult(t1: string, t2: string, s: [number, number]) {
       matchesWithScore++;
       totalGoals += s[0] + s[1];
       const diff = Math.abs(s[0] - s[1]);
       if (diff > biggestWin) {
         biggestWin = diff;
-        biggestWinner = s[0] > s[1] ? m.team1 : m.team2;
-        biggestLoser  = s[0] > s[1] ? m.team2 : m.team1;
+        biggestWinner = s[0] > s[1] ? t1 : t2;
+        biggestLoser  = s[0] > s[1] ? t2 : t1;
       }
-      teamGoals[m.team1] = (teamGoals[m.team1] ?? 0) + s[0];
-      teamGoals[m.team2] = (teamGoals[m.team2] ?? 0) + s[1];
-      teamConceded[m.team1] = (teamConceded[m.team1] ?? 0) + s[1];
-      teamConceded[m.team2] = (teamConceded[m.team2] ?? 0) + s[0];
+      teamGoals[t1]    = (teamGoals[t1]    ?? 0) + s[0];
+      teamGoals[t2]    = (teamGoals[t2]    ?? 0) + s[1];
+      teamConceded[t1] = (teamConceded[t1] ?? 0) + s[1];
+      teamConceded[t2] = (teamConceded[t2] ?? 0) + s[0];
+      teamGames[t1]    = (teamGames[t1]    ?? 0) + 1;
+      teamGames[t2]    = (teamGames[t2]    ?? 0) + 1;
+    }
+
+    // Group stage: real scores + predictions
+    for (const m of matches.filter(m => m.group)) {
+      const score = m.score?.ft;
+      const pred = predictions[`${m.team1}|${m.team2}|${m.date}`];
+      const s = score ?? (pred ? [pred.score1, pred.score2] as [number, number] : null);
+      if (s) addResult(m.team1, m.team2, s);
+    }
+
+    // Knockout stage: real scores + user KO scores
+    for (const num of KO_NUMS) {
+      const m = byNum[num];
+      if (!m) continue;
+      const t1 = resolveRef(m.team1, byNum, ko, espnAll);
+      const t2 = resolveRef(m.team2, byNum, ko, espnAll);
+      if (!t1 || !t2) continue;
+      const score = m.score?.ft ?? (m.score?.et ?? null);
+      const userScore = ko[num] as [number, number] | undefined;
+      const s = score ?? userScore ?? null;
+      if (s) addResult(t1, t2, s);
     }
 
     const avgGoals = matchesWithScore > 0 ? (totalGoals / matchesWithScore).toFixed(1) : '—';
-    const topScorer = Object.entries(teamGoals).sort((a, b) => b[1] - a[1])[0];
-    const mostConceded = Object.entries(teamConceded).sort((a, b) => b[1] - a[1])[0];
 
-    return { totalGoals, matchesWithScore, avgGoals, biggestWin, biggestWinner, biggestLoser, topScorer, mostConceded };
-  }, [matches, predictions]);
+    // Best attack (most scored)
+    const topScorer = Object.entries(teamGoals).sort((a, b) => b[1] - a[1])[0] ?? null;
 
+    // Best defense (fewest conceded, among teams that played ≥1 game)
+    const played = Object.keys(teamGames);
+    const bestDefense = played.length > 0
+      ? played
+          .map(t => [t, teamConceded[t] ?? 0] as [string, number])
+          .sort((a, b) => a[1] - b[1])[0]
+      : null;
+
+    return {
+      totalGoals, matchesWithScore, avgGoals,
+      biggestWin, biggestWinner, biggestLoser,
+      topScorer, bestDefense,
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matches, predictions, byNum, espnAll]);
+
+  // ── Unbeaten teams (group stage only — meaningful metric) ─────────────────
   const unbeaten = useMemo(() => {
     const groupMatches = matches.filter(m => m.group);
     const lost = new Set<string>();
@@ -155,14 +220,7 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
     return Array.from(played).filter(t => !lost.has(t));
   }, [matches, predictions]);
 
-  const groupSummaries = useMemo(() => {
-    return groups.map(g => {
-      const gm = matches.filter(m => m.group === g.name);
-      const standings = calcStandings(g.teams, gm, predictions);
-      return { name: g.name, leader: standings[0]?.team, pts: standings[0]?.pts };
-    });
-  }, [groups, matches, predictions]);
-
+  // ── Upsets in knockout ────────────────────────────────────────────────────
   const upsets = useMemo(() => {
     let count = 0;
     for (const num of KO_NUMS) {
@@ -179,9 +237,19 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
       if (winner !== favWinner) count++;
     }
     return count;
-  }, [byNum, ko, espnAll]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [byNum, espnAll]);
 
-  const noData = !champion && groupStats.matchesWithScore === 0;
+  // ── Group leaders ──────────────────────────────────────────────────────────
+  const groupSummaries = useMemo(() => {
+    return groups.map(g => {
+      const gm = matches.filter(m => m.group === g.name);
+      const standings = calcStandings(g.teams, gm, predictions);
+      return { name: g.name, leader: standings[0]?.team, pts: standings[0]?.pts };
+    });
+  }, [groups, matches, predictions]);
+
+  const noData = !champion && allStats.matchesWithScore === 0;
 
   if (noData) {
     return (
@@ -235,12 +303,25 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
         </div>
       )}
 
-      {/* Stats grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 16 }}>
+      {/* Data source badge */}
+      <div className="flex items-center gap-2 mb-4">
+        <span style={{ fontSize: 10, color: '#334155', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          Dados:
+        </span>
+        <span style={{ fontSize: 10, color: '#475569', background: '#0f172a', border: '1px solid #1e293b', borderRadius: 6, padding: '2px 8px', fontWeight: 600 }}>
+          Fase de grupos + Mata-mata
+        </span>
+        <span style={{ fontSize: 10, color: '#334155' }}>
+          · {allStats.matchesWithScore} jogo{allStats.matchesWithScore !== 1 ? 's' : ''} com placar
+        </span>
+      </div>
+
+      {/* Stats grid — 1 col mobile, 2 col sm+ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         <StatCard
-          label="Gols na fase de grupos"
-          value={groupStats.totalGoals}
-          sub={`${groupStats.matchesWithScore} jogos com placar`}
+          label="Total de gols"
+          value={allStats.totalGoals}
+          sub="grupos + mata-mata"
           icon={<Activity size={16} />}
           iconBg="rgba(34,197,94,0.3)"
           iconColor="#22c55e"
@@ -249,8 +330,8 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
         />
         <StatCard
           label="Média de gols por jogo"
-          value={groupStats.avgGoals}
-          sub="fase de grupos"
+          value={allStats.avgGoals}
+          sub="todos os jogos com placar"
           icon={<TrendingUp size={16} />}
           iconBg="rgba(59,130,246,0.3)"
           iconColor="#60a5fa"
@@ -260,7 +341,7 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
         <StatCard
           label="Zebras no mata-mata"
           value={upsets}
-          sub="azarão bateu favorito"
+          sub="azarão bateu favorito (FIFA)"
           icon={<Shuffle size={16} />}
           iconBg="rgba(167,139,250,0.3)"
           iconColor="#a78bfa"
@@ -280,7 +361,7 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
       </div>
 
       {/* Biggest win */}
-      {groupStats.biggestWinner && (
+      {allStats.biggestWinner && (
         <div style={{
           background: 'linear-gradient(145deg, rgba(15,23,42,0.95), rgba(10,16,32,0.95))',
           border: '1px solid rgba(30,41,59,0.7)',
@@ -288,7 +369,7 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
           marginBottom: 12,
           animation: 'statsCountUp 0.45s ease both',
           animationDelay: '0.2s',
-          display: 'flex', alignItems: 'center', gap: 16,
+          display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
         }}>
           <div style={{
             width: 34, height: 34, borderRadius: 10, flexShrink: 0,
@@ -298,69 +379,47 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
           }}>
             <Target size={16} color="#f87171" />
           </div>
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, marginBottom: 8 }}>
               Maior goleada
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <Flag team={groupStats.biggestWinner} className="w-8 h-5 rounded-sm" />
-              <span style={{ fontSize: 15, fontWeight: 800, color: '#f1f5f9' }}>{teamPT(groupStats.biggestWinner)}</span>
-              <span style={{ fontWeight: 900, color: '#4ade80', fontSize: 18, padding: '0 4px' }}>+{groupStats.biggestWin}</span>
+              <Flag team={allStats.biggestWinner} className="w-8 h-5 rounded-sm shrink-0" />
+              <span style={{ fontSize: 15, fontWeight: 800, color: '#f1f5f9' }}>{teamPT(allStats.biggestWinner)}</span>
+              <span style={{ fontWeight: 900, color: '#4ade80', fontSize: 18, padding: '0 4px' }}>+{allStats.biggestWin}</span>
               <span style={{ color: '#334155', fontSize: 12 }}>vs</span>
-              <Flag team={groupStats.biggestLoser} className="w-8 h-5 rounded-sm" />
-              <span style={{ fontSize: 15, color: '#64748b', fontWeight: 600 }}>{teamPT(groupStats.biggestLoser)}</span>
+              <Flag team={allStats.biggestLoser} className="w-8 h-5 rounded-sm shrink-0" />
+              <span style={{ fontSize: 15, color: '#64748b', fontWeight: 600 }}>{teamPT(allStats.biggestLoser)}</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Attack / Defense */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-        {groupStats.topScorer && (
-          <div style={{
-            background: 'linear-gradient(145deg, rgba(15,23,42,0.95), rgba(10,16,32,0.95))',
-            border: '1px solid rgba(30,41,59,0.7)',
-            borderRadius: 18, padding: '20px 22px',
-            animation: 'statsCountUp 0.45s ease both', animationDelay: '0.25s',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(34,197,94,0.15)' }}>
-                <Zap size={16} color="#4ade80" />
-              </div>
-              <span style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Melhor ataque</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Flag team={groupStats.topScorer[0]} className="w-9 h-6 rounded-sm" />
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', flex: 1 }}>{teamPT(groupStats.topScorer[0])}</span>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontWeight: 900, color: '#4ade80', fontSize: 22, lineHeight: 1 }}>{groupStats.topScorer[1]}</div>
-                <div style={{ fontSize: 10, color: '#374151', fontWeight: 600 }}>GOLS</div>
-              </div>
-            </div>
-          </div>
+      {/* Attack / Defense — 1 col mobile, 2 col sm+ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        {allStats.topScorer && (
+          <TeamStatCard
+            label="Melhor ataque"
+            team={allStats.topScorer[0]}
+            value={allStats.topScorer[1]}
+            unit="GOLS"
+            iconBg="rgba(34,197,94,0.2)"
+            iconColor="#4ade80"
+            icon={<Zap size={16} />}
+            delay={0.25}
+          />
         )}
-        {groupStats.mostConceded && (
-          <div style={{
-            background: 'linear-gradient(145deg, rgba(15,23,42,0.95), rgba(10,16,32,0.95))',
-            border: '1px solid rgba(30,41,59,0.7)',
-            borderRadius: 18, padding: '20px 22px',
-            animation: 'statsCountUp 0.45s ease both', animationDelay: '0.3s',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(239,68,68,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(239,68,68,0.15)' }}>
-                <AlertTriangle size={16} color="#f87171" />
-              </div>
-              <span style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Pior defesa</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Flag team={groupStats.mostConceded[0]} className="w-9 h-6 rounded-sm" />
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', flex: 1 }}>{teamPT(groupStats.mostConceded[0])}</span>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontWeight: 900, color: '#f87171', fontSize: 22, lineHeight: 1 }}>{groupStats.mostConceded[1]}</div>
-                <div style={{ fontSize: 10, color: '#374151', fontWeight: 600 }}>SOFRIDOS</div>
-              </div>
-            </div>
-          </div>
+        {allStats.bestDefense && (
+          <TeamStatCard
+            label="Melhor defesa"
+            team={allStats.bestDefense[0]}
+            value={allStats.bestDefense[1]}
+            unit="SOFRIDOS"
+            iconBg="rgba(59,130,246,0.2)"
+            iconColor="#60a5fa"
+            icon={<Shield size={16} />}
+            delay={0.3}
+          />
         )}
       </div>
 
@@ -373,12 +432,12 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
           animation: 'statsCountUp 0.45s ease both', animationDelay: '0.35s',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(245,158,11,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(245,158,11,0.15)' }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(245,158,11,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(245,158,11,0.15)', flexShrink: 0 }}>
               <Award size={16} color="#fbbf24" />
             </div>
             <span style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Líderes por grupo</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 8 }}>
             {groupSummaries.map(g => g.leader ? (
               <div key={g.name} style={{
                 display: 'flex', alignItems: 'center', gap: 8,
