@@ -6,7 +6,7 @@ import type { OFScorer } from '../data/openFootball';
 import { Flag } from './Flag';
 import { teamPT } from '../data/teamNames';
 
-const MEDAL = ['🥇', '🥈', '🥉'];
+const MEDAL_COLORS = ['#f59e0b', '#94a3b8', '#cd7c3a'];
 
 function normalize(s: string): string {
   return s.toLowerCase()
@@ -54,10 +54,19 @@ function ScorerRow({
     >
       {/* Rank */}
       <div style={{ width: 30, textAlign: 'center', flexShrink: 0 }}>
-        {isTop3
-          ? <span style={{ fontSize: 20, lineHeight: 1 }}>{MEDAL[rank - 1]}</span>
-          : <span style={{ fontSize: 13, fontWeight: 800, color: '#334155' }}>{rank}</span>
-        }
+        {isTop3 ? (
+          <div style={{
+            width: 26, height: 26, borderRadius: '50%', margin: '0 auto',
+            background: MEDAL_COLORS[rank - 1],
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 12, fontWeight: 900, color: 'white',
+            boxShadow: `0 0 8px ${MEDAL_COLORS[rank - 1]}66`,
+          }}>
+            {rank}
+          </div>
+        ) : (
+          <span style={{ fontSize: 13, fontWeight: 800, color: '#334155' }}>{rank}</span>
+        )}
       </div>
 
       {/* Avatar / Photo */}
