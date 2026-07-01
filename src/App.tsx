@@ -245,7 +245,7 @@ export default function App() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {groupsData.groups.map((group, i) => (
                     <div key={group.name} style={{ animation: 'fadeSlideUp 0.35s ease both', animationDelay: `${i * 0.04}s`, opacity: 0, animationFillMode: 'both' }}>
                       <GroupCard

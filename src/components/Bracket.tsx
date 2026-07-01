@@ -466,6 +466,8 @@ export function Bracket({ matches, liveMatches }: Props) {
         const blob = await toBlob(el, {
           backgroundColor: '#020617',
           pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+          width: el.offsetWidth,
+          height: el.offsetHeight,
           cacheBust: false,
         });
         if (!cancelled) capturedBlobRef.current = blob ?? null;
@@ -533,6 +535,8 @@ export function Bracket({ matches, liveMatches }: Props) {
       const blob = preBlob ?? (bracketRef.current ? await toBlob(bracketRef.current, {
         backgroundColor: '#020617',
         pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        width: bracketRef.current.offsetWidth,
+        height: bracketRef.current.offsetHeight,
       }) : null);
 
       if (blob) {
