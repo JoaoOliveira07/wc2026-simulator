@@ -293,7 +293,11 @@ export function FormationEditor({ team, squad }: Props) {
           background: 'linear-gradient(to left, #0d1117 30%, transparent)',
         }} />
 
-        <div className="hide-scrollbar" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingLeft: 2, paddingRight: 2 }}>
+        <div
+          className="hide-scrollbar"
+          style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingLeft: 2, paddingRight: 2 }}
+          onWheel={e => { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }}
+        >
           {FORMATIONS.map(f => {
             const active = formation === f.id;
             return (
