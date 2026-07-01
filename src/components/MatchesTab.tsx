@@ -27,13 +27,11 @@ const CAZETV_URL = 'https://www.youtube.com/@CazeTV/streams';
 
 const WEEKDAY = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-function isToday(d: Date | null): boolean {
-  if (!d) return false;
-  const now = new Date();
-  return d.getFullYear() === now.getFullYear() &&
-    d.getMonth() === now.getMonth() &&
-    d.getDate() === now.getDate();
+function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
+
 
 function parseKickoff(dateStr: string, timeStr: string): Date | null {
   if (!timeStr) return null;
@@ -339,8 +337,9 @@ export function MatchesTab({ matches, liveMatches }: Props) {
     return out;
   }
 
-  const todayUpcoming  = upcoming.filter(e => isToday(e.kicked));
-  const laterUpcoming  = upcoming.filter(e => !isToday(e.kicked));
+  const today          = todayStr();
+  const todayUpcoming  = upcoming.filter(e => e.m.date === today);
+  const laterUpcoming  = upcoming.filter(e => e.m.date !== today);
   const todayGroups    = groupByRound(todayUpcoming);
   const laterGroups    = groupByRound(laterUpcoming);
   const finishedGroups = groupByRound(finished);
