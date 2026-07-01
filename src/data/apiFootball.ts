@@ -63,7 +63,11 @@ async function apiFetch<T>(path: string): Promise<T[]> {
   const res = await fetch(`${BASE}${path}`, { headers: { 'x-apisports-key': KEY } });
   const json = await res.json();
   if (!res.ok) throw new Error(String(res.status));
-  return json.response as T[];
+  const errs = json.errors;
+  if (errs && typeof errs === 'object' && Object.keys(errs).length > 0) {
+    throw new Error(Object.values(errs).join(' '));
+  }
+  return (json.response ?? []) as T[];
 }
 
 // Overrides: openfootball name → API-Football name
@@ -191,8 +195,8 @@ const TTL_HOUR = 60 * 60 * 1000;
 export async function fetchTopScorers(): Promise<AFTopScorer[]> {
   const ck = 'topscorers:2026';
   const cached = cacheGet<AFTopScorer[]>(ck, TTL_HOUR);
-  if (cached) return cached;
+  if (cached?.length) return cached; // skip empty cache — always retry API if no data
   const rows = await apiFetch<AFTopScorer>('/players/topscorers?league=1&season=2026');
-  cacheSet(ck, rows);
+  if (rows.length) cacheSet(ck, rows); // only persist non-empty results
   return rows;
 }

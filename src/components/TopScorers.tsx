@@ -175,11 +175,22 @@ export function TopScorers() {
           <p style={{ color: '#475569', fontSize: 14, margin: 0 }}>
             Dados de artilharia não disponíveis no momento.
           </p>
-          <p style={{ color: '#334155', fontSize: 12, marginTop: 4 }}>
-            A Copa do Mundo 2026 começa em Junho de 2026.
-          </p>
+          {error instanceof Error && (
+            <p style={{
+              color: '#334155', fontSize: 11, marginTop: 6,
+              background: 'rgba(30,41,59,0.6)', borderRadius: 6,
+              padding: '4px 10px', display: 'inline-block',
+              fontFamily: 'monospace',
+            }}>
+              {error.message}
+            </p>
+          )}
+          <br />
           <button
-            onClick={() => refetch()}
+            onClick={() => {
+              localStorage.removeItem('af:topscorers:2026');
+              refetch();
+            }}
             style={{
               marginTop: 16, padding: '8px 20px', borderRadius: 8,
               background: '#1e293b', border: '1px solid #334155',
