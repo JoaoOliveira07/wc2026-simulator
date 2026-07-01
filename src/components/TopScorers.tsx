@@ -5,6 +5,7 @@ import { fetchTopScorers } from '../data/apiFootball';
 import type { OFScorer } from '../data/openFootball';
 import { Flag } from './Flag';
 import { teamPT } from '../data/teamNames';
+import { proxyPhoto } from '../data/mediaProxy';
 
 const MEDAL_COLORS = ['#f59e0b', '#94a3b8', '#cd7c3a'];
 
@@ -172,7 +173,7 @@ export function TopScorers() {
     const map: Record<string, string> = {};
     for (const players of Object.values(squads)) {
       for (const p of players) {
-        if (p.photo) map[normalize(p.name)] = p.photo;
+        if (p.photo) map[normalize(p.name)] = proxyPhoto(p.photo);
       }
     }
     return map;

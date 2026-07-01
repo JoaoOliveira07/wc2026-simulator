@@ -5,6 +5,7 @@ import { Flag } from './Flag';
 import { fetchSquad, fetchCoach } from '../data/apiFootball';
 import type { AFPlayer } from '../data/apiFootball';
 import { teamPT } from '../data/teamNames';
+import { proxyPhoto } from '../data/mediaProxy';
 import { FormationEditor } from './FormationEditor';
 
 // ── Position helpers (used by squad list) ────────────────────────────────────
@@ -48,7 +49,7 @@ function PlayerCard({ player }: { player: AFPlayer }) {
         boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
       }}>
         {player.photo && (
-          <img src={player.photo} alt={player.name} referrerPolicy="no-referrer"
+          <img src={proxyPhoto(player.photo)} alt={player.name} referrerPolicy="no-referrer"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
@@ -184,7 +185,7 @@ export function TeamModal({ team, onClose }: Props) {
               ) : coach ? (
                 <>
                   {coach.photo && (
-                    <img src={coach.photo} alt={coach.name} referrerPolicy="no-referrer"
+                    <img src={proxyPhoto(coach.photo)} alt={coach.name} referrerPolicy="no-referrer"
                       style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', border: '1px solid #334155' }}
                       onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
