@@ -281,27 +281,40 @@ export function FormationEditor({ team, squad }: Props) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
 
       {/* Formation picker */}
-      <div style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 2 }}>
-        {FORMATIONS.map(f => {
-          const active = formation === f.id;
-          return (
-            <button
-              key={f.id}
-              onClick={() => handleFormationChange(f.id)}
-              style={{
-                padding: '5px 11px', borderRadius: 8,
-                fontSize: 11, fontWeight: 800, cursor: 'pointer',
-                whiteSpace: 'nowrap', flexShrink: 0,
-                background: active ? 'rgba(74,222,128,0.12)' : 'transparent',
-                color: active ? '#4ade80' : '#475569',
-                border: active ? '1px solid rgba(74,222,128,0.3)' : '1px solid rgba(30,41,59,0.6)',
-                transition: 'all 0.15s',
-              }}
-            >
-              {f.id}
-            </button>
-          );
-        })}
+      <div style={{ position: 'relative' }}>
+        {/* Left fade */}
+        <div style={{
+          position: 'absolute', left: 0, top: 0, bottom: 0, width: 20, zIndex: 1, pointerEvents: 'none',
+          background: 'linear-gradient(to right, #0d1117 30%, transparent)',
+        }} />
+        {/* Right fade */}
+        <div style={{
+          position: 'absolute', right: 0, top: 0, bottom: 0, width: 20, zIndex: 1, pointerEvents: 'none',
+          background: 'linear-gradient(to left, #0d1117 30%, transparent)',
+        }} />
+
+        <div className="hide-scrollbar" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingLeft: 2, paddingRight: 2 }}>
+          {FORMATIONS.map(f => {
+            const active = formation === f.id;
+            return (
+              <button
+                key={f.id}
+                onClick={() => handleFormationChange(f.id)}
+                style={{
+                  padding: '5px 11px', borderRadius: 8,
+                  fontSize: 11, fontWeight: 800, cursor: 'pointer',
+                  whiteSpace: 'nowrap', flexShrink: 0,
+                  background: active ? 'rgba(74,222,128,0.12)' : 'transparent',
+                  color: active ? '#4ade80' : '#475569',
+                  border: active ? '1px solid rgba(74,222,128,0.3)' : '1px solid rgba(30,41,59,0.6)',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {f.id}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Pitch */}
