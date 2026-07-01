@@ -252,6 +252,13 @@ export function FormationEditor({ team, squad }: Props) {
     if (!pickerTarget) return;
     const newSlots = { ...slots };
     if (player) {
+      // If already in another slot, vacate it first (move, don't duplicate)
+      for (const key of Object.keys(newSlots)) {
+        if (newSlots[key] === player.id && key !== pickerTarget.slotKey) {
+          delete newSlots[key];
+          break;
+        }
+      }
       newSlots[pickerTarget.slotKey] = player.id;
     } else {
       delete newSlots[pickerTarget.slotKey];
