@@ -21,6 +21,60 @@ const GROUP_COLORS: Record<string, string> = {
   'Group J': '#14b8a6', 'Group K': '#a78bfa', 'Group L': '#fb923c',
 };
 
+function getGroupPhrase(
+  standings: ReturnType<typeof calcStandings>,
+  allDecided: boolean,
+  groupMatches: Match[],
+  predictions: Predictions,
+): string | null {
+  if (standings.length < 3) return null;
+
+  const playedCount = groupMatches.filter(m =>
+    m.score?.ft || predictions[`${m.team1}|${m.team2}|${m.date}`]
+  ).length;
+
+  if (playedCount === 0) return null;
+
+  const s0 = standings[0];
+  const s1 = standings[1];
+  const s2 = standings[2];
+
+  // All games decided
+  if (allDecided) {
+    if (s0.pts === 9) return `🔥 ${teamPT(s0.team)} dominou o grupo — 3 vitórias em 3`;
+    if (s0.pts === s1.pts && s1.pts === s2.pts) return `🤯 Três times empatados em pontos — Copa do mundo de verdade`;
+    if (s1.pts === s2.pts) return `⚔️ Segundo lugar decidido no saldo — diferença mínima`;
+    return null;
+  }
+
+  // Some games played
+  const remaining = groupMatches.length - playedCount;
+  if (remaining === 0) return null;
+
+  // Tight race between 2nd and 3rd
+  const ptsDiff = s1.pts - s2.pts;
+  if (ptsDiff <= 1 && playedCount >= 3) {
+    return `🔥 Grupo da morte — ${teamPT(s1.team)} e ${teamPT(s2.team)} brigam pela segunda vaga`;
+  }
+
+  // Runaway leader
+  if (s0.pts >= 6 && s0.pts - s1.pts >= 3) {
+    return `🚀 ${teamPT(s0.team)} já garantido na liderança`;
+  }
+
+  // Both top-2 already safe (3rd can't catch them)
+  if (playedCount >= 4 && s1.pts - s2.pts >= 4) {
+    return `✅ ${teamPT(s0.team)} e ${teamPT(s1.team)} classificados`;
+  }
+
+  // Surprise: team seeded high sitting low
+  if (s2.played >= 2 && s2.pts === 0) {
+    return `❌ ${teamPT(s2.team)} ainda sem pontuar — situação crítica`;
+  }
+
+  return null;
+}
+
 export function GroupCard({ group, matches, predictions, onPredict, onTeamClick, qualifiedThirds }: Props) {
   const groupMatches = useMemo(
     () => matches.filter((m) => m.group === group.name),
@@ -29,6 +83,16 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
   const standings = useMemo(
     () => calcStandings(group.teams, groupMatches, predictions),
     [group.teams, groupMatches, predictions],
+  );
+
+  const allDecided = useMemo(
+    () => groupMatches.every(m => m.score?.ft || predictions[`${m.team1}|${m.team2}|${m.date}`]),
+    [groupMatches, predictions],
+  );
+
+  const phrase = useMemo(
+    () => getGroupPhrase(standings, allDecided, groupMatches, predictions),
+    [standings, allDecided, groupMatches, predictions],
   );
 
   const color = GROUP_COLORS[group.name] ?? '#6b7280';
@@ -51,6 +115,7 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
         <span className="ml-auto text-xs text-slate-500">{groupMatches.filter(m => m.score?.ft).length}/{groupMatches.length} jogos</span>
       </div>
 
+
       {/* Standings */}
       <div className="px-3 pt-3 pb-2">
         <table className="w-full text-xs">
@@ -72,11 +137,16 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
               const isThirdQual = isThird && qualifiedThirds.has(s.team);
               const isQualified = isTop2 || isThirdQual;
 
-              const dotColor  = isTop2 ? color : isThirdQual ? '#f59e0b' : undefined;
-              const textColor = isQualified ? '#f1f5f9' : isThird ? '#64748b' : '#475569';
-              const ptsColor  = isTop2 ? color : isThirdQual ? '#f59e0b' : '#475569';
+              // Dim eliminated teams (4th place when all games decided, or 3rd not qualified when decided)
+              const isEliminated = allDecided && (i === 3 || (i === 2 && !isThirdQual));
+              const opacity = isEliminated ? 0.6 : 1;
 
-              // separator above 3rd and 4th rows
+              const dotColor  = isTop2 ? color : isThirdQual ? '#f59e0b' : undefined;
+              const textColor = isEliminated
+                ? '#374151'
+                : isQualified ? '#f1f5f9' : isThird ? '#64748b' : '#475569';
+              const ptsColor  = isEliminated ? '#374151' : isTop2 ? color : isThirdQual ? '#f59e0b' : '#475569';
+
               const borderTop = i === 2
                 ? '1px dashed rgba(255,255,255,0.08)'
                 : i === 3
@@ -84,18 +154,24 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
                   : undefined;
 
               return (
-                <tr key={s.team} style={{ borderTop, color: textColor }}>
+                <tr key={s.team} style={{
+                  borderTop,
+                  color: textColor,
+                  opacity,
+                  transition: 'opacity 0.4s ease',
+                }}>
                   <td className="py-1">
                     <div className="flex items-center gap-1.5">
                       <span
                         className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
                         style={dotColor
                           ? { background: dotColor, color: '#fff' }
-                          : { color: '#374151' }}
+                          : { color: isEliminated ? '#1f2937' : '#374151' }}
                       >
                         {i + 1}
                       </span>
-                      <Flag team={s.team} className="w-7 h-5 rounded-sm" />
+                      <Flag team={s.team} className="w-7 h-5 rounded-sm"
+                        style={{ filter: isEliminated ? 'grayscale(0.7)' : undefined, transition: 'filter 0.4s ease' }} />
                       <span
                         className="truncate max-w-[90px] text-xs cursor-pointer hover:text-white hover:underline"
                         onClick={() => onTeamClick(s.team)}

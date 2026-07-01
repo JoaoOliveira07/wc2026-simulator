@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Layers, Trophy, CalendarDays, BarChart2 } from 'lucide-react';
+import { Layers, Trophy, CalendarDays, BarChart2, TrendingUp } from 'lucide-react';
 import { fetchGroups, fetchMatches } from './data/api';
 import { fetchESPNToday } from './data/espnApi';
 import { usePredictions } from './store/usePredictions';
@@ -11,16 +11,16 @@ import { TeamModal } from './components/TeamModal';
 import { TopScorers } from './components/TopScorers';
 import { LiveBanner } from './components/LiveBanner';
 import { MatchesTab } from './components/MatchesTab';
+import { StatsTab } from './components/StatsTab';
+import { ToastContainer, useToasts, useClassificationTracker } from './components/ClassificationToast';
 import type { Match } from './types';
 
-type Tab = 'groups' | 'bracket' | 'jogos' | 'artilheiros';
+type Tab = 'groups' | 'bracket' | 'jogos' | 'artilheiros' | 'stats';
 
 function predKey(m: Match) {
   return `${m.team1}|${m.team2}|${m.date}`;
 }
 
-
-// Simple football SVG icon
 function FootballIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -40,14 +40,14 @@ export default function App() {
     queryKey: ['groups'],
     queryFn: fetchGroups,
     staleTime: 60_000,
-    refetchInterval: 3 * 60_000,  // re-fetch groups every 3min during tournament
+    refetchInterval: 3 * 60_000,
   });
 
   const { data: matchesData, isLoading: loadingMatches, error: errMatches } = useQuery({
     queryKey: ['matches'],
     queryFn: fetchMatches,
     staleTime: 60_000,
-    refetchInterval: 2 * 60_000,  // re-fetch match results every 2min
+    refetchInterval: 2 * 60_000,
   });
 
   const { data: espnData = [] } = useQuery({
@@ -70,19 +70,42 @@ export default function App() {
     (m) => !m.score?.ft && predictions[predKey(m)],
   ).length;
 
-  // Compute best 8 third-place qualifiers (WC 2026: top-2 + 8 best 3rds → R32)
   const qualifiedThirds = useMemo<Set<string>>(() => {
     if (!groupsData || !matchesData) return new Set();
     const thirds = groupsData.groups.map((g) => {
       const gm = matchesData.matches.filter((m) => m.group === g.name);
       const standings = calcStandings(g.teams, gm, predictions);
-      return standings[2]; // 3rd place
+      return standings[2];
     }).filter(Boolean);
-    // Sort: pts → gd → gf
     thirds.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
     return new Set(thirds.slice(0, 8).map((s) => s.team));
   }, [groupsData, matchesData, predictions]);
 
+  // All currently qualified teams (for toast tracking)
+  const allQualified = useMemo<Set<string>>(() => {
+    if (!groupsData || !matchesData) return new Set();
+    const q = new Set<string>();
+    for (const g of groupsData.groups) {
+      const gm = matchesData.matches.filter(m => m.group === g.name);
+      const standings = calcStandings(g.teams, gm, predictions);
+      // Only show as qualified if enough games played to confirm
+      if (standings[0]) q.add(standings[0].team);
+      if (standings[1]) q.add(standings[1].team);
+    }
+    qualifiedThirds.forEach(t => q.add(t));
+    return q;
+  }, [groupsData, matchesData, predictions, qualifiedThirds]);
+
+  const { toasts, addToast } = useToasts();
+  useClassificationTracker(allQualified, addToast);
+
+  const NAV_TABS: { id: Tab; label: string; shortLabel: string; icon: React.ReactNode }[] = [
+    { id: 'groups',      label: 'Fase de Grupos', shortLabel: 'Grupos',     icon: <Layers size={12} /> },
+    { id: 'jogos',       label: 'Confrontos',      shortLabel: 'Jogos',      icon: <CalendarDays size={12} /> },
+    { id: 'bracket',     label: 'Chaveamento',     shortLabel: 'Chave',      icon: <Trophy size={12} /> },
+    { id: 'artilheiros', label: 'Artilheiros',     shortLabel: 'Gols',       icon: <BarChart2 size={12} /> },
+    { id: 'stats',       label: 'Estatísticas',    shortLabel: 'Stats',      icon: <TrendingUp size={12} /> },
+  ];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden">
@@ -106,46 +129,19 @@ export default function App() {
           </div>
           <div className="flex justify-center pb-2">
             <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
-              <button
-                onClick={() => setTab('groups')}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-                style={tab === 'groups'
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                  : { color: '#475569', cursor: 'pointer' }}
-              >
-                <Layers size={11} />
-                Grupos
-              </button>
-              <button
-                onClick={() => setTab('jogos')}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-                style={tab === 'jogos'
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                  : { color: '#475569', cursor: 'pointer' }}
-              >
-                <CalendarDays size={11} />
-                Jogos
-              </button>
-              <button
-                onClick={() => setTab('bracket')}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-                style={tab === 'bracket'
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                  : { color: '#475569', cursor: 'pointer' }}
-              >
-                <Trophy size={11} />
-                Chave
-              </button>
-              <button
-                onClick={() => setTab('artilheiros')}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-                style={tab === 'artilheiros'
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                  : { color: '#475569', cursor: 'pointer' }}
-              >
-                <BarChart2 size={11} />
-                Gols
-              </button>
+              {NAV_TABS.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
+                  style={tab === t.id
+                    ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                    : { color: '#475569', cursor: 'pointer' }}
+                >
+                  {t.icon}
+                  {t.shortLabel}
+                </button>
+              ))}
             </nav>
           </div>
         </div>
@@ -169,46 +165,19 @@ export default function App() {
             </div>
           </div>
           <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
-            <button
-              onClick={() => setTab('groups')}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-              style={tab === 'groups'
-                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                : { color: '#475569', cursor: 'pointer' }}
-            >
-              <Layers size={12} />
-              Fase de Grupos
-            </button>
-            <button
-              onClick={() => setTab('jogos')}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-              style={tab === 'jogos'
-                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                : { color: '#475569', cursor: 'pointer' }}
-            >
-              <CalendarDays size={12} />
-              Confrontos
-            </button>
-            <button
-              onClick={() => setTab('bracket')}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-              style={tab === 'bracket'
-                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                : { color: '#475569', cursor: 'pointer' }}
-            >
-              <Trophy size={12} />
-              Chaveamento
-            </button>
-            <button
-              onClick={() => setTab('artilheiros')}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
-              style={tab === 'artilheiros'
-                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                : { color: '#475569', cursor: 'pointer' }}
-            >
-              <BarChart2 size={12} />
-              Artilheiros
-            </button>
+            {NAV_TABS.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
+                style={tab === t.id
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                  : { color: '#475569', cursor: 'pointer' }}
+              >
+                {t.icon}
+                {t.label}
+              </button>
+            ))}
           </nav>
           <div className="flex justify-end">
             {!loading && !error && (
@@ -304,10 +273,23 @@ export default function App() {
                 <Bracket matches={matchesData.matches} liveMatches={espnData} />
               </div>
             )}
+
+            {tab === 'stats' && (
+              <div key="stats" style={{ animation: 'fadeSlideUp 0.25s ease both' }}>
+                <StatsTab
+                  groups={groupsData.groups}
+                  matches={matchesData.matches}
+                  predictions={predictions}
+                  espnAll={espnData}
+                />
+              </div>
+            )}
           </>
         )}
       </main>
+
       <TeamModal team={selectedTeam} onClose={() => setSelectedTeam(null)} />
+      <ToastContainer toasts={toasts} />
     </div>
   );
 }

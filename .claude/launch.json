@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "Copa 2026 Dev",
-      "runtimeExecutable": "bash",
-      "runtimeArgs": ["-c", "cd /Volumes/Externo/GitHub/wc2026-simulator && npm run dev -- --port 5173 --host 0.0.0.0"],
+      "runtimeExecutable": "/opt/homebrew/bin/node",
+      "runtimeArgs": ["/Volumes/Externo/GitHub/wc2026-simulator/node_modules/vite/bin/vite.js", "--port", "5173", "--host", "0.0.0.0"],
       "port": 5173
     }
   ]

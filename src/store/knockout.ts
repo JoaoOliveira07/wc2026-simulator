@@ -74,11 +74,27 @@ export function resolveWinner(
   return resolveRef(raw, byNum, us, espnAll);
 }
 
-function randomND(): [number, number] {
-  const p = [0, 0, 1, 1, 1, 2, 2, 3, 4];
-  let a = p[Math.floor(Math.random() * p.length)];
-  let b = p[Math.floor(Math.random() * p.length)];
-  while (a === b) b = p[Math.floor(Math.random() * p.length)];
+import { getStrength } from '../data/fifaRankings';
+
+const GOAL_POOL = [0, 0, 1, 1, 1, 2, 2, 3, 4];
+
+function pick(): number {
+  return GOAL_POOL[Math.floor(Math.random() * GOAL_POOL.length)];
+}
+
+function weightedScore(t1: string | null, t2: string | null): [number, number] {
+  let a = pick();
+  let b = pick();
+  while (a === b) b = pick();
+
+  const s1 = t1 ? getStrength(t1) : 50;
+  const s2 = t2 ? getStrength(t2) : 50;
+  const pTeam1Wins = s1 / (s1 + s2);
+
+  // a > b means team1 wins; flip if needed based on probability
+  const team1ShouldWin = Math.random() < pTeam1Wins;
+  const team1Winning = a > b;
+  if (team1Winning !== team1ShouldWin) return [b, a];
   return [a, b];
 }
 
@@ -94,7 +110,7 @@ export function simulate(
     if (!m.num || m.score?.ft || next[m.num]) continue;
     const t1 = resolveRef(m.team1, byNum, next, espnAll);
     const t2 = resolveRef(m.team2, byNum, next, espnAll);
-    if (t1 && t2) next[m.num] = randomND();
+    if (t1 && t2) next[m.num] = weightedScore(t1, t2);
   }
   return next;
 }
