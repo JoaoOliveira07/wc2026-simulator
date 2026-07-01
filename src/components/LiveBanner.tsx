@@ -123,12 +123,6 @@ export function LiveBanner() {
 
   return (
     <>
-      <style>{`
-        @keyframes livePulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(0.7); }
-        }
-      `}</style>
       <div style={{ borderTop: '1px solid rgba(30,41,59,0.5)', padding: '5px 0' }}>
       <div style={{
         maxWidth: '96rem', margin: '0 auto', padding: '0 20px',

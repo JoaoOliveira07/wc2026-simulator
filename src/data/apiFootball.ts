@@ -4,8 +4,8 @@
 //
 // To refresh static data:  node scripts/fetchData.mjs
 
-import type { AFCoach, AFLineup, AFPlayer } from './apiFootballTypes';
-export type { AFCoach, AFLineup, AFPlayer };
+import type { AFCoach, AFLineup, AFPlayer, AFTopScorer } from './apiFootballTypes';
+export type { AFCoach, AFLineup, AFPlayer, AFTopScorer };
 
 // ── Static JSON loader ────────────────────────────────────────────────────────
 
@@ -46,12 +46,12 @@ const KEY = import.meta.env.VITE_AF_KEY as string;
 const BASE = 'https://v3.football.api-sports.io';
 const TTL = 7 * 24 * 60 * 60 * 1000; // 7 days (static data changes rarely)
 
-function cacheGet<T>(key: string): T | null {
+function cacheGet<T>(key: string, ttl = TTL): T | null {
   try {
     const raw = localStorage.getItem(`af:${key}`);
     if (!raw) return null;
     const { d, t } = JSON.parse(raw);
-    if (Date.now() - t > TTL) { localStorage.removeItem(`af:${key}`); return null; }
+    if (Date.now() - t > ttl) { localStorage.removeItem(`af:${key}`); return null; }
     return d as T;
   } catch { return null; }
 }
@@ -117,7 +117,7 @@ export async function fetchSquad(teamName: string): Promise<AFPlayer[]> {
   const squads = await getStaticSquads();
   if (squads) {
     const key = findTeamName(Object.keys(squads), teamName);
-    if (key) return squads[key] ?? [];
+    if (key && squads[key]?.length) return squads[key]!;
   }
 
   // 2. localStorage cache
@@ -139,7 +139,7 @@ export async function fetchCoach(teamName: string): Promise<AFCoach | null> {
   const coaches = await getStaticCoaches();
   if (coaches) {
     const key = findTeamName(Object.keys(coaches), teamName);
-    if (key) return coaches[key] ?? null;
+    if (key && coaches[key] != null) return coaches[key]!;
   }
 
   // 2. localStorage cache
@@ -161,7 +161,7 @@ export async function fetchLastLineup(teamName: string): Promise<AFLineup | null
   const lineups = await getStaticLineups();
   if (lineups) {
     const key = findTeamName(Object.keys(lineups), teamName);
-    if (key) return lineups[key] ?? null;
+    if (key && lineups[key] != null) return lineups[key]!;
   }
 
   // 2. localStorage cache
@@ -184,4 +184,15 @@ export async function fetchLastLineup(teamName: string): Promise<AFLineup | null
   const result: AFLineup = { formation: mine.formation, startXI: mine.startXI, substitutes: mine.substitutes };
   cacheSet(ck, result);
   return result;
+}
+
+const TTL_HOUR = 60 * 60 * 1000;
+
+export async function fetchTopScorers(): Promise<AFTopScorer[]> {
+  const ck = 'topscorers:2026';
+  const cached = cacheGet<AFTopScorer[]>(ck, TTL_HOUR);
+  if (cached) return cached;
+  const rows = await apiFetch<AFTopScorer>('/players/topscorers?league=1&season=2026');
+  cacheSet(ck, rows);
+  return rows;
 }

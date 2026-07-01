@@ -23,3 +23,11 @@ export interface AFLineup {
     player: { id: number; name: string; number: number; pos: string; grid: string | null };
   }>;
 }
+
+export interface AFTopScorer {
+  player: { id: number; name: string; nationality: string; photo: string };
+  statistics: Array<{
+    team: { name: string; logo: string };
+    goals: { total: number | null; assists: number | null };
+  }>;
+}

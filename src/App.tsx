@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Layers, Trophy, CalendarDays } from 'lucide-react';
+import { Layers, Trophy, CalendarDays, BarChart2 } from 'lucide-react';
 import { fetchGroups, fetchMatches } from './data/api';
 import { fetchESPNToday } from './data/espnApi';
 import { usePredictions } from './store/usePredictions';
@@ -8,11 +8,12 @@ import { calcStandings } from './store/standings';
 import { GroupCard } from './components/GroupCard';
 import { Bracket } from './components/Bracket';
 import { TeamModal } from './components/TeamModal';
+import { TopScorers } from './components/TopScorers';
 import { LiveBanner } from './components/LiveBanner';
 import { MatchesTab } from './components/MatchesTab';
 import type { Match } from './types';
 
-type Tab = 'groups' | 'bracket' | 'jogos';
+type Tab = 'groups' | 'bracket' | 'jogos' | 'artilheiros';
 
 function predKey(m: Match) {
   return `${m.team1}|${m.team2}|${m.date}`;
@@ -99,7 +100,7 @@ export default function App() {
             >
               <FootballIcon size={14} />
             </div>
-            <span className="font-black text-white text-sm">Copa 2026</span>
+            <span className="font-black text-sm" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Copa 2026</span>
             <span className="text-slate-700 text-xs">·</span>
             <span className="text-slate-500 text-xs font-medium">Simulador</span>
           </div>
@@ -107,33 +108,43 @@ export default function App() {
             <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
               <button
                 onClick={() => setTab('groups')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
                 style={tab === 'groups'
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
-                  : { color: '#475569' }}
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                  : { color: '#475569', cursor: 'pointer' }}
               >
                 <Layers size={11} />
                 Grupos
               </button>
               <button
                 onClick={() => setTab('jogos')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
                 style={tab === 'jogos'
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
-                  : { color: '#475569' }}
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                  : { color: '#475569', cursor: 'pointer' }}
               >
                 <CalendarDays size={11} />
                 Jogos
               </button>
               <button
                 onClick={() => setTab('bracket')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
                 style={tab === 'bracket'
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
-                  : { color: '#475569' }}
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                  : { color: '#475569', cursor: 'pointer' }}
               >
                 <Trophy size={11} />
-                Chaveamento
+                Chave
+              </button>
+              <button
+                onClick={() => setTab('artilheiros')}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
+                style={tab === 'artilheiros'
+                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                  : { color: '#475569', cursor: 'pointer' }}
+              >
+                <BarChart2 size={11} />
+                Gols
               </button>
             </nav>
           </div>
@@ -152,7 +163,7 @@ export default function App() {
               <FootballIcon size={17} />
             </div>
             <div className="leading-none">
-              <span className="font-black text-white" style={{ fontSize: 14, letterSpacing: '-0.01em' }}>Copa 2026</span>
+              <span className="font-black" style={{ fontSize: 14, letterSpacing: '-0.01em', background: 'linear-gradient(135deg,#4ade80,#16a34a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Copa 2026</span>
               <span className="ml-2 font-medium" style={{ fontSize: 11, color: '#334155' }}>·</span>
               <span className="ml-2 font-semibold" style={{ fontSize: 11, color: '#475569' }}>Simulador</span>
             </div>
@@ -160,33 +171,43 @@ export default function App() {
           <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
             <button
               onClick={() => setTab('groups')}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
               style={tab === 'groups'
-                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
-                : { color: '#475569' }}
+                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                : { color: '#475569', cursor: 'pointer' }}
             >
               <Layers size={12} />
               Fase de Grupos
             </button>
             <button
               onClick={() => setTab('jogos')}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
               style={tab === 'jogos'
-                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
-                : { color: '#475569' }}
+                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                : { color: '#475569', cursor: 'pointer' }}
             >
               <CalendarDays size={12} />
               Confrontos
             </button>
             <button
               onClick={() => setTab('bracket')}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
               style={tab === 'bracket'
-                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }
-                : { color: '#475569' }}
+                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                : { color: '#475569', cursor: 'pointer' }}
             >
               <Trophy size={12} />
               Chaveamento
+            </button>
+            <button
+              onClick={() => setTab('artilheiros')}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
+              style={tab === 'artilheiros'
+                ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
+                : { color: '#475569', cursor: 'pointer' }}
+            >
+              <BarChart2 size={12} />
+              Artilheiros
             </button>
           </nav>
           <div className="flex justify-end">
@@ -233,10 +254,16 @@ export default function App() {
           </div>
         )}
 
+        {tab === 'artilheiros' && (
+          <div key="artilheiros" style={{ animation: 'fadeSlideUp 0.25s ease both' }}>
+            <TopScorers />
+          </div>
+        )}
+
         {!loading && !error && groupsData && matchesData && (
           <>
             {tab === 'groups' && (
-              <div>
+              <div key="groups" style={{ animation: 'fadeSlideUp 0.25s ease both' }}>
                 <div className="flex items-center gap-2 text-xs mb-5">
                   <span className="text-slate-500">{groupsData.groups.length} grupos</span>
                   <span className="text-slate-700">·</span>
@@ -250,27 +277,32 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {groupsData.groups.map((group) => (
-                    <GroupCard
-                      key={group.name}
-                      group={group}
-                      matches={matchesData.matches}
-                      predictions={predictions}
-                      onPredict={setPrediction}
-                      onTeamClick={setSelectedTeam}
-                      qualifiedThirds={qualifiedThirds}
-                    />
+                  {groupsData.groups.map((group, i) => (
+                    <div key={group.name} style={{ animation: 'fadeSlideUp 0.35s ease both', animationDelay: `${i * 0.04}s`, opacity: 0, animationFillMode: 'both' }}>
+                      <GroupCard
+                        group={group}
+                        matches={matchesData.matches}
+                        predictions={predictions}
+                        onPredict={setPrediction}
+                        onTeamClick={setSelectedTeam}
+                        qualifiedThirds={qualifiedThirds}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
             {tab === 'jogos' && (
-              <MatchesTab matches={matchesData.matches} liveMatches={espnData} />
+              <div key="jogos" style={{ animation: 'fadeSlideUp 0.25s ease both' }}>
+                <MatchesTab matches={matchesData.matches} liveMatches={espnData} />
+              </div>
             )}
 
             {tab === 'bracket' && (
-              <Bracket matches={matchesData.matches} liveMatches={espnData} />
+              <div key="bracket" style={{ animation: 'fadeSlideUp 0.25s ease both' }}>
+                <Bracket matches={matchesData.matches} liveMatches={espnData} />
+              </div>
             )}
           </>
         )}

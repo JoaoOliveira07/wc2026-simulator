@@ -186,5 +186,9 @@
   {
     "name": "New Zealand",
     "apiId": 4673
+  },
+  {
+    "name": "Brazil",
+    "apiId": 6
   }
 ]

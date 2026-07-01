@@ -385,12 +385,17 @@ function BracketCol({ nums, byNum, us, onScore, label, liveMatches }: ColProps) 
   return (
     <div style={{ flex: 1, minWidth: CARD_W, height: TOTAL_H, position: 'relative' }}>
       {label && (
-        <div style={{
-          position: 'absolute', top: -24, left: 0, right: 0,
-          textAlign: 'center', fontSize: 10, fontWeight: 800,
-          textTransform: 'uppercase', letterSpacing: '0.12em', color: '#64748b',
-        }}>
-          {label}
+        <div style={{ position: 'absolute', top: -30, left: 0, right: 0, textAlign: 'center' }}>
+          <span style={{
+            display: 'inline-block',
+            fontSize: 9, fontWeight: 800,
+            textTransform: 'uppercase', letterSpacing: '0.12em', color: '#64748b',
+            background: 'linear-gradient(135deg,#1a2332,#0f172a)',
+            border: '1px solid #1e293b', borderRadius: 6,
+            padding: '3px 10px',
+          }}>
+            {label}
+          </span>
         </div>
       )}
       {nums.map((num, i) => {
@@ -445,8 +450,6 @@ export function Bracket({ matches, liveMatches }: Props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-      <style>{`@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}`}</style>
-
       {/* Toolbar — constrained to bracket width so buttons stay flush */}
       <div className="flex flex-wrap items-center gap-3" style={{ width: '100%', maxWidth: 1760, padding: '0 20px' }}>
         {champion && (

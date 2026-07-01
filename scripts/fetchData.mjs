@@ -34,7 +34,7 @@ const DELAY   = 7000; // ms between requests (free plan = 10 req/min)
 // Format: [openfootballName, apiFootballSearchTerm (omit if same)]
 const TEAMS = [
   ['Canada'],['Mexico'],['United States','USA'],
-  ['Argentina'],['Chile'],['Colombia'],['Ecuador'],['Paraguay'],['Peru'],['Uruguay'],['Venezuela'],['Bolivia'],
+  ['Brazil'],['Argentina'],['Chile'],['Colombia'],['Ecuador'],['Paraguay'],['Peru'],['Uruguay'],['Venezuela'],['Bolivia'],
   ['Costa Rica'],['El Salvador'],['Guatemala'],['Honduras'],['Jamaica'],['Panama'],['Trinidad and Tobago'],
   ['Morocco'],['Cameroon'],['Egypt'],['Ghana'],['Nigeria'],['Senegal'],['South Africa'],['Algeria'],['Tunisia'],
   ['Iran'],['Japan'],['Korea Republic','South Korea'],['Saudi Arabia'],['Australia'],['Indonesia'],['Qatar'],

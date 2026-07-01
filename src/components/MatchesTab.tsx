@@ -214,16 +214,18 @@ function SectionHeader({ label, color, count }: { label: string; color: string; 
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 8,
-      padding: '10px 14px 6px',
-      borderBottom: `1px solid ${color}22`,
+      padding: '8px 14px',
+      borderLeft: `3px solid ${color}`,
+      background: `${color}0d`,
+      borderRadius: '0 8px 8px 0',
     }}>
-      <span style={{ fontSize: 10, fontWeight: 900, color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+      <span style={{ fontSize: 11, fontWeight: 900, color, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
         {label}
       </span>
       <span style={{
-        fontSize: 9, fontWeight: 700, color,
-        background: `${color}18`, border: `1px solid ${color}33`,
-        borderRadius: 4, padding: '1px 5px',
+        fontSize: 9, fontWeight: 800, color,
+        background: `${color}20`, border: `1px solid ${color}40`,
+        borderRadius: 5, padding: '2px 6px',
       }}>
         {count}
       </span>
@@ -235,10 +237,10 @@ function SectionHeader({ label, color, count }: { label: string; color: string; 
 function RoundSubHeader({ round }: { round: string }) {
   return (
     <div style={{
-      padding: '5px 14px', fontSize: 9, fontWeight: 800,
-      color: '#334155', letterSpacing: '0.1em', textTransform: 'uppercase',
-      borderBottom: '1px solid rgba(30,41,59,0.3)',
-      background: 'rgba(15,23,42,0.4)',
+      padding: '4px 14px', fontSize: 9, fontWeight: 800,
+      color: '#475569', letterSpacing: '0.1em', textTransform: 'uppercase',
+      borderBottom: '1px solid rgba(30,41,59,0.4)',
+      background: 'rgba(15,23,42,0.6)',
     }}>
       {roundLabel(round)}
     </div>
@@ -307,8 +309,6 @@ export function MatchesTab({ matches, liveMatches }: Props) {
 
   return (
     <div style={{ maxWidth: 700, margin: '0 auto' }}>
-      <style>{`@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}`}</style>
-
       {/* AO VIVO */}
       {live.length > 0 && (
         <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.2)' }}>
