@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { fetchTopScorers } from '../data/apiFootball';
 import type { OFScorer } from '../data/openFootball';
 import { Flag } from './Flag';
+import { teamPT } from '../data/teamNames';
 
 const MEDAL = ['🥇', '🥈', '🥉'];
 
@@ -102,7 +103,7 @@ function ScorerRow({
         {scorer.team && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3 }}>
             <Flag team={scorer.team} className="w-5 h-3.5" />
-            <span style={{ fontSize: 11, color: '#475569', fontWeight: 600 }}>{scorer.team}</span>
+            <span style={{ fontSize: 11, color: '#475569', fontWeight: 600 }}>{teamPT(scorer.team)}</span>
           </div>
         )}
       </div>

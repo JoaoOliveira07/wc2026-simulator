@@ -234,83 +234,6 @@
       }
     ]
   },
-  "United States": {
-    "id": 13,
-    "name": "M. Pochettino",
-    "firstname": "Mauricio Roberto",
-    "lastname": "Pochettino Trossero",
-    "age": 53,
-    "birth": {
-      "date": "1972-03-02",
-      "place": "Murphy",
-      "country": "Argentina"
-    },
-    "nationality": "Argentina",
-    "height": "182 cm",
-    "weight": "80 kg",
-    "photo": "https://media.api-sports.io/football/coachs/13.png",
-    "team": {
-      "id": 2384,
-      "name": "United States",
-      "logo": "https://media.api-sports.io/football/teams/2384.png"
-    },
-    "career": [
-      {
-        "team": {
-          "id": 2384,
-          "name": "United States",
-          "logo": "https://media.api-sports.io/football/teams/2384.png"
-        },
-        "start": "2024-09-01",
-        "end": null
-      },
-      {
-        "team": {
-          "id": 49,
-          "name": "Chelsea",
-          "logo": "https://media.api-sports.io/football/teams/49.png"
-        },
-        "start": "2023-07-01",
-        "end": "2024-05-01"
-      },
-      {
-        "team": {
-          "id": 85,
-          "name": "PSG",
-          "logo": "https://media.api-sports.io/football/teams/85.png"
-        },
-        "start": "2021-01-01",
-        "end": "2022-07-01"
-      },
-      {
-        "team": {
-          "id": 47,
-          "name": "Tottenham Hotspur",
-          "logo": "https://media.api-sports.io/football/teams/47.png"
-        },
-        "start": "2014-07-01",
-        "end": "2019-11-01"
-      },
-      {
-        "team": {
-          "id": 41,
-          "name": "Southampton",
-          "logo": "https://media.api-sports.io/football/teams/41.png"
-        },
-        "start": "2013-01-01",
-        "end": "2014-05-01"
-      },
-      {
-        "team": {
-          "id": 540,
-          "name": "Espanyol",
-          "logo": "https://media.api-sports.io/football/teams/540.png"
-        },
-        "start": "2009-01-01",
-        "end": "2012-11-01"
-      }
-    ]
-  },
   "Argentina": {
     "id": 326,
     "name": "L. Scaloni",
@@ -5874,6 +5797,83 @@
         },
         "start": "2010-10-01",
         "end": "2012-08-01"
+      }
+    ]
+  },
+  "USA": {
+    "id": 13,
+    "name": "M. Pochettino",
+    "firstname": "Mauricio Roberto",
+    "lastname": "Pochettino Trossero",
+    "age": 53,
+    "birth": {
+      "date": "1972-03-02",
+      "place": "Murphy",
+      "country": "Argentina"
+    },
+    "nationality": "Argentina",
+    "height": "182 cm",
+    "weight": "80 kg",
+    "photo": "https://media.api-sports.io/football/coachs/13.png",
+    "team": {
+      "id": 2384,
+      "name": "United States",
+      "logo": "https://media.api-sports.io/football/teams/2384.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2384,
+          "name": "United States",
+          "logo": "https://media.api-sports.io/football/teams/2384.png"
+        },
+        "start": "2024-09-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 49,
+          "name": "Chelsea",
+          "logo": "https://media.api-sports.io/football/teams/49.png"
+        },
+        "start": "2023-07-01",
+        "end": "2024-05-01"
+      },
+      {
+        "team": {
+          "id": 85,
+          "name": "PSG",
+          "logo": "https://media.api-sports.io/football/teams/85.png"
+        },
+        "start": "2021-01-01",
+        "end": "2022-07-01"
+      },
+      {
+        "team": {
+          "id": 47,
+          "name": "Tottenham Hotspur",
+          "logo": "https://media.api-sports.io/football/teams/47.png"
+        },
+        "start": "2014-07-01",
+        "end": "2019-11-01"
+      },
+      {
+        "team": {
+          "id": 41,
+          "name": "Southampton",
+          "logo": "https://media.api-sports.io/football/teams/41.png"
+        },
+        "start": "2013-01-01",
+        "end": "2014-05-01"
+      },
+      {
+        "team": {
+          "id": 540,
+          "name": "Espanyol",
+          "logo": "https://media.api-sports.io/football/teams/540.png"
+        },
+        "start": "2009-01-01",
+        "end": "2012-11-01"
       }
     ]
   }

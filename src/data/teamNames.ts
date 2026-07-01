@@ -24,6 +24,9 @@ const PT: Record<string, string> = {
   'Panama': 'Panamá',
   'Trinidad and Tobago': 'Trinidad e Tobago',
   'United States': 'EUA',
+  'USA': 'EUA',
+  'Haiti': 'Haiti',
+  'Curaçao': 'Curaçao',
   // UEFA
   'Albania': 'Albânia',
   'Austria': 'Áustria',
@@ -81,6 +84,8 @@ const PT: Record<string, string> = {
   'Japan': 'Japão',
   'Jordan': 'Jordânia',
   'Korea Republic': 'Coreia do Sul',
+  'South Korea': 'Coreia do Sul',
+  'Iraq': 'Iraque',
   'Kuwait': 'Kuwait',
   'Oman': 'Omã',
   'Qatar': 'Catar',

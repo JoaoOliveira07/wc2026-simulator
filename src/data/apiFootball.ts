@@ -79,12 +79,19 @@ const OVERRIDES: Record<string, string> = {
   'Congo DR': 'DR Congo',
 };
 
+function normTeam(s: string): string {
+  return s.toLowerCase()
+    .replace(/[áàâã]/g, 'a').replace(/[éèê]/g, 'e').replace(/[íì]/g, 'i')
+    .replace(/[óòôõ]/g, 'o').replace(/[úùû]/g, 'u').replace(/ç/g, 'c')
+    .replace(/ñ/g, 'n').replace(/ü/g, 'u');
+}
+
 // Fuzzy name lookup within a static/live teams list
 function findTeamName(haystack: string[], needle: string): string | undefined {
-  const q = (OVERRIDES[needle] ?? needle).toLowerCase();
+  const q = normTeam(OVERRIDES[needle] ?? needle);
   return (
-    haystack.find(n => n.toLowerCase() === q) ??
-    haystack.find(n => n.toLowerCase().includes(q) || q.includes(n.toLowerCase()))
+    haystack.find(n => normTeam(n) === q) ??
+    haystack.find(n => normTeam(n).includes(q) || q.includes(normTeam(n)))
   );
 }
 
