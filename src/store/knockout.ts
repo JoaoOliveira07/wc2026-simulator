@@ -1,15 +1,15 @@
 import type { Match } from '../types';
-import type { ESPNMatch } from '../data/espnApi';
+import { type ESPNMatch, normESPNTeam } from '../data/espnApi';
 
 export type UserScores = Record<number, [number, number]>;
 
 function findESPNFor(m: Match, espnAll: ESPNMatch[]): ESPNMatch | null {
   if (!espnAll.length) return null;
   return espnAll.find(e => {
-    const h  = e.home.name.toLowerCase();
-    const a  = e.away.name.toLowerCase();
-    const t1 = m.team1.toLowerCase();
-    const t2 = m.team2.toLowerCase();
+    const h  = normESPNTeam(e.home.name);
+    const a  = normESPNTeam(e.away.name);
+    const t1 = normESPNTeam(m.team1);
+    const t2 = normESPNTeam(m.team2);
     return (h.includes(t1) || t1.includes(h)) && (a.includes(t2) || t2.includes(a))
       ||   (h.includes(t2) || t2.includes(h)) && (a.includes(t1) || t1.includes(a));
   }) ?? null;
