@@ -4261,5 +4261,1620 @@
         "end": null
       }
     ]
+  },
+  "South Korea": {
+    "id": 2789,
+    "name": "Kim Do-Hoon",
+    "firstname": "Do-Hoon",
+    "lastname": "Kim",
+    "age": 55,
+    "birth": {
+      "date": "1970-07-21",
+      "place": "Tongyeong",
+      "country": "Korea Republic"
+    },
+    "nationality": "Korea Republic",
+    "height": "182 cm",
+    "weight": "77 kg",
+    "photo": "https://media.api-sports.io/football/coachs/2789.png",
+    "team": {
+      "id": 17,
+      "name": "Korea Republic",
+      "logo": "https://media.api-sports.io/football/teams/17.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 17,
+          "name": "Korea Republic",
+          "logo": "https://media.api-sports.io/football/teams/17.png"
+        },
+        "start": "2024-05-01",
+        "end": "2024-07-01"
+      },
+      {
+        "team": {
+          "id": 4204,
+          "name": "Lion City Sailors",
+          "logo": "https://media.api-sports.io/football/teams/4204.png"
+        },
+        "start": "2021-05-01",
+        "end": "2022-08-01"
+      },
+      {
+        "team": {
+          "id": 2767,
+          "name": "Ulsan HD",
+          "logo": "https://media.api-sports.io/football/teams/2767.png"
+        },
+        "start": "2016-12-01",
+        "end": "2020-12-01"
+      },
+      {
+        "team": {
+          "id": 2763,
+          "name": "Incheon United",
+          "logo": "https://media.api-sports.io/football/teams/2763.png"
+        },
+        "start": "2015-01-01",
+        "end": "2016-09-01"
+      }
+    ]
+  },
+  "Haiti": {
+    "id": 373,
+    "name": "S. Migné",
+    "firstname": "Sébastien Bernard Henri Clément",
+    "lastname": "Migné",
+    "age": 53,
+    "birth": {
+      "date": "1972-11-30",
+      "place": "La Roche-sur-Yon",
+      "country": "France"
+    },
+    "nationality": "France",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/373.png",
+    "team": {
+      "id": 2386,
+      "name": "Haiti",
+      "logo": "https://media.api-sports.io/football/teams/2386.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 2386,
+          "name": "Haiti",
+          "logo": "https://media.api-sports.io/football/teams/2386.png"
+        },
+        "start": "2024-03-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 2682,
+          "name": "Marumo Gallants",
+          "logo": "https://media.api-sports.io/football/teams/2682.png"
+        },
+        "start": "2021-07-01",
+        "end": "2021-10-01"
+      },
+      {
+        "team": {
+          "id": 1511,
+          "name": "Kenya",
+          "logo": "https://media.api-sports.io/football/teams/1511.png"
+        },
+        "start": "2018-05-01",
+        "end": "2019-08-01"
+      },
+      {
+        "team": {
+          "id": 1517,
+          "name": "Congo",
+          "logo": "https://media.api-sports.io/football/teams/1517.png"
+        },
+        "start": "2017-03-01",
+        "end": "2017-12-01"
+      },
+      {
+        "team": {
+          "id": null,
+          "name": "Congo DR U21",
+          "logo": null
+        },
+        "start": "2013-02-01",
+        "end": "2013-12-01"
+      }
+    ]
+  },
+  "Scotland": {
+    "id": 76,
+    "name": "S. Clarke",
+    "firstname": "Stephen",
+    "lastname": "Clarke",
+    "age": 62,
+    "birth": {
+      "date": "1963-08-29",
+      "place": "Saltcoats",
+      "country": "Scotland"
+    },
+    "nationality": "Scotland",
+    "height": "178 cm",
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/76.png",
+    "team": {
+      "id": 1108,
+      "name": "Scotland",
+      "logo": "https://media.api-sports.io/football/teams/1108.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1108,
+          "name": "Scotland",
+          "logo": "https://media.api-sports.io/football/teams/1108.png"
+        },
+        "start": "2019-05-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 250,
+          "name": "Kilmarnock",
+          "logo": "https://media.api-sports.io/football/teams/250.png"
+        },
+        "start": "2017-10-01",
+        "end": "2019-05-01"
+      },
+      {
+        "team": {
+          "id": 66,
+          "name": "Aston Villa",
+          "logo": "https://media.api-sports.io/football/teams/66.png"
+        },
+        "start": "2016-10-01",
+        "end": "2016-10-01"
+      },
+      {
+        "team": {
+          "id": 53,
+          "name": "Reading",
+          "logo": "https://media.api-sports.io/football/teams/53.png"
+        },
+        "start": "2014-12-01",
+        "end": "2015-12-01"
+      },
+      {
+        "team": {
+          "id": 60,
+          "name": "West Bromwich Albion",
+          "logo": "https://media.api-sports.io/football/teams/60.png"
+        },
+        "start": "2012-06-01",
+        "end": "2013-12-01"
+      }
+    ]
+  },
+  "Curaçao": {
+    "id": 3104,
+    "name": "D. Advocaat",
+    "firstname": "Dirk Nicolaas",
+    "lastname": "Advocaat",
+    "age": 78,
+    "birth": {
+      "date": "1947-09-27",
+      "place": "Den Haag",
+      "country": "Netherlands"
+    },
+    "nationality": "Netherlands",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/3104.png",
+    "team": {
+      "id": 5530,
+      "name": "Curaçao",
+      "logo": "https://media.api-sports.io/football/teams/5530.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 5530,
+          "name": "Curaçao",
+          "logo": "https://media.api-sports.io/football/teams/5530.png"
+        },
+        "start": "2024-01-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 198,
+          "name": "ADO Den Haag",
+          "logo": "https://media.api-sports.io/football/teams/198.png"
+        },
+        "start": "2022-11-01",
+        "end": "2023-06-01"
+      },
+      {
+        "team": {
+          "id": 1567,
+          "name": "Iraq",
+          "logo": "https://media.api-sports.io/football/teams/1567.png"
+        },
+        "start": "2021-07-01",
+        "end": "2021-11-01"
+      },
+      {
+        "team": {
+          "id": 209,
+          "name": "Feyenoord",
+          "logo": "https://media.api-sports.io/football/teams/209.png"
+        },
+        "start": "2019-10-01",
+        "end": "2021-06-01"
+      },
+      {
+        "team": {
+          "id": 207,
+          "name": "Utrecht",
+          "logo": "https://media.api-sports.io/football/teams/207.png"
+        },
+        "start": "2018-09-01",
+        "end": "2019-05-01"
+      },
+      {
+        "team": {
+          "id": 426,
+          "name": "Sparta Rotterdam",
+          "logo": "https://media.api-sports.io/football/teams/426.png"
+        },
+        "start": "2018-01-01",
+        "end": "2018-06-01"
+      },
+      {
+        "team": {
+          "id": 1118,
+          "name": "Netherlands",
+          "logo": "https://media.api-sports.io/football/teams/1118.png"
+        },
+        "start": "2017-06-01",
+        "end": "2017-12-01"
+      },
+      {
+        "team": {
+          "id": 611,
+          "name": "Fenerbahce",
+          "logo": "https://media.api-sports.io/football/teams/611.png"
+        },
+        "start": "2016-08-01",
+        "end": "2017-06-01"
+      },
+      {
+        "team": {
+          "id": 746,
+          "name": "Sunderland",
+          "logo": "https://media.api-sports.io/football/teams/746.png"
+        },
+        "start": "2015-03-01",
+        "end": "2015-10-01"
+      },
+      {
+        "team": {
+          "id": 14,
+          "name": "Serbia",
+          "logo": "https://media.api-sports.io/football/teams/14.png"
+        },
+        "start": "2014-07-01",
+        "end": "2014-11-01"
+      },
+      {
+        "team": {
+          "id": 201,
+          "name": "AZ",
+          "logo": "https://media.api-sports.io/football/teams/201.png"
+        },
+        "start": "2013-10-01",
+        "end": "2014-06-01"
+      },
+      {
+        "team": {
+          "id": 197,
+          "name": "PSV",
+          "logo": "https://media.api-sports.io/football/teams/197.png"
+        },
+        "start": "2012-07-01",
+        "end": "2013-06-01"
+      },
+      {
+        "team": {
+          "id": 4,
+          "name": "Russia",
+          "logo": "https://media.api-sports.io/football/teams/4.png"
+        },
+        "start": "2010-07-01",
+        "end": "2012-06-01"
+      },
+      {
+        "team": {
+          "id": 201,
+          "name": "AZ",
+          "logo": "https://media.api-sports.io/football/teams/201.png"
+        },
+        "start": "2009-12-01",
+        "end": "2010-06-01"
+      },
+      {
+        "team": {
+          "id": 1,
+          "name": "Belgium",
+          "logo": "https://media.api-sports.io/football/teams/1.png"
+        },
+        "start": "2009-10-01",
+        "end": "2010-04-01"
+      },
+      {
+        "team": {
+          "id": 596,
+          "name": "Zenit",
+          "logo": "https://media.api-sports.io/football/teams/596.png"
+        },
+        "start": "2006-07-01",
+        "end": "2009-08-01"
+      },
+      {
+        "team": {
+          "id": 17,
+          "name": "Korea Republic",
+          "logo": "https://media.api-sports.io/football/teams/17.png"
+        },
+        "start": "2005-09-01",
+        "end": "2006-07-01"
+      },
+      {
+        "team": {
+          "id": 1563,
+          "name": "UAE",
+          "logo": "https://media.api-sports.io/football/teams/1563.png"
+        },
+        "start": "2005-06-01",
+        "end": "2005-09-01"
+      },
+      {
+        "team": {
+          "id": 163,
+          "name": "Borussia M'gladbach",
+          "logo": "https://media.api-sports.io/football/teams/163.png"
+        },
+        "start": "2004-11-01",
+        "end": "2005-04-01"
+      },
+      {
+        "team": {
+          "id": 1118,
+          "name": "Netherlands",
+          "logo": "https://media.api-sports.io/football/teams/1118.png"
+        },
+        "start": "2002-01-01",
+        "end": "2004-07-01"
+      },
+      {
+        "team": {
+          "id": 257,
+          "name": "Rangers",
+          "logo": "https://media.api-sports.io/football/teams/257.png"
+        },
+        "start": "1998-07-01",
+        "end": "2001-12-01"
+      },
+      {
+        "team": {
+          "id": 197,
+          "name": "PSV",
+          "logo": "https://media.api-sports.io/football/teams/197.png"
+        },
+        "start": "1994-12-01",
+        "end": "1998-06-01"
+      },
+      {
+        "team": {
+          "id": 1118,
+          "name": "Netherlands",
+          "logo": "https://media.api-sports.io/football/teams/1118.png"
+        },
+        "start": "1992-09-01",
+        "end": "1994-12-01"
+      },
+      {
+        "team": {
+          "id": null,
+          "name": "SVV",
+          "logo": null
+        },
+        "start": "1989-07-01",
+        "end": "1991-08-01"
+      },
+      {
+        "team": {
+          "id": null,
+          "name": "Haarlem",
+          "logo": null
+        },
+        "start": "1987-07-01",
+        "end": "1989-06-01"
+      }
+    ]
+  },
+  "Sweden": {
+    "id": 12,
+    "name": "G. Potter",
+    "firstname": "Graham Stephen",
+    "lastname": "Potter",
+    "age": 50,
+    "birth": {
+      "date": "1975-05-20",
+      "place": "Solihull",
+      "country": "England"
+    },
+    "nationality": "England",
+    "height": "185 cm",
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/12.png",
+    "team": {
+      "id": 48,
+      "name": "West Ham United",
+      "logo": "https://media.api-sports.io/football/teams/48.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 48,
+          "name": "West Ham United",
+          "logo": "https://media.api-sports.io/football/teams/48.png"
+        },
+        "start": "2025-01-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 49,
+          "name": "Chelsea",
+          "logo": "https://media.api-sports.io/football/teams/49.png"
+        },
+        "start": "2022-09-01",
+        "end": "2023-04-01"
+      },
+      {
+        "team": {
+          "id": 51,
+          "name": "Brighton & Hove Albion",
+          "logo": "https://media.api-sports.io/football/teams/51.png"
+        },
+        "start": "2019-05-01",
+        "end": "2022-09-01"
+      },
+      {
+        "team": {
+          "id": 76,
+          "name": "Swansea City",
+          "logo": "https://media.api-sports.io/football/teams/76.png"
+        },
+        "start": "2018-06-01",
+        "end": "2019-05-01"
+      },
+      {
+        "team": {
+          "id": 376,
+          "name": "Östersund",
+          "logo": "https://media.api-sports.io/football/teams/376.png"
+        },
+        "start": "2011-01-01",
+        "end": "2018-06-01"
+      }
+    ]
+  },
+  "Iran": {
+    "id": 2703,
+    "name": "A. Ghalenoei",
+    "firstname": "Amir",
+    "lastname": "Ghalenoei",
+    "age": 62,
+    "birth": {
+      "date": "1963-11-23",
+      "place": "Tehran",
+      "country": "Iran"
+    },
+    "nationality": "Iran",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/2703.png",
+    "team": {
+      "id": 22,
+      "name": "IR Iran",
+      "logo": "https://media.api-sports.io/football/teams/22.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 22,
+          "name": "IR Iran",
+          "logo": "https://media.api-sports.io/football/teams/22.png"
+        },
+        "start": "2023-03-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 2714,
+          "name": "Gol Gohar",
+          "logo": "https://media.api-sports.io/football/teams/2714.png"
+        },
+        "start": "2020-09-01",
+        "end": "2023-03-01"
+      },
+      {
+        "team": {
+          "id": 2744,
+          "name": "Sepahan",
+          "logo": "https://media.api-sports.io/football/teams/2744.png"
+        },
+        "start": "2018-07-01",
+        "end": "2020-08-01"
+      },
+      {
+        "team": {
+          "id": 2738,
+          "name": "Zob Ahan",
+          "logo": "https://media.api-sports.io/football/teams/2738.png"
+        },
+        "start": "2017-07-01",
+        "end": "2018-06-01"
+      },
+      {
+        "team": {
+          "id": 2737,
+          "name": "Tractor",
+          "logo": "https://media.api-sports.io/football/teams/2737.png"
+        },
+        "start": "2015-12-01",
+        "end": "2017-06-01"
+      },
+      {
+        "team": {
+          "id": 2717,
+          "name": "Malavan",
+          "logo": "https://media.api-sports.io/football/teams/2717.png"
+        },
+        "start": "2015-07-01",
+        "end": "2015-08-01"
+      },
+      {
+        "team": {
+          "id": 2733,
+          "name": "Esteghlal",
+          "logo": "https://media.api-sports.io/football/teams/2733.png"
+        },
+        "start": "2012-06-01",
+        "end": "2015-06-01"
+      },
+      {
+        "team": {
+          "id": 2737,
+          "name": "Tractor",
+          "logo": "https://media.api-sports.io/football/teams/2737.png"
+        },
+        "start": "2011-07-01",
+        "end": "2012-05-01"
+      },
+      {
+        "team": {
+          "id": 2744,
+          "name": "Sepahan",
+          "logo": "https://media.api-sports.io/football/teams/2744.png"
+        },
+        "start": "2009-07-01",
+        "end": "2011-06-01"
+      },
+      {
+        "team": {
+          "id": 22,
+          "name": "IR Iran",
+          "logo": "https://media.api-sports.io/football/teams/22.png"
+        },
+        "start": "2006-08-01",
+        "end": "2007-12-01"
+      }
+    ]
+  },
+  "Iraq": {
+    "id": 356,
+    "name": "G. Arnold",
+    "firstname": "Graham James",
+    "lastname": "Arnold",
+    "age": 62,
+    "birth": {
+      "date": "1963-08-03",
+      "place": "Sydney",
+      "country": "Australia"
+    },
+    "nationality": "Australia",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/356.png",
+    "team": {
+      "id": 1567,
+      "name": "Iraq",
+      "logo": "https://media.api-sports.io/football/teams/1567.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1567,
+          "name": "Iraq",
+          "logo": "https://media.api-sports.io/football/teams/1567.png"
+        },
+        "start": "2025-05-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 1567,
+          "name": "Iraq",
+          "logo": "https://media.api-sports.io/football/teams/1567.png"
+        },
+        "start": "2023-11-01",
+        "end": "2023-11-01"
+      },
+      {
+        "team": {
+          "id": 10927,
+          "name": "Australia U23",
+          "logo": "https://media.api-sports.io/football/teams/10927.png"
+        },
+        "start": "2019-12-01",
+        "end": "2021-10-01"
+      },
+      {
+        "team": {
+          "id": 20,
+          "name": "Australia",
+          "logo": "https://media.api-sports.io/football/teams/20.png"
+        },
+        "start": "2018-10-01",
+        "end": "2024-09-01"
+      },
+      {
+        "team": {
+          "id": 943,
+          "name": "Sydney",
+          "logo": "https://media.api-sports.io/football/teams/943.png"
+        },
+        "start": "2014-05-01",
+        "end": "2018-05-01"
+      },
+      {
+        "team": {
+          "id": 286,
+          "name": "Vegalta Sendai",
+          "logo": "https://media.api-sports.io/football/teams/286.png"
+        },
+        "start": "2014-01-01",
+        "end": "2014-04-01"
+      },
+      {
+        "team": {
+          "id": 941,
+          "name": "Central Coast Mariners",
+          "logo": "https://media.api-sports.io/football/teams/941.png"
+        },
+        "start": "2011-10-01",
+        "end": "2013-11-01"
+      },
+      {
+        "team": {
+          "id": 10927,
+          "name": "Australia U23",
+          "logo": "https://media.api-sports.io/football/teams/10927.png"
+        },
+        "start": "2008-06-01",
+        "end": "2009-05-01"
+      },
+      {
+        "team": {
+          "id": 20,
+          "name": "Australia",
+          "logo": "https://media.api-sports.io/football/teams/20.png"
+        },
+        "start": "2006-07-01",
+        "end": "2007-09-01"
+      }
+    ]
+  },
+  "Norway": {
+    "id": 194,
+    "name": "L. Lagerbäck",
+    "firstname": "Lars Edvin",
+    "lastname": "Lagerbäck",
+    "age": 77,
+    "birth": {
+      "date": "1948-07-16",
+      "place": "Katrineholm",
+      "country": "Sweden"
+    },
+    "nationality": "Sweden",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/194.png",
+    "team": {
+      "id": 1090,
+      "name": "Norway",
+      "logo": "https://media.api-sports.io/football/teams/1090.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1090,
+          "name": "Norway",
+          "logo": "https://media.api-sports.io/football/teams/1090.png"
+        },
+        "start": "2017-02-01",
+        "end": "2020-12-01"
+      },
+      {
+        "team": {
+          "id": 18,
+          "name": "Iceland",
+          "logo": "https://media.api-sports.io/football/teams/18.png"
+        },
+        "start": "2012-01-01",
+        "end": "2016-07-01"
+      },
+      {
+        "team": {
+          "id": 19,
+          "name": "Nigeria",
+          "logo": "https://media.api-sports.io/football/teams/19.png"
+        },
+        "start": "2010-02-01",
+        "end": "2010-09-01"
+      },
+      {
+        "team": {
+          "id": 5,
+          "name": "Sweden",
+          "logo": "https://media.api-sports.io/football/teams/5.png"
+        },
+        "start": "1998-01-01",
+        "end": "2009-10-01"
+      }
+    ]
+  },
+  "Austria": {
+    "id": 3085,
+    "name": "R. Rangnick",
+    "firstname": "Ralf Dietrich",
+    "lastname": "Rangnick",
+    "age": 67,
+    "birth": {
+      "date": "1958-06-29",
+      "place": "Backnang",
+      "country": "Germany"
+    },
+    "nationality": "Germany",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/3085.png",
+    "team": {
+      "id": 775,
+      "name": "Austria",
+      "logo": "https://media.api-sports.io/football/teams/775.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 775,
+          "name": "Austria",
+          "logo": "https://media.api-sports.io/football/teams/775.png"
+        },
+        "start": "2022-05-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 33,
+          "name": "Manchester United",
+          "logo": "https://media.api-sports.io/football/teams/33.png"
+        },
+        "start": "2021-12-01",
+        "end": "2022-05-01"
+      },
+      {
+        "team": {
+          "id": 173,
+          "name": "RB Leipzig",
+          "logo": "https://media.api-sports.io/football/teams/173.png"
+        },
+        "start": "2018-07-01",
+        "end": "2019-06-01"
+      },
+      {
+        "team": {
+          "id": 173,
+          "name": "RB Leipzig",
+          "logo": "https://media.api-sports.io/football/teams/173.png"
+        },
+        "start": "2015-07-01",
+        "end": "2016-06-01"
+      },
+      {
+        "team": {
+          "id": 174,
+          "name": "Schalke 04",
+          "logo": "https://media.api-sports.io/football/teams/174.png"
+        },
+        "start": "2011-03-01",
+        "end": "2011-09-01"
+      },
+      {
+        "team": {
+          "id": 167,
+          "name": "Hoffenheim",
+          "logo": "https://media.api-sports.io/football/teams/167.png"
+        },
+        "start": "2006-07-01",
+        "end": "2011-01-01"
+      },
+      {
+        "team": {
+          "id": 174,
+          "name": "Schalke 04",
+          "logo": "https://media.api-sports.io/football/teams/174.png"
+        },
+        "start": "2004-09-01",
+        "end": "2005-12-01"
+      }
+    ]
+  },
+  "Jordan": {
+    "id": 361,
+    "name": "V. Borkelmans",
+    "firstname": "Vital Philomene",
+    "lastname": "Borkelmans",
+    "age": 62,
+    "birth": {
+      "date": "1963-06-01",
+      "place": "Maaseik",
+      "country": "Belgium"
+    },
+    "nationality": "Belgium",
+    "height": "176 cm",
+    "weight": "75 kg",
+    "photo": "https://media.api-sports.io/football/coachs/361.png",
+    "team": {
+      "id": 1548,
+      "name": "Jordan",
+      "logo": "https://media.api-sports.io/football/teams/1548.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1548,
+          "name": "Jordan",
+          "logo": "https://media.api-sports.io/football/teams/1548.png"
+        },
+        "start": "2018-10-01",
+        "end": "2021-06-01"
+      },
+      {
+        "team": {
+          "id": 6215,
+          "name": "Dender",
+          "logo": "https://media.api-sports.io/football/teams/6215.png"
+        },
+        "start": "2010-01-01",
+        "end": "2012-05-01"
+      }
+    ]
+  },
+  "Uzbekistan": {
+    "id": 53,
+    "name": "F. Cannavaro",
+    "firstname": "Fabio",
+    "lastname": "Cannavaro",
+    "age": 52,
+    "birth": {
+      "date": "1973-09-13",
+      "place": "Napoli",
+      "country": "Italy"
+    },
+    "nationality": "Italy",
+    "height": "176 cm",
+    "weight": "75 kg",
+    "photo": "https://media.api-sports.io/football/coachs/53.png",
+    "team": {
+      "id": 1568,
+      "name": "Uzbekistan",
+      "logo": "https://media.api-sports.io/football/teams/1568.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1568,
+          "name": "Uzbekistan",
+          "logo": "https://media.api-sports.io/football/teams/1568.png"
+        },
+        "start": "2026-01-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 620,
+          "name": "Dinamo Zagreb",
+          "logo": "https://media.api-sports.io/football/teams/620.png"
+        },
+        "start": "2025-01-01",
+        "end": "2025-04-01"
+      },
+      {
+        "team": {
+          "id": 494,
+          "name": "Udinese",
+          "logo": "https://media.api-sports.io/football/teams/494.png"
+        },
+        "start": "2024-04-01",
+        "end": "2024-06-01"
+      },
+      {
+        "team": {
+          "id": 506,
+          "name": "Benevento",
+          "logo": "https://media.api-sports.io/football/teams/506.png"
+        },
+        "start": "2022-09-01",
+        "end": "2023-02-01"
+      },
+      {
+        "team": {
+          "id": 1566,
+          "name": "China PR",
+          "logo": "https://media.api-sports.io/football/teams/1566.png"
+        },
+        "start": "2019-03-01",
+        "end": "2019-04-01"
+      },
+      {
+        "team": {
+          "id": 832,
+          "name": "Guangzhou",
+          "logo": "https://media.api-sports.io/football/teams/832.png"
+        },
+        "start": "2017-11-01",
+        "end": "2021-12-01"
+      },
+      {
+        "team": {
+          "id": 843,
+          "name": "Tianjin Tianhai",
+          "logo": "https://media.api-sports.io/football/teams/843.png"
+        },
+        "start": "2017-01-01",
+        "end": "2017-11-01"
+      },
+      {
+        "team": {
+          "id": 2939,
+          "name": "Al Nassr",
+          "logo": "https://media.api-sports.io/football/teams/2939.png"
+        },
+        "start": "2015-10-01",
+        "end": "2016-02-01"
+      },
+      {
+        "team": {
+          "id": 832,
+          "name": "Guangzhou",
+          "logo": "https://media.api-sports.io/football/teams/832.png"
+        },
+        "start": "2014-11-01",
+        "end": "2015-06-01"
+      }
+    ]
+  },
+  "Czech Republic": {
+    "id": 2994,
+    "name": "I. Hašek",
+    "firstname": "Ivan",
+    "lastname": "Hašek",
+    "age": 62,
+    "birth": {
+      "date": "1963-09-06",
+      "place": "Městec Králové",
+      "country": "Czechia"
+    },
+    "nationality": "Czechia",
+    "height": "171 cm",
+    "weight": "65 kg",
+    "photo": "https://media.api-sports.io/football/coachs/2994.png",
+    "team": {
+      "id": 770,
+      "name": "Czechia",
+      "logo": "https://media.api-sports.io/football/teams/770.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 770,
+          "name": "Czechia",
+          "logo": "https://media.api-sports.io/football/teams/770.png"
+        },
+        "start": "2024-03-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 1551,
+          "name": "Lebanon",
+          "logo": "https://media.api-sports.io/football/teams/1551.png"
+        },
+        "start": "2021-07-01",
+        "end": "2022-07-01"
+      },
+      {
+        "team": {
+          "id": 2880,
+          "name": "Fujairah",
+          "logo": "https://media.api-sports.io/football/teams/2880.png"
+        },
+        "start": "2019-04-01",
+        "end": "2019-06-01"
+      },
+      {
+        "team": {
+          "id": 2880,
+          "name": "Fujairah",
+          "logo": "https://media.api-sports.io/football/teams/2880.png"
+        },
+        "start": "2018-06-01",
+        "end": "2019-02-01"
+      },
+      {
+        "team": {
+          "id": 2868,
+          "name": "Emirates",
+          "logo": "https://media.api-sports.io/football/teams/2868.png"
+        },
+        "start": "2016-12-01",
+        "end": "2018-04-01"
+      },
+      {
+        "team": {
+          "id": 2880,
+          "name": "Fujairah",
+          "logo": "https://media.api-sports.io/football/teams/2880.png"
+        },
+        "start": "2014-12-01",
+        "end": "2016-03-01"
+      },
+      {
+        "team": {
+          "id": 2907,
+          "name": "Qatar SC",
+          "logo": "https://media.api-sports.io/football/teams/2907.png"
+        },
+        "start": "2014-07-01",
+        "end": "2014-09-01"
+      },
+      {
+        "team": {
+          "id": 2932,
+          "name": "Al Hilal",
+          "logo": "https://media.api-sports.io/football/teams/2932.png"
+        },
+        "start": "2012-01-01",
+        "end": "2012-05-01"
+      },
+      {
+        "team": {
+          "id": 2870,
+          "name": "Shabab Al Ahli",
+          "logo": "https://media.api-sports.io/football/teams/2870.png"
+        },
+        "start": "2011-06-01",
+        "end": "2011-11-01"
+      },
+      {
+        "team": {
+          "id": 770,
+          "name": "Czechia",
+          "logo": "https://media.api-sports.io/football/teams/770.png"
+        },
+        "start": "2009-07-01",
+        "end": "2009-10-01"
+      },
+      {
+        "team": {
+          "id": 1063,
+          "name": "Saint-Etienne",
+          "logo": "https://media.api-sports.io/football/teams/1063.png"
+        },
+        "start": "2006-05-01",
+        "end": "2007-06-01"
+      },
+      {
+        "team": {
+          "id": 95,
+          "name": "Strasbourg",
+          "logo": "https://media.api-sports.io/football/teams/95.png"
+        },
+        "start": "2001-07-01",
+        "end": "2003-07-01"
+      }
+    ]
+  },
+  "Bosnia & Herzegovina": {
+    "id": 211,
+    "name": "F. Hadžibegić",
+    "firstname": "Faruk",
+    "lastname": "Hadžibegić",
+    "age": 68,
+    "birth": {
+      "date": "1957-10-07",
+      "place": "Sarajevo",
+      "country": "Bosnia and Herzegovina"
+    },
+    "nationality": "Bosnia and Herzegovina",
+    "height": "182 cm",
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/211.png",
+    "team": {
+      "id": 1113,
+      "name": "Bosnia-Herzegovina",
+      "logo": "https://media.api-sports.io/football/teams/1113.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1113,
+          "name": "Bosnia-Herzegovina",
+          "logo": "https://media.api-sports.io/football/teams/1113.png"
+        },
+        "start": "2023-01-01",
+        "end": "2023-06-01"
+      },
+      {
+        "team": {
+          "id": 906,
+          "name": "MC Alger",
+          "logo": "https://media.api-sports.io/football/teams/906.png"
+        },
+        "start": "2022-11-01",
+        "end": "2023-09-01"
+      },
+      {
+        "team": {
+          "id": 906,
+          "name": "MC Alger",
+          "logo": "https://media.api-sports.io/football/teams/906.png"
+        },
+        "start": "2022-07-01",
+        "end": "2022-09-01"
+      },
+      {
+        "team": {
+          "id": 1109,
+          "name": "Montenegro",
+          "logo": "https://media.api-sports.io/football/teams/1109.png"
+        },
+        "start": "2019-07-01",
+        "end": "2020-12-01"
+      },
+      {
+        "team": {
+          "id": 104,
+          "name": "Red Star",
+          "logo": "https://media.api-sports.io/football/teams/104.png"
+        },
+        "start": "2018-10-01",
+        "end": "2019-03-01"
+      },
+      {
+        "team": {
+          "id": 105,
+          "name": "Valenciennes",
+          "logo": "https://media.api-sports.io/football/teams/105.png"
+        },
+        "start": "2016-01-01",
+        "end": "2017-10-01"
+      },
+      {
+        "team": {
+          "id": 4652,
+          "name": "Arles",
+          "logo": "https://media.api-sports.io/football/teams/4652.png"
+        },
+        "start": "2010-10-01",
+        "end": "2011-11-01"
+      },
+      {
+        "team": {
+          "id": 3570,
+          "name": "Denizlispor",
+          "logo": "https://media.api-sports.io/football/teams/3570.png"
+        },
+        "start": "2006-06-01",
+        "end": "2006-12-01"
+      },
+      {
+        "team": {
+          "id": 13390,
+          "name": "Diyarbakırspor",
+          "logo": "https://media.api-sports.io/football/teams/13390.png"
+        },
+        "start": "2006-03-01",
+        "end": "2006-05-01"
+      },
+      {
+        "team": {
+          "id": 1008,
+          "name": "Gaziantepspor",
+          "logo": "https://media.api-sports.io/football/teams/1008.png"
+        },
+        "start": "2005-07-01",
+        "end": "2005-12-01"
+      },
+      {
+        "team": {
+          "id": 1113,
+          "name": "Bosnia-Herzegovina",
+          "logo": "https://media.api-sports.io/football/teams/1113.png"
+        },
+        "start": "1999-09-01",
+        "end": "1999-10-01"
+      },
+      {
+        "team": {
+          "id": 1113,
+          "name": "Bosnia-Herzegovina",
+          "logo": "https://media.api-sports.io/football/teams/1113.png"
+        },
+        "start": "1999-03-01",
+        "end": "1999-06-01"
+      }
+    ]
+  },
+  "Turkey": {
+    "id": 2549,
+    "name": "V. Montella",
+    "firstname": "Vincenzo",
+    "lastname": "Montella",
+    "age": 51,
+    "birth": {
+      "date": "1974-06-18",
+      "place": "Pomigliano d'Arco",
+      "country": "Italy"
+    },
+    "nationality": "Italy",
+    "height": "172 cm",
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/2549.png",
+    "team": {
+      "id": 777,
+      "name": "Türkiye",
+      "logo": "https://media.api-sports.io/football/teams/777.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 777,
+          "name": "Türkiye",
+          "logo": "https://media.api-sports.io/football/teams/777.png"
+        },
+        "start": "2023-09-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 3563,
+          "name": "Adana Demirspor",
+          "logo": "https://media.api-sports.io/football/teams/3563.png"
+        },
+        "start": "2021-09-01",
+        "end": "2023-06-01"
+      },
+      {
+        "team": {
+          "id": 502,
+          "name": "Fiorentina",
+          "logo": "https://media.api-sports.io/football/teams/502.png"
+        },
+        "start": "2019-04-01",
+        "end": "2019-12-01"
+      },
+      {
+        "team": {
+          "id": 536,
+          "name": "Sevilla",
+          "logo": "https://media.api-sports.io/football/teams/536.png"
+        },
+        "start": "2017-12-01",
+        "end": "2018-04-01"
+      },
+      {
+        "team": {
+          "id": 489,
+          "name": "AC Milan",
+          "logo": "https://media.api-sports.io/football/teams/489.png"
+        },
+        "start": "2016-06-01",
+        "end": "2017-11-01"
+      },
+      {
+        "team": {
+          "id": 498,
+          "name": "Sampdoria",
+          "logo": "https://media.api-sports.io/football/teams/498.png"
+        },
+        "start": "2015-11-01",
+        "end": "2016-06-01"
+      },
+      {
+        "team": {
+          "id": 502,
+          "name": "Fiorentina",
+          "logo": "https://media.api-sports.io/football/teams/502.png"
+        },
+        "start": "2012-06-01",
+        "end": "2015-06-01"
+      },
+      {
+        "team": {
+          "id": 1580,
+          "name": "Catania",
+          "logo": "https://media.api-sports.io/football/teams/1580.png"
+        },
+        "start": "2011-06-01",
+        "end": "2012-06-01"
+      },
+      {
+        "team": {
+          "id": 497,
+          "name": "Roma",
+          "logo": "https://media.api-sports.io/football/teams/497.png"
+        },
+        "start": "2011-02-01",
+        "end": "2011-06-01"
+      }
+    ]
+  },
+  "Ivory Coast": {
+    "id": 342,
+    "name": "I. Kamara",
+    "firstname": "Ibrahim",
+    "lastname": "Kamara",
+    "age": 59,
+    "birth": {
+      "date": "1966-05-17",
+      "place": null,
+      "country": "Côte d'Ivoire"
+    },
+    "nationality": "Côte d'Ivoire",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/342.png",
+    "team": {
+      "id": 1501,
+      "name": "Côte d'Ivoire",
+      "logo": "https://media.api-sports.io/football/teams/1501.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1501,
+          "name": "Côte d'Ivoire",
+          "logo": "https://media.api-sports.io/football/teams/1501.png"
+        },
+        "start": "2018-01-01",
+        "end": "2020-02-01"
+      },
+      {
+        "team": {
+          "id": 1501,
+          "name": "Côte d'Ivoire",
+          "logo": "https://media.api-sports.io/football/teams/1501.png"
+        },
+        "start": "2017-03-01",
+        "end": "2017-03-01"
+      },
+      {
+        "team": {
+          "id": 1501,
+          "name": "Côte d'Ivoire",
+          "logo": "https://media.api-sports.io/football/teams/1501.png"
+        },
+        "start": "2015-05-01",
+        "end": "2015-07-01"
+      },
+      {
+        "team": {
+          "id": null,
+          "name": "Côte d'Ivoire U22",
+          "logo": null
+        },
+        "start": "2015-01-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 25818,
+          "name": "Côte d'Ivoire U17",
+          "logo": "https://media.api-sports.io/football/teams/25818.png"
+        },
+        "start": "2013-10-01",
+        "end": "2014-12-01"
+      }
+    ]
+  },
+  "Cape Verde": {
+    "id": 5756,
+    "name": "Lúcio Antunes",
+    "firstname": "Ulisses Indalécio",
+    "lastname": "Silva Antunes",
+    "age": 52,
+    "birth": {
+      "date": "1966-09-10",
+      "place": "Praia",
+      "country": "Cape Verde Islands"
+    },
+    "nationality": "Cape Verde Islands",
+    "height": null,
+    "weight": null,
+    "photo": "https://media.api-sports.io/football/coachs/5756.png",
+    "team": {
+      "id": 1533,
+      "name": "Cape Verde Islands",
+      "logo": "https://media.api-sports.io/football/teams/1533.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1533,
+          "name": "Cape Verde Islands",
+          "logo": "https://media.api-sports.io/football/teams/1533.png"
+        },
+        "start": "2016-09-16",
+        "end": "2017-11-30"
+      }
+    ]
+  },
+  "DR Congo": {
+    "id": 370,
+    "name": "S. Desabre",
+    "firstname": "Sébastien Serge Louis",
+    "lastname": "Desabre",
+    "age": 49,
+    "birth": {
+      "date": "1976-08-02",
+      "place": "Valence",
+      "country": "France"
+    },
+    "nationality": "France",
+    "height": "182 cm",
+    "weight": "76 kg",
+    "photo": "https://media.api-sports.io/football/coachs/370.png",
+    "team": {
+      "id": 1508,
+      "name": "Congo DR",
+      "logo": "https://media.api-sports.io/football/teams/1508.png"
+    },
+    "career": [
+      {
+        "team": {
+          "id": 1508,
+          "name": "Congo DR",
+          "logo": "https://media.api-sports.io/football/teams/1508.png"
+        },
+        "start": "2023-03-01",
+        "end": null
+      },
+      {
+        "team": {
+          "id": 113,
+          "name": "Niort",
+          "logo": "https://media.api-sports.io/football/teams/113.png"
+        },
+        "start": "2020-06-01",
+        "end": "2022-08-01"
+      },
+      {
+        "team": {
+          "id": 968,
+          "name": "Wydad Casablanca",
+          "logo": "https://media.api-sports.io/football/teams/968.png"
+        },
+        "start": "2020-01-01",
+        "end": "2020-02-01"
+      },
+      {
+        "team": {
+          "id": 1036,
+          "name": "Pyramids",
+          "logo": "https://media.api-sports.io/football/teams/1036.png"
+        },
+        "start": "2019-07-01",
+        "end": "2019-12-01"
+      },
+      {
+        "team": {
+          "id": 1519,
+          "name": "Uganda",
+          "logo": "https://media.api-sports.io/football/teams/1519.png"
+        },
+        "start": "2017-12-01",
+        "end": "2019-07-01"
+      },
+      {
+        "team": {
+          "id": 1030,
+          "name": "Ismaily",
+          "logo": "https://media.api-sports.io/football/teams/1030.png"
+        },
+        "start": "2017-07-01",
+        "end": "2017-12-01"
+      },
+      {
+        "team": {
+          "id": 968,
+          "name": "Wydad Casablanca",
+          "logo": "https://media.api-sports.io/football/teams/968.png"
+        },
+        "start": "2016-09-01",
+        "end": "2017-01-01"
+      },
+      {
+        "team": {
+          "id": 914,
+          "name": "Saoura",
+          "logo": "https://media.api-sports.io/football/teams/914.png"
+        },
+        "start": "2016-07-01",
+        "end": "2016-08-01"
+      },
+      {
+        "team": {
+          "id": 980,
+          "name": "ES Tunis",
+          "logo": "https://media.api-sports.io/football/teams/980.png"
+        },
+        "start": "2014-05-01",
+        "end": "2014-08-01"
+      },
+      {
+        "team": {
+          "id": 980,
+          "name": "ES Tunis",
+          "logo": "https://media.api-sports.io/football/teams/980.png"
+        },
+        "start": "2013-12-01",
+        "end": "2014-01-01"
+      },
+      {
+        "team": {
+          "id": 5401,
+          "name": "Cotonsport",
+          "logo": "https://media.api-sports.io/football/teams/5401.png"
+        },
+        "start": "2013-07-01",
+        "end": "2013-11-01"
+      },
+      {
+        "team": {
+          "id": 4512,
+          "name": "ASEC Mimosas",
+          "logo": "https://media.api-sports.io/football/teams/4512.png"
+        },
+        "start": "2010-10-01",
+        "end": "2012-08-01"
+      }
+    ]
   }
 }

@@ -190,5 +190,73 @@
   {
     "name": "Brazil",
     "apiId": 6
+  },
+  {
+    "name": "South Korea",
+    "apiId": 17
+  },
+  {
+    "name": "Haiti",
+    "apiId": 2386
+  },
+  {
+    "name": "Scotland",
+    "apiId": 1108
+  },
+  {
+    "name": "Curaçao",
+    "apiId": 5530
+  },
+  {
+    "name": "Sweden",
+    "apiId": 5
+  },
+  {
+    "name": "Iran",
+    "apiId": 22
+  },
+  {
+    "name": "Iraq",
+    "apiId": 1567
+  },
+  {
+    "name": "Norway",
+    "apiId": 1090
+  },
+  {
+    "name": "Austria",
+    "apiId": 775
+  },
+  {
+    "name": "Jordan",
+    "apiId": 1548
+  },
+  {
+    "name": "Uzbekistan",
+    "apiId": 1568
+  },
+  {
+    "name": "Czech Republic",
+    "apiId": 770
+  },
+  {
+    "name": "Bosnia & Herzegovina",
+    "apiId": 1113
+  },
+  {
+    "name": "Turkey",
+    "apiId": 777
+  },
+  {
+    "name": "Ivory Coast",
+    "apiId": 1501
+  },
+  {
+    "name": "Cape Verde",
+    "apiId": 1533
+  },
+  {
+    "name": "DR Congo",
+    "apiId": 1508
   }
 ]
