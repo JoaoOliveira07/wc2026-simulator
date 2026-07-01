@@ -471,11 +471,26 @@ export function Bracket({ matches, liveMatches }: Props) {
   const handleShare = async () => {
     if (!bracketRef.current || shareStatus === 'sharing') return;
     setShareStatus('sharing');
-    try {
-      const preds = JSON.parse(localStorage.getItem('wc2026_predictions') ?? '{}');
-      const shareURL = buildShareURL(preds, us);
-      const shareText = 'Confira minha simulação da Copa 2026';
 
+    const preds = JSON.parse(localStorage.getItem('wc2026_predictions') ?? '{}');
+    const shareURL = buildShareURL(preds, us);
+    const shareText = 'Confira minha simulação da Copa 2026';
+
+    // Detect capabilities synchronously, before any await
+    const hasMobileShare = typeof navigator.share === 'function';
+    const probeFile = new File([], 'x.png', { type: 'image/png' });
+    const canShareFiles = hasMobileShare && (navigator.canShare?.({ files: [probeFile] }) ?? false);
+
+    try {
+      if (hasMobileShare && !canShareFiles) {
+        // iOS Safari e afins: navigator.share() DEVE ser o primeiro await —
+        // qualquer await antes (ex: html2canvas) expira o contexto de gesto.
+        // Compartilha texto + URL imediatamente.
+        await navigator.share({ title: shareText, text: shareText, url: shareURL });
+        return;
+      }
+
+      // Captura a imagem (Android Chrome suporta file sharing e mantém o contexto de gesto)
       const canvas = await html2canvas(bracketRef.current, {
         backgroundColor: '#020617',
         scale: 1.5,
@@ -487,33 +502,37 @@ export function Bracket({ matches, liveMatches }: Props) {
         canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob failed')), 'image/png'),
       );
 
-      const imageFile = new File([blob], 'copa2026.png', { type: 'image/png' });
-
-      // Mobile: Web Share API com imagem + link + texto
-      if (navigator.canShare?.({ files: [imageFile] })) {
-        await navigator.share({
-          files: [imageFile],
-          title: shareText,
-          text: shareText,
-          url: shareURL,
-        });
-      } else {
-        // Desktop: baixa a imagem e copia o link para a área de transferência
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `copa2026-chave${champion ? '-' + champion.toLowerCase().replace(/\s/g, '_') : ''}.png`;
-        a.click();
-        URL.revokeObjectURL(a.href);
+      if (canShareFiles) {
+        // Android: compartilha imagem + texto + link juntos
+        const imageFile = new File([blob], 'copa2026.png', { type: 'image/png' });
         try {
-          await navigator.clipboard.writeText(`${shareText}: ${shareURL}`);
-        } catch {
-          window.prompt('Copie o link da sua simulação:', shareURL);
+          await navigator.share({ files: [imageFile], title: shareText, text: shareText, url: shareURL });
+        } catch (err) {
+          if (err instanceof Error && err.name === 'AbortError') return;
+          // Fallback: share sem imagem
+          await navigator.share({ title: shareText, text: shareText, url: shareURL });
         }
-        setShareStatus('shared');
-        setTimeout(() => setShareStatus('idle'), 2500);
+        return;
       }
+
+      // Desktop: baixa a imagem + copia o texto com link
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `copa2026-chave${champion ? '-' + champion.toLowerCase().replace(/\s/g, '_') : ''}.png`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      try {
+        await navigator.clipboard.writeText(`${shareText}: ${shareURL}`);
+      } catch {
+        window.prompt('Copie o link da sua simulação:', shareURL);
+      }
+      setShareStatus('shared');
+      setTimeout(() => setShareStatus('idle'), 2500);
+
     } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') return; // utilizador cancelou
       console.error('Share failed:', err);
+      window.prompt('Copie o link da sua simulação:', shareURL);
     } finally {
       setShareStatus(s => s === 'sharing' ? 'idle' : s);
     }
