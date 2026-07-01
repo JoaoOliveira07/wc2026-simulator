@@ -110,13 +110,12 @@ export function PlayerPickerModal({ squad, slotType, usedIds, onSelect, onClose 
         }}>
           <Search size={13} style={{ color: '#475569', flexShrink: 0 }} />
           <input
-            autoFocus
             placeholder="Buscar jogador..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             style={{
               flex: 1, background: 'transparent', border: 'none', outline: 'none',
-              color: '#f1f5f9', fontSize: 12, fontFamily: 'inherit',
+              color: '#f1f5f9', fontSize: 16, fontFamily: 'inherit',
             }}
           />
           {search && (

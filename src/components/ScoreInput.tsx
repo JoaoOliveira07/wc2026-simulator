@@ -37,7 +37,8 @@ export function ScoreInput({ value, onChange, disabled }: Props) {
       onChange={(e) => handleChange(e.target.value)}
       onBlur={handleBlur}
       placeholder="–"
-      className="w-8 h-7 bg-slate-700 border border-slate-600 text-center text-white rounded text-sm font-bold focus:outline-none focus:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+      className="w-8 h-7 bg-slate-700 border border-slate-600 text-center text-white rounded font-bold focus:outline-none focus:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+      style={{ fontSize: 16 }}
     />
   );
 }
