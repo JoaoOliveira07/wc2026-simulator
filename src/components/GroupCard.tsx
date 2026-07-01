@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import type { Group, Match, Predictions, Prediction } from '../types';
 import { calcStandings } from '../store/standings';
 import { MatchRow } from './MatchRow';
@@ -30,7 +31,6 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
     () => calcStandings(group.teams, groupMatches, predictions),
     [group.teams, groupMatches, predictions],
   );
-
   const allDecided = useMemo(
     () => groupMatches.every(m => m.score?.ft || predictions[`${m.team1}|${m.team2}|${m.date}`]),
     [groupMatches, predictions],
@@ -38,6 +38,8 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
 
   const color = GROUP_COLORS[group.name] ?? '#6b7280';
   const letter = group.name.replace('Group ', '');
+  const [matchesOpen, setMatchesOpen] = useState(false);
+  const playedCount = groupMatches.filter(m => m.score?.ft).length;
 
   return (
     <div className="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 flex flex-col">
@@ -53,7 +55,7 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
           {letter}
         </div>
         <span className="font-semibold text-white text-sm">{group.name}</span>
-        <span className="ml-auto text-xs text-slate-500">{groupMatches.filter(m => m.score?.ft).length}/{groupMatches.length} jogos</span>
+        <span className="ml-auto text-xs text-slate-500">{playedCount}/{groupMatches.length} jogos</span>
       </div>
 
       {/* Standings */}
@@ -77,7 +79,6 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
               const isThirdQual = isThird && qualifiedThirds.has(s.team);
               const isQualified = isTop2 || isThirdQual;
 
-              // Dim eliminated teams (4th place when all games decided, or 3rd not qualified when decided)
               const isEliminated = allDecided && (i === 3 || (i === 2 && !isThirdQual));
               const opacity = isEliminated ? 0.6 : 1;
 
@@ -94,12 +95,7 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
                   : undefined;
 
               return (
-                <tr key={s.team} style={{
-                  borderTop,
-                  color: textColor,
-                  opacity,
-                  transition: 'opacity 0.4s ease',
-                }}>
+                <tr key={s.team} style={{ borderTop, color: textColor, opacity, transition: 'opacity 0.4s ease' }}>
                   <td className="py-1">
                     <div className="flex items-center gap-1.5">
                       <span
@@ -135,9 +131,7 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
                   <td className="text-center py-1 tabular-nums">{s.drawn}</td>
                   <td className="text-center py-1 tabular-nums">{s.lost}</td>
                   <td className="text-center py-1 tabular-nums">{s.gd > 0 ? `+${s.gd}` : s.gd}</td>
-                  <td className="text-center py-1 font-bold tabular-nums" style={{ color: ptsColor }}>
-                    {s.pts}
-                  </td>
+                  <td className="text-center py-1 font-bold tabular-nums" style={{ color: ptsColor }}>{s.pts}</td>
                 </tr>
               );
             })}
@@ -145,20 +139,36 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
         </table>
       </div>
 
-      {/* Separator */}
-      <div className="mx-3 border-t border-slate-800" />
+      {/* Confrontos — colapsável */}
+      <button
+        onClick={() => setMatchesOpen(o => !o)}
+        className="flex items-center justify-between w-full px-4 py-2 text-xs font-semibold transition-colors"
+        style={{
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          color: matchesOpen ? '#94a3b8' : '#475569',
+          background: matchesOpen ? 'rgba(255,255,255,0.02)' : 'transparent',
+          cursor: 'pointer',
+        }}
+      >
+        <span>Confrontos</span>
+        <ChevronDown
+          size={13}
+          style={{ transform: matchesOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}
+        />
+      </button>
 
-      {/* Matches */}
-      <div className="px-1 py-2 flex-1 overflow-hidden">
-        {groupMatches.map((m) => (
-          <MatchRow
-            key={`${m.team1}-${m.team2}-${m.date}`}
-            match={m}
-            predictions={predictions}
-            onPredict={onPredict}
-          />
-        ))}
-      </div>
+      {matchesOpen && (
+        <div className="px-1 pb-2">
+          {groupMatches.map((m) => (
+            <MatchRow
+              key={`${m.team1}-${m.team2}-${m.date}`}
+              match={m}
+              predictions={predictions}
+              onPredict={onPredict}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
