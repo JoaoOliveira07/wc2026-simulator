@@ -39,6 +39,7 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
   const color = GROUP_COLORS[group.name] ?? '#6b7280';
   const letter = group.name.replace('Group ', '');
   const [matchesOpen, setMatchesOpen] = useState(false);
+  const [hoveredEliminated, setHoveredEliminated] = useState<number | null>(null);
   const playedCount = groupMatches.filter(m => m.score?.ft).length;
 
   return (
@@ -80,13 +81,16 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
               const isQualified = isTop2 || isThirdQual;
 
               const isEliminated = allDecided && (i === 3 || (i === 2 && !isThirdQual));
-              const opacity = isEliminated ? 0.6 : 1;
+              const lit = isEliminated && hoveredEliminated === i;
+              const opacity = isEliminated && !lit ? 0.45 : 1;
 
               const dotColor  = isTop2 ? color : isThirdQual ? '#f59e0b' : undefined;
-              const textColor = isEliminated
+              const textColor = isEliminated && !lit
                 ? '#374151'
+                : isEliminated && lit
+                ? '#64748b'
                 : isQualified ? '#f1f5f9' : isThird ? '#64748b' : '#475569';
-              const ptsColor  = isEliminated ? '#374151' : isTop2 ? color : isThirdQual ? '#f59e0b' : '#475569';
+              const ptsColor  = isEliminated && !lit ? '#374151' : isEliminated && lit ? '#475569' : isTop2 ? color : isThirdQual ? '#f59e0b' : '#475569';
 
               const borderTop = i === 2
                 ? '1px dashed rgba(255,255,255,0.08)'
@@ -95,19 +99,24 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
                   : undefined;
 
               return (
-                <tr key={s.team} style={{ borderTop, color: textColor, opacity, transition: 'opacity 0.4s ease' }}>
+                <tr
+                  key={s.team}
+                  onMouseEnter={() => isEliminated && setHoveredEliminated(i)}
+                  onMouseLeave={() => setHoveredEliminated(null)}
+                  style={{ borderTop, color: textColor, opacity, transition: 'opacity 0.2s ease, color 0.2s ease', cursor: isEliminated ? 'default' : undefined }}
+                >
                   <td className="py-1">
                     <div className="flex items-center gap-1.5">
                       <span
                         className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
                         style={dotColor
                           ? { background: dotColor, color: '#fff' }
-                          : { color: isEliminated ? '#1f2937' : '#374151' }}
+                          : { color: isEliminated && !lit ? '#1f2937' : '#374151' }}
                       >
                         {i + 1}
                       </span>
                       <Flag team={s.team} className="w-7 h-5 rounded-sm"
-                        style={{ filter: isEliminated ? 'grayscale(0.7)' : undefined, transition: 'filter 0.4s ease' }} />
+                        style={{ filter: isEliminated && !lit ? 'grayscale(0.8)' : 'none', transition: 'filter 0.2s ease' }} />
                       <span
                         className="truncate max-w-[90px] text-xs cursor-pointer hover:text-white hover:underline"
                         onClick={() => onTeamClick(s.team)}
