@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Trophy, Zap, Trash2, ChevronRight, Share2, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import html2canvas from 'html2canvas';
+import { toBlob } from 'html-to-image';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
 import { teamsMatch } from '../data/espnApi';
@@ -468,6 +468,26 @@ export function Bracket({ matches, liveMatches }: Props) {
 
   const handleClear = () => { setUs({}); localStorage.removeItem('wc2026_ko'); };
 
+  const captureImage = async (): Promise<Blob> => {
+    const el = bracketRef.current!;
+    // Tenta até 2 vezes (html-to-image às vezes falha na 1ª por imagens ainda a carregar)
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const blob = await toBlob(el, {
+          backgroundColor: '#020617',
+          pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+          cacheBust: true,
+          skipAutoScale: false,
+        });
+        if (blob) return blob;
+      } catch (err) {
+        if (attempt === 1) throw err;
+        await new Promise(r => setTimeout(r, 300));
+      }
+    }
+    throw new Error('toBlob returned null');
+  };
+
   const handleShare = async () => {
     if (!bracketRef.current || shareStatus === 'sharing') return;
     setShareStatus('sharing');
@@ -476,51 +496,59 @@ export function Bracket({ matches, liveMatches }: Props) {
     const shareURL = buildShareURL(preds, us);
     const shareText = 'Confira minha simulação da Copa 2026';
 
-    // Detect capabilities synchronously, before any await
+    // Detectar capacidades antes de qualquer await
     const hasMobileShare = typeof navigator.share === 'function';
     const probeFile = new File([], 'x.png', { type: 'image/png' });
     const canShareFiles = hasMobileShare && (navigator.canShare?.({ files: [probeFile] }) ?? false);
 
     try {
       if (hasMobileShare && !canShareFiles) {
-        // iOS Safari e afins: navigator.share() DEVE ser o primeiro await —
-        // qualquer await antes (ex: html2canvas) expira o contexto de gesto.
-        // Compartilha texto + URL imediatamente.
-        await navigator.share({ title: shareText, text: shareText, url: shareURL });
+        // iOS Safari: navigator.share() DEVE ser o primeiro await (limitação de gesto).
+        // Partilha texto + URL imediatamente, depois tenta capturar e abrir a imagem.
+        try {
+          await navigator.share({ title: shareText, text: shareText, url: shareURL });
+        } catch (err) {
+          if (err instanceof Error && err.name === 'AbortError') return;
+        }
+        // Após o share sheet fechar, captura e tenta download
+        try {
+          const blob = await captureImage();
+          const objUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = objUrl;
+          a.download = 'copa2026.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(objUrl), 10_000);
+        } catch { /* download silently ignored */ }
         return;
       }
 
-      // Captura a imagem (Android Chrome suporta file sharing e mantém o contexto de gesto)
-      const canvas = await html2canvas(bracketRef.current, {
-        backgroundColor: '#020617',
-        scale: 1.5,
-        useCORS: true,
-        logging: false,
-      });
-
-      const blob = await new Promise<Blob>((res, rej) =>
-        canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob failed')), 'image/png'),
-      );
+      const blob = await captureImage();
+      const imageFile = new File([blob], 'copa2026.png', { type: 'image/png' });
 
       if (canShareFiles) {
-        // Android: compartilha imagem + texto + link juntos
-        const imageFile = new File([blob], 'copa2026.png', { type: 'image/png' });
+        // Android Chrome: partilha com imagem + texto + link
         try {
           await navigator.share({ files: [imageFile], title: shareText, text: shareText, url: shareURL });
         } catch (err) {
           if (err instanceof Error && err.name === 'AbortError') return;
-          // Fallback: share sem imagem
+          // Fallback: sem imagem
           await navigator.share({ title: shareText, text: shareText, url: shareURL });
         }
         return;
       }
 
-      // Desktop: baixa a imagem + copia o texto com link
+      // Desktop: download da imagem + copia texto com link
+      const objUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
+      a.href = objUrl;
       a.download = `copa2026-chave${champion ? '-' + champion.toLowerCase().replace(/\s/g, '_') : ''}.png`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(a.href);
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(objUrl), 10_000);
       try {
         await navigator.clipboard.writeText(`${shareText}: ${shareURL}`);
       } catch {
@@ -530,8 +558,9 @@ export function Bracket({ matches, liveMatches }: Props) {
       setTimeout(() => setShareStatus('idle'), 2500);
 
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') return; // utilizador cancelou
+      if (err instanceof Error && err.name === 'AbortError') return;
       console.error('Share failed:', err);
+      // Última salvaguarda: mostra o link
       window.prompt('Copie o link da sua simulação:', shareURL);
     } finally {
       setShareStatus(s => s === 'sharing' ? 'idle' : s);
