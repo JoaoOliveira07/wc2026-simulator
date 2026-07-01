@@ -21,60 +21,6 @@ const GROUP_COLORS: Record<string, string> = {
   'Group J': '#14b8a6', 'Group K': '#a78bfa', 'Group L': '#fb923c',
 };
 
-function getGroupPhrase(
-  standings: ReturnType<typeof calcStandings>,
-  allDecided: boolean,
-  groupMatches: Match[],
-  predictions: Predictions,
-): string | null {
-  if (standings.length < 3) return null;
-
-  const playedCount = groupMatches.filter(m =>
-    m.score?.ft || predictions[`${m.team1}|${m.team2}|${m.date}`]
-  ).length;
-
-  if (playedCount === 0) return null;
-
-  const s0 = standings[0];
-  const s1 = standings[1];
-  const s2 = standings[2];
-
-  // All games decided
-  if (allDecided) {
-    if (s0.pts === 9) return `🔥 ${teamPT(s0.team)} dominou o grupo — 3 vitórias em 3`;
-    if (s0.pts === s1.pts && s1.pts === s2.pts) return `🤯 Três times empatados em pontos — Copa do mundo de verdade`;
-    if (s1.pts === s2.pts) return `⚔️ Segundo lugar decidido no saldo — diferença mínima`;
-    return null;
-  }
-
-  // Some games played
-  const remaining = groupMatches.length - playedCount;
-  if (remaining === 0) return null;
-
-  // Tight race between 2nd and 3rd
-  const ptsDiff = s1.pts - s2.pts;
-  if (ptsDiff <= 1 && playedCount >= 3) {
-    return `🔥 Grupo da morte — ${teamPT(s1.team)} e ${teamPT(s2.team)} brigam pela segunda vaga`;
-  }
-
-  // Runaway leader
-  if (s0.pts >= 6 && s0.pts - s1.pts >= 3) {
-    return `🚀 ${teamPT(s0.team)} já garantido na liderança`;
-  }
-
-  // Both top-2 already safe (3rd can't catch them)
-  if (playedCount >= 4 && s1.pts - s2.pts >= 4) {
-    return `✅ ${teamPT(s0.team)} e ${teamPT(s1.team)} classificados`;
-  }
-
-  // Surprise: team seeded high sitting low
-  if (s2.played >= 2 && s2.pts === 0) {
-    return `❌ ${teamPT(s2.team)} ainda sem pontuar — situação crítica`;
-  }
-
-  return null;
-}
-
 export function GroupCard({ group, matches, predictions, onPredict, onTeamClick, qualifiedThirds }: Props) {
   const groupMatches = useMemo(
     () => matches.filter((m) => m.group === group.name),
@@ -88,11 +34,6 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
   const allDecided = useMemo(
     () => groupMatches.every(m => m.score?.ft || predictions[`${m.team1}|${m.team2}|${m.date}`]),
     [groupMatches, predictions],
-  );
-
-  const phrase = useMemo(
-    () => getGroupPhrase(standings, allDecided, groupMatches, predictions),
-    [standings, allDecided, groupMatches, predictions],
   );
 
   const color = GROUP_COLORS[group.name] ?? '#6b7280';
@@ -114,12 +55,6 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
         <span className="font-semibold text-white text-sm">{group.name}</span>
         <span className="ml-auto text-xs text-slate-500">{groupMatches.filter(m => m.score?.ft).length}/{groupMatches.length} jogos</span>
       </div>
-
-      {phrase && (
-        <div className="px-4 py-1.5 text-xs" style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#94a3b8' }}>
-          {phrase}
-        </div>
-      )}
 
       {/* Standings */}
       <div className="px-3 pt-3 pb-2">
