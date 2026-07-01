@@ -301,15 +301,20 @@ export function FormationEditor({ team, squad }: Props) {
       <div style={{ position: 'relative', borderRadius: 14 }}>
         <PitchBackground />
 
-        {/* Slot grid — above background */}
-        <div style={{ position: 'relative', zIndex: 1, padding: '36px 4px 40px' }}>
-          {reversedRows.map(([rowIdx, row], displayIdx) => {
+        {/* Slot grid — above background, fixed height for consistent pitch size */}
+        <div style={{
+          position: 'relative', zIndex: 1,
+          height: 460,
+          padding: '32px 4px 38px',
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-evenly',
+          boxSizing: 'border-box',
+        }}>
+          {reversedRows.map(([rowIdx, row]) => {
             const rowSlots = Array.from({ length: row.count }, (_, colIdx) => ({
               key: `r${rowIdx}_${colIdx}`,
               type: row.type,
             }));
-
-            const isLastRow = displayIdx === reversedRows.length - 1;
 
             return (
               <div
@@ -318,7 +323,6 @@ export function FormationEditor({ team, squad }: Props) {
                   display: 'flex',
                   justifyContent: row.count === 1 ? 'center' : 'space-evenly',
                   alignItems: 'flex-end',
-                  paddingBottom: isLastRow ? 0 : 32,
                 }}
               >
                 {rowSlots.map(({ key, type }) => {
