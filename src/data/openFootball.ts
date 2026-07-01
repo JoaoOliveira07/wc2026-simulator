@@ -1,4 +1,4 @@
-const CUP_URL = 'https://raw.githubusercontent.com/openfootball/world-cup/master/2026--usa/cup.txt';
+const BASE = 'https://raw.githubusercontent.com/openfootball/world-cup/master/2026--usa';
 const CACHE_KEY = 'of:topscorers:2026';
 const CACHE_TTL = 30 * 60 * 1000;
 
@@ -41,10 +41,7 @@ function parseGoals(block: string, counts: Record<string, number>) {
   }
 }
 
-function parseCupTxt(text: string): OFScorer[] {
-  const counts: Record<string, number> = {};
-
-  // Collect multi-line goal blocks, then parse each
+function parseCupIntoMap(text: string, counts: Record<string, number>) {
   const lines = text.split('\n');
   let block = '';
   let inBlock = false;
@@ -58,37 +55,38 @@ function parseCupTxt(text: string): OFScorer[] {
       block += ' ' + trimmed;
     }
 
-    // Block is complete when parens are balanced
     if (inBlock) {
       const open  = (block.match(/\(/g) ?? []).length;
       const close = (block.match(/\)/g) ?? []).length;
       if (open > 0 && open === close) {
-        // Remove outer parens, split on ; for two teams
         const inner = block.slice(block.indexOf('(') + 1, block.lastIndexOf(')'));
-        for (const side of inner.split(';')) {
-          parseGoals(side, counts);
-        }
+        for (const side of inner.split(';')) parseGoals(side, counts);
         block = '';
         inBlock = false;
       }
     }
   }
-
-  return Object.entries(counts)
-    .filter(([name]) => name.length > 2)
-    .map(([name, goals]) => ({ name, goals }))
-    .sort((a, b) => b.goals - a.goals);
 }
 
 export async function fetchOFTopScorers(): Promise<OFScorer[]> {
   const cached = cacheGet<OFScorer[]>(CACHE_KEY);
   if (cached?.length) return cached;
 
-  const res = await fetch(CUP_URL);
-  if (!res.ok) throw new Error('Dados indisponíveis');
+  const [groupRes, finalsRes] = await Promise.all([
+    fetch(`${BASE}/cup.txt`),
+    fetch(`${BASE}/cup_finals.txt`),
+  ]);
+  if (!groupRes.ok) throw new Error('Dados indisponíveis');
 
-  const text = await res.text();
-  const scorers = parseCupTxt(text);
+  const counts: Record<string, number> = {};
+  parseCupIntoMap(await groupRes.text(), counts);
+  if (finalsRes.ok) parseCupIntoMap(await finalsRes.text(), counts);
+
+  const scorers = Object.entries(counts)
+    .filter(([name]) => name.length > 2)
+    .map(([name, goals]) => ({ name, goals }))
+    .sort((a, b) => b.goals - a.goals);
+
   if (scorers.length) cacheSet(CACHE_KEY, scorers);
   return scorers;
 }
