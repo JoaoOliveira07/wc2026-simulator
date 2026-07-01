@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Plus, RotateCcw, Pencil } from 'lucide-react';
+import { proxyPhoto } from '../data/mediaProxy';
 import type { AFPlayer } from '../data/apiFootball';
 import {
   FORMATIONS, DEFAULT_FORMATION, getFormation, getSlotKeys,
@@ -98,7 +99,7 @@ function FilledSlot({ player, type, onClick }: { player: AFPlayer; type: Positio
         {/* Photo */}
         {player.photo ? (
           <img
-            src={player.photo} alt={player.name} referrerPolicy="no-referrer"
+            src={proxyPhoto(player.photo)} alt={player.name} referrerPolicy="no-referrer"
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
             onError={e => {
               const img = e.target as HTMLImageElement;
