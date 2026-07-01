@@ -190,28 +190,5 @@ export async function fetchLastLineup(teamName: string): Promise<AFLineup | null
   return result;
 }
 
-const TTL_HOUR = 60 * 60 * 1000;
-
-export interface TopScorersResult {
-  scorers: AFTopScorer[];
-  season: number;
-}
-
-export async function fetchTopScorers(): Promise<TopScorersResult> {
-  // Try 2026 first; free plan falls back to 2022
-  for (const season of [2026, 2022]) {
-    const ck = `topscorers:${season}`;
-    const cached = cacheGet<AFTopScorer[]>(ck, TTL_HOUR);
-    if (cached?.length) return { scorers: cached, season };
-    try {
-      const rows = await apiFetch<AFTopScorer>(`/players/topscorers?league=1&season=${season}`);
-      if (rows.length) {
-        cacheSet(ck, rows);
-        return { scorers: rows, season };
-      }
-    } catch {
-      // Try next season
-    }
-  }
-  return { scorers: [], season: 2026 };
-}
+export { fetchOFTopScorers as fetchTopScorers } from './openFootball';
+export type { OFScorer as TopScorer } from './openFootball';
