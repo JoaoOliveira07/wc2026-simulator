@@ -4,6 +4,9 @@ const ESPN_NORM: Record<string, string> = {
   'democratic republic of the congo': 'dr congo',
   'democratic republic of congo': 'dr congo',
   'congo, democratic republic of': 'dr congo',
+  'congo dr': 'dr congo',
+  'congo drc': 'dr congo',
+  'drc': 'dr congo',
   'republic of korea': 'south korea',
   'korea republic': 'south korea',
   'united states': 'usa',
@@ -18,6 +21,20 @@ const ESPN_NORM: Record<string, string> = {
 export function normESPNTeam(s: string): string {
   const l = s.toLowerCase().trim();
   return ESPN_NORM[l] ?? l;
+}
+
+/** Word-intersection match: true if normalized names share ≥ 1 meaningful word (len > 2) */
+function wordMatch(a: string, b: string): boolean {
+  const wa = a.split(/\W+/).filter(w => w.length > 2);
+  const wb = new Set(b.split(/\W+/).filter(w => w.length > 2));
+  return wa.some(w => wb.has(w));
+}
+
+/** True when two team name strings refer to the same team */
+export function teamsMatch(rawA: string, rawB: string): boolean {
+  const a = normESPNTeam(rawA);
+  const b = normESPNTeam(rawB);
+  return a === b || a.includes(b) || b.includes(a) || wordMatch(a, b);
 }
 
 export type ESPNStatus = 'live' | 'halftime' | 'final' | 'scheduled' | 'postponed';

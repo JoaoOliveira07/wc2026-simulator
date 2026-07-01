@@ -3,7 +3,7 @@ import { Flag } from './Flag';
 import { teamPT } from '../data/teamNames';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
-import { normESPNTeam } from '../data/espnApi';
+import { teamsMatch } from '../data/espnApi';
 import { resolveRef } from '../store/knockout';
 import cazeTvLogo from '../assets/cazetv.png';
 
@@ -42,14 +42,10 @@ function parseKickoff(dateStr: string, timeStr: string): Date | null {
 
 function findESPNMatch(m: Match, espnAll: ESPNMatch[]): ESPNMatch | null {
   if (!espnAll.length) return null;
-  return espnAll.find(e => {
-    const h  = normESPNTeam(e.home.name);
-    const a  = normESPNTeam(e.away.name);
-    const t1 = normESPNTeam(m.team1);
-    const t2 = normESPNTeam(m.team2);
-    return (h.includes(t1) || t1.includes(h)) && (a.includes(t2) || t2.includes(a))
-      ||   (h.includes(t2) || t2.includes(h)) && (a.includes(t1) || t1.includes(a));
-  }) ?? null;
+  return espnAll.find(e =>
+    (teamsMatch(e.home.name, m.team1) && teamsMatch(e.away.name, m.team2)) ||
+    (teamsMatch(e.home.name, m.team2) && teamsMatch(e.away.name, m.team1))
+  ) ?? null;
 }
 
 type MatchStatus = 'live' | 'upcoming' | 'finished';

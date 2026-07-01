@@ -1,18 +1,14 @@
 import type { Match } from '../types';
-import { type ESPNMatch, normESPNTeam } from '../data/espnApi';
+import { type ESPNMatch, teamsMatch } from '../data/espnApi';
 
 export type UserScores = Record<number, [number, number]>;
 
 function findESPNFor(m: Match, espnAll: ESPNMatch[]): ESPNMatch | null {
   if (!espnAll.length) return null;
-  return espnAll.find(e => {
-    const h  = normESPNTeam(e.home.name);
-    const a  = normESPNTeam(e.away.name);
-    const t1 = normESPNTeam(m.team1);
-    const t2 = normESPNTeam(m.team2);
-    return (h.includes(t1) || t1.includes(h)) && (a.includes(t2) || t2.includes(a))
-      ||   (h.includes(t2) || t2.includes(h)) && (a.includes(t1) || t1.includes(a));
-  }) ?? null;
+  return espnAll.find(e =>
+    (teamsMatch(e.home.name, m.team1) && teamsMatch(e.away.name, m.team2)) ||
+    (teamsMatch(e.home.name, m.team2) && teamsMatch(e.away.name, m.team1))
+  ) ?? null;
 }
 
 function getScoreFromESPN(m: Match, espnAll: ESPNMatch[]): [number, number] | null {
