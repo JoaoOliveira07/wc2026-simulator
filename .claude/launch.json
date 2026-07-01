@@ -3,11 +3,9 @@
   "configurations": [
     {
       "name": "Copa 2026 Dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 5173,
-      "cwd": "/Volumes/Externo/GitHub/wc2026-simulator",
-      "autoPort": false
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Volumes/Externo/GitHub/wc2026-simulator && npm run dev -- --port 5173 --host 0.0.0.0"],
+      "port": 5173
     }
   ]
 }
