@@ -1,5 +1,25 @@
 // ESPN unofficial API — works from browser (CORS allowed), blocked by curl (TLS fingerprint)
 
+const ESPN_NORM: Record<string, string> = {
+  'democratic republic of the congo': 'dr congo',
+  'democratic republic of congo': 'dr congo',
+  'congo, democratic republic of': 'dr congo',
+  'republic of korea': 'south korea',
+  'korea republic': 'south korea',
+  'united states': 'usa',
+  'united states of america': 'usa',
+  'ir iran': 'iran',
+  'iran (islamic republic of)': 'iran',
+  'bosnia and herzegovina': 'bosnia & herzegovina',
+  "côte d'ivoire": 'ivory coast',
+  "cote d'ivoire": 'ivory coast',
+};
+
+export function normESPNTeam(s: string): string {
+  const l = s.toLowerCase().trim();
+  return ESPN_NORM[l] ?? l;
+}
+
 export type ESPNStatus = 'live' | 'halftime' | 'final' | 'scheduled' | 'postponed';
 
 export interface ESPNMatch {

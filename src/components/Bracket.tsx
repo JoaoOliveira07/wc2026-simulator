@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Trophy, Zap, Trash2, ChevronRight } from 'lucide-react';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
+import { normESPNTeam } from '../data/espnApi';
 import { Flag } from './Flag';
 import { ScoreInput } from './ScoreInput';
 import trofeuImg from '../assets/trofeu_copa.png';
@@ -114,12 +115,13 @@ function HorizLine({ phase }: { phase: Phase }) {
 
 
 // ── Live match detection ──────────────────────────────────────────────────────
+
 function matchTeams(t1: string | null, t2: string | null, e: ESPNMatch): boolean {
   if (!t1 || !t2) return false;
-  const h  = e.home.name.toLowerCase();
-  const a  = e.away.name.toLowerCase();
-  const r1 = t1.toLowerCase();
-  const r2 = t2.toLowerCase();
+  const h  = normESPNTeam(e.home.name);
+  const a  = normESPNTeam(e.away.name);
+  const r1 = normESPNTeam(t1);
+  const r2 = normESPNTeam(t2);
   return (h.includes(r1) || r1.includes(h)) && (a.includes(r2) || r2.includes(a))
     ||   (h.includes(r2) || r2.includes(h)) && (a.includes(r1) || r1.includes(a));
 }
