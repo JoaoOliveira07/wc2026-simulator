@@ -157,7 +157,8 @@ export function TopScorers() {
   const { data: scorers = [], isLoading, error, refetch } = useQuery<OFScorer[]>({
     queryKey: ['topscorers'],
     queryFn: fetchTopScorers,
-    staleTime: 30 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
     retry: 1,
   });
 

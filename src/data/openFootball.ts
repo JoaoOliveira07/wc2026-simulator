@@ -1,6 +1,6 @@
 const BASE = 'https://raw.githubusercontent.com/openfootball/world-cup/master/2026--usa';
 const CACHE_KEY = 'of:topscorers:2026';
-const CACHE_TTL = 30 * 60 * 1000;
+const CACHE_TTL = 5 * 60 * 1000;
 
 export interface OFScorer {
   name: string;

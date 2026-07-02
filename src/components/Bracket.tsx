@@ -144,9 +144,10 @@ interface CenterProps {
   onScore: (num: number, s: [number, number]) => void;
   liveMatches?: ESPNMatch[];
   hasChampion?: boolean;
+  champion?: string | null;
 }
 
-function CenterSection({ byNum, us, onScore, liveMatches, hasChampion }: CenterProps) {
+function CenterSection({ byNum, us, onScore, liveMatches, hasChampion, champion }: CenterProps) {
   const imgSize = 148;
 
   const lineY        = TOTAL_H / 2;
@@ -191,6 +192,30 @@ function CenterSection({ byNum, us, onScore, liveMatches, hasChampion }: CenterP
           }}
         />
       </div>
+
+      {/* Champion below trophy */}
+      {champion && (
+        <div style={{
+          position: 'absolute',
+          top: trophyTop + imgSize + 4,
+          left: 8, right: 8,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+          animation: 'bracketPop 0.4s ease',
+          background: 'linear-gradient(180deg, rgba(234,179,8,0.18) 0%, rgba(234,179,8,0.07) 100%)',
+          border: '1px solid rgba(234,179,8,0.45)',
+          borderRadius: 10,
+          padding: '8px 12px',
+          boxShadow: '0 0 24px rgba(234,179,8,0.25), inset 0 0 12px rgba(234,179,8,0.06)',
+        }}>
+          <div style={{ fontSize: 9, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.14em', color: '#fbbf24' }}>
+            🏆 Campeão
+          </div>
+          <Flag team={champion} style={{ width: 40, height: 27, borderRadius: 3, objectFit: 'cover', boxShadow: '0 1px 6px rgba(0,0,0,0.5)' }} />
+          <span style={{ fontSize: 15, fontWeight: 900, color: '#fef08a', textAlign: 'center', textShadow: '0 0 12px rgba(234,179,8,0.6)' }}>
+            {teamPT(champion)}
+          </span>
+        </div>
+      )}
 
       {/* Final card */}
       <div style={{ position: 'absolute', top: finalCardTop, left: 4, right: 4, height: CARD_H }}>
@@ -466,8 +491,8 @@ export function Bracket({ matches, liveMatches }: Props) {
         const blob = await toBlob(el, {
           backgroundColor: '#020617',
           pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-          width: el.offsetWidth,
-          height: el.offsetHeight,
+          width: el.scrollWidth,
+          height: el.scrollHeight,
           cacheBust: false,
         });
         if (!cancelled) capturedBlobRef.current = blob ?? null;
@@ -535,8 +560,8 @@ export function Bracket({ matches, liveMatches }: Props) {
       const blob = preBlob ?? (bracketRef.current ? await toBlob(bracketRef.current, {
         backgroundColor: '#020617',
         pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-        width: bracketRef.current.offsetWidth,
-        height: bracketRef.current.offsetHeight,
+        width: bracketRef.current.scrollWidth,
+        height: bracketRef.current.scrollHeight,
       }) : null);
 
       if (blob) {
@@ -571,19 +596,6 @@ export function Bracket({ matches, liveMatches }: Props) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3" style={{ width: '100%', maxWidth: 1760, padding: '0 20px' }}>
-        {champion && (
-          <div className="flex items-center gap-3 rounded-xl px-4 py-2"
-            style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)', animation: 'bracketPop 0.4s ease' }}>
-            <Flag team={champion} className="w-9 h-6 rounded-sm" />
-            <div>
-              <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#92400e' }}>
-                Campeão Simulado
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#fef08a' }}>{teamPT(champion)}</div>
-            </div>
-            <Trophy size={16} style={{ color: '#eab308', marginLeft: 4 }} />
-          </div>
-        )}
         <div className="ml-auto flex gap-2">
           <button
             onClick={handleSimulate}
@@ -656,7 +668,7 @@ export function Bracket({ matches, liveMatches }: Props) {
           <BracketCol nums={L_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" liveMatches={liveMatches} />
           <HorizLine phase="sf" />
 
-          <CenterSection byNum={byNum} us={us} onScore={handleScore} liveMatches={liveMatches} hasChampion={!!champion} />
+          <CenterSection byNum={byNum} us={us} onScore={handleScore} liveMatches={liveMatches} hasChampion={!!champion} champion={champion} />
 
           <HorizLine phase="sf" />
           <BracketCol nums={R_SF}  byNum={byNum} us={us} onScore={handleScore} label="Semifinal" liveMatches={liveMatches} />
