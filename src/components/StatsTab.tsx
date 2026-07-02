@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { TrendingUp, Shuffle, Shield, Target, Zap, Award, Trophy, Activity } from 'lucide-react';
 import type { Group, Match, Predictions } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
@@ -103,7 +103,7 @@ function TeamStatCard({
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <Flag team={team} className="w-9 h-6 rounded-sm shrink-0" />
-        <span style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{teamPT(team)}</span>
+        <span title={teamPT(team)} style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{teamPT(team)}</span>
         <div style={{ textAlign: 'right', flexShrink: 0 }}>
           <div style={{ fontWeight: 900, color: iconColor, fontSize: 22, lineHeight: 1 }}>{value}</div>
           <div style={{ fontSize: 10, color: '#374151', fontWeight: 600 }}>{unit}</div>
@@ -114,7 +114,12 @@ function TeamStatCard({
 }
 
 export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
-  const ko = readKO();
+  const [ko, setKo] = useState<UserScores>(readKO);
+  useEffect(() => {
+    const refresh = () => setKo(readKO());
+    document.addEventListener('visibilitychange', refresh);
+    return () => document.removeEventListener('visibilitychange', refresh);
+  }, []);
 
   const byNum = useMemo(() => {
     const map: Record<number, Match> = {};
@@ -126,8 +131,7 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
 
   const champion = useMemo(
     () => resolveWinner(FINAL_NUM, byNum, ko, espnAll),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [byNum, espnAll],
+    [byNum, ko, espnAll],
   );
 
   // ── Aggregate goals from ALL matches (groups + knockout) ──────────────────
@@ -197,8 +201,7 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
       biggestWin, biggestWinner, biggestLoser,
       topScorer, bestDefense,
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [matches, predictions, byNum, espnAll]);
+  }, [matches, predictions, byNum, ko, espnAll]);
 
   // ── Unbeaten teams (group stage only — meaningful metric) ─────────────────
   const unbeaten = useMemo(() => {
@@ -237,8 +240,7 @@ export function StatsTab({ groups, matches, predictions, espnAll }: Props) {
       if (winner !== favWinner) count++;
     }
     return count;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [byNum, espnAll]);
+  }, [byNum, ko, espnAll]);
 
   // ── Group leaders ──────────────────────────────────────────────────────────
   const groupSummaries = useMemo(() => {

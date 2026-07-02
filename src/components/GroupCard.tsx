@@ -120,6 +120,7 @@ export function GroupCard({ group, matches, predictions, onPredict, onTeamClick,
                       <span
                         className="truncate max-w-[90px] text-xs cursor-pointer hover:text-white hover:underline"
                         onClick={() => onTeamClick(s.team)}
+                        title={teamPT(s.team)}
                         style={{ color: 'inherit' }}
                       >{teamPT(s.team)}</span>
                       {isThird && (

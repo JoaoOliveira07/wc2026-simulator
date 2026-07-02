@@ -33,7 +33,7 @@ export function MatchRow({ match, predictions, onPredict }: Props) {
       <span className="text-slate-600 text-[11px] w-9 shrink-0 tabular-nums">{dateStr}</span>
 
       <div className={`flex items-center gap-1.5 flex-1 justify-end min-w-0 ${w1 ? 'text-white font-medium' : 'text-slate-400'}`}>
-        <span className="truncate text-xs">{teamPT(match.team1)}</span>
+        <span className="truncate text-xs" title={teamPT(match.team1)}>{teamPT(match.team1)}</span>
         <Flag team={match.team1} className="w-7 h-5 rounded-sm shrink-0" />
       </div>
 
@@ -59,7 +59,7 @@ export function MatchRow({ match, predictions, onPredict }: Props) {
 
       <div className={`flex items-center gap-1.5 flex-1 min-w-0 ${w2 ? 'text-white font-medium' : 'text-slate-400'}`}>
         <Flag team={match.team2} className="w-7 h-5 rounded-sm shrink-0" />
-        <span className="truncate text-xs">{teamPT(match.team2)}</span>
+        <span className="truncate text-xs" title={teamPT(match.team2)}>{teamPT(match.team2)}</span>
       </div>
     </div>
   );

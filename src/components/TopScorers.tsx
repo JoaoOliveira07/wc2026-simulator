@@ -127,7 +127,7 @@ function ScorerRow({
         <span style={{ fontSize: 18, fontWeight: 900, color: '#4ade80', lineHeight: 1 }}>
           {scorer.goals}
         </span>
-        <span style={{ fontSize: 7.5, fontWeight: 800, color: '#16a34a', marginTop: 2, letterSpacing: '0.06em' }}>
+        <span style={{ fontSize: 8, fontWeight: 800, color: '#16a34a', marginTop: 2, letterSpacing: '0.06em' }}>
           GOLS
         </span>
       </div>

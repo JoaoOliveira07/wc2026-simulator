@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Flag } from './Flag';
 import { teamPT } from '../data/teamNames';
+import { useNow, formatCountdown } from '../utils/countdown';
 import type { Match } from '../types';
 import type { ESPNMatch } from '../data/espnApi';
 import { teamsMatch } from '../data/espnApi';
@@ -63,7 +64,7 @@ function getStatus(m: Match, espn: ESPNMatch | null): MatchStatus {
 }
 
 // ── Date column ───────────────────────────────────────────────────────────────
-function DateCol({ kicked, status, today }: { kicked: Date | null; status: MatchStatus; today?: boolean }) {
+function DateCol({ kicked, status, today, now }: { kicked: Date | null; status: MatchStatus; today?: boolean; now?: number }) {
   const isLive = status === 'live';
   const isDone = status === 'finished';
 
@@ -84,13 +85,19 @@ function DateCol({ kicked, status, today }: { kicked: Date | null; status: Match
   const time  = kicked.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
   if (today && status === 'upcoming') {
+    const countdown = now ? formatCountdown(kicked, now) : null;
     return (
       <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
         <div style={{ fontSize: 8, fontWeight: 800, color: '#f59e0b', letterSpacing: '0.08em' }}>HOJE</div>
         <div style={{ fontSize: 12, fontWeight: 800, color: '#fbbf24' }}>{time}</div>
+        {countdown && (
+          <div style={{ fontSize: 9, fontWeight: 800, color: '#f59e0b', letterSpacing: '0.02em' }}>{countdown}</div>
+        )}
       </div>
     );
   }
+
+  const countdown = (!isDone && now) ? formatCountdown(kicked, now) : null;
 
   return (
     <div style={{ width: 46, flexShrink: 0, textAlign: 'center' }}>
@@ -100,6 +107,9 @@ function DateCol({ kicked, status, today }: { kicked: Date | null; status: Match
       <div style={{ fontSize: 11, fontWeight: 700, color: isDone ? '#334155' : '#64748b' }}>
         {time}
       </div>
+      {countdown && (
+        <div style={{ fontSize: 9, fontWeight: 800, color: '#3b82f6', letterSpacing: '0.02em' }}>{countdown}</div>
+      )}
     </div>
   );
 }
@@ -145,9 +155,9 @@ function ScoreCol({ m, espn, status }: { m: Match; espn: ESPNMatch | null; statu
 }
 
 // ── Single match row ──────────────────────────────────────────────────────────
-function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2, today }: {
+function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2, today, now }: {
   m: Match; espn: ESPNMatch | null; status: MatchStatus; kicked: Date | null;
-  resolvedTeam1?: string | null; resolvedTeam2?: string | null; today?: boolean;
+  resolvedTeam1?: string | null; resolvedTeam2?: string | null; today?: boolean; now?: number;
 }) {
   const isLive = status === 'live';
   const isUpcoming = status === 'upcoming';
@@ -176,11 +186,11 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2, today
       cursor: (isLive || isUpcoming) ? 'pointer' : 'default',
       textDecoration: 'none',
     }}>
-      <DateCol kicked={kicked} status={status} today={today} />
+      <DateCol kicked={kicked} status={status} today={today} now={now} />
 
       {/* Team 1 */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', minWidth: 0 }}>
-        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L') ? nameColor : '#1e293b', textAlign: 'right' }}>
+        <span className="truncate" title={displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L') ? teamPT(displayTeam1) : undefined} style={{ fontSize: 12, fontWeight: 700, color: displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L') ? nameColor : '#1e293b', textAlign: 'right' }}>
           {displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L') ? teamPT(displayTeam1) : displayTeam1 ?? '—'}
         </span>
         {displayTeam1 && !displayTeam1.startsWith('W') && !displayTeam1.startsWith('L')
@@ -200,7 +210,7 @@ function MatchRow({ m, espn, status, kicked, resolvedTeam1, resolvedTeam2, today
           ? <Flag team={displayTeam2} className="w-7 h-5 rounded-sm shrink-0" style={isDone ? { opacity: 0.5 } : undefined} />
           : <span className="w-7 h-5 rounded-sm shrink-0 inline-block" style={{ background: 'rgba(15,23,42,0.7)' }} />
         }
-        <span className="truncate" style={{ fontSize: 12, fontWeight: 700, color: displayTeam2 && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L') ? nameColor : '#1e293b' }}>
+        <span className="truncate" title={displayTeam2 && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L') ? teamPT(displayTeam2) : undefined} style={{ fontSize: 12, fontWeight: 700, color: displayTeam2 && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L') ? nameColor : '#1e293b' }}>
           {displayTeam2 && !displayTeam2.startsWith('W') && !displayTeam2.startsWith('L') ? teamPT(displayTeam2) : displayTeam2 ?? '—'}
         </span>
       </div>
@@ -296,6 +306,7 @@ interface EnrichedMatch {
 }
 
 export function MatchesTab({ matches, liveMatches }: Props) {
+  const now = useNow();
   const koByNum = useMemo(() => {
     const map: Record<number, Match> = {};
     for (const m of matches) if (!m.group && m.num) map[m.num] = m;
@@ -369,7 +380,7 @@ export function MatchesTab({ matches, liveMatches }: Props) {
               <TodaySubHeader round={round} />
               {items.map((e, i) => (
                 <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked}
-                  resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} today />
+                  resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} today now={now} />
               ))}
             </div>
           ))}
@@ -379,7 +390,7 @@ export function MatchesTab({ matches, liveMatches }: Props) {
               <RoundSubHeader round={round} />
               {items.map((e, i) => (
                 <MatchRow key={key(e, i)} m={e.m} espn={e.espn} status={e.status} kicked={e.kicked}
-                  resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} />
+                  resolvedTeam1={resolveTeam(e.m.team1)} resolvedTeam2={resolveTeam(e.m.team2)} now={now} />
               ))}
             </div>
           ))}

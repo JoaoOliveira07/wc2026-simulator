@@ -363,6 +363,7 @@ function KoCard({ matchNum, byNum, us, onScore, isChampion, isThird, liveMatches
             }
 
             <span className="flex-1 truncate min-w-0 font-semibold"
+              title={team ? teamPT(team) : undefined}
               style={{ fontSize: 12, color: nameColor, animation: team ? 'bracketPop 0.35s ease' : undefined }}>
               {team ? teamPT(team) : '—'}
             </span>
@@ -628,7 +629,7 @@ export function Bracket({ matches, liveMatches }: Props) {
             }}
             title="Compartilhar simulação"
           >
-            {shareStatus === 'shared' ? <Check size={13} /> : <Share2 size={13} />}
+            {shareStatus === 'shared' ? <Check size={13} /> : shareStatus === 'sharing' ? <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" /> : <Share2 size={13} />}
             <span className="hidden sm:inline">
               {shareStatus === 'sharing' ? 'Aguarde…' : shareStatus === 'shared' ? 'Copiado!' : 'Compartilhar'}
             </span>
@@ -651,7 +652,14 @@ export function Bracket({ matches, liveMatches }: Props) {
       </div>
 
       {/* Bracket scroll container */}
-      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const, display: 'flex', width: '100%', maxWidth: '100vw' }}>
+      <div style={{ position: 'relative', width: '100%', maxWidth: '100vw' }}>
+        {/* Right-edge fade hint — mobile only */}
+        <div className="sm:hidden" style={{
+          position: 'absolute', right: 0, top: 0, bottom: 0,
+          width: 48, zIndex: 2, pointerEvents: 'none',
+          background: 'linear-gradient(to right, transparent, #020617)',
+        }} />
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const, display: 'flex', width: '100%' }}>
         <div ref={bracketRef} style={{
           display: 'flex', alignItems: 'flex-start',
           marginLeft: 'auto', marginRight: 'auto',
@@ -679,6 +687,7 @@ export function Bracket({ matches, liveMatches }: Props) {
           <BracketFork fromCount={8} rtl phase="r16" />
           <BracketCol nums={R_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" liveMatches={liveMatches} />
         </div>
+      </div>
       </div>
     </div>
   );

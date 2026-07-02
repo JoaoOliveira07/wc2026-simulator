@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { WifiOff } from 'lucide-react';
 import { fetchESPNToday, type ESPNMatch } from '../data/espnApi';
 
 const CAZETV_URL = 'https://www.youtube.com/@CazeTV/streams';
@@ -101,11 +102,11 @@ function TeamLogo({ src, abbr }: { src: string; abbr: string }) {
 }
 
 export function LiveBanner() {
-  const { data: matches = [] } = useQuery({
+  const { data: matches = [], isLoading, isError } = useQuery({
     queryKey: ['espn-today'],
     queryFn: fetchESPNToday,
     staleTime: 0,
-    refetchInterval: 60_000,   // poll every 60s
+    refetchInterval: 60_000,
     retry: 1,
   });
 
@@ -128,7 +129,18 @@ export function LiveBanner() {
         maxWidth: '96rem', margin: '0 auto', padding: '0 20px',
         display: 'flex', alignItems: 'center', gap: 10,
       }}>
-        {display.length === 0 ? (
+        {isLoading ? (
+          <div style={{ display: 'flex', gap: 6, flex: 1 }}>
+            {[120, 140, 120].map((w, i) => (
+              <div key={i} className="skeleton" style={{ width: w, height: 30, borderRadius: 10, flexShrink: 0 }} />
+            ))}
+          </div>
+        ) : isError ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <WifiOff size={12} color="#334155" />
+            <span style={{ fontSize: 11, color: '#334155', fontWeight: 500 }}>Ao vivo indisponível</span>
+          </div>
+        ) : matches.length === 0 ? (
           <span style={{ fontSize: 11, color: '#334155', fontWeight: 500 }}>
             Nenhum jogo acontecendo nesse momento
           </span>
@@ -167,8 +179,16 @@ export function LiveBanner() {
               </div>
             )}
             <div style={{ width: 1, height: 16, background: '#1e293b', flexShrink: 0 }} />
-            <div style={{ display: 'flex', gap: 6, overflowX: 'auto', flex: 1, scrollbarWidth: 'none' }}>
-              {sorted.map(m => <MatchChip key={m.id} m={m} />)}
+            {/* Scroll container with right-edge fade */}
+            <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
+              <div style={{
+                position: 'absolute', right: 0, top: 0, bottom: 0,
+                width: 32, zIndex: 2, pointerEvents: 'none',
+                background: 'linear-gradient(to right, transparent, rgba(2,6,23,1))',
+              }} />
+              <div style={{ display: 'flex', gap: 6, overflowX: 'auto', scrollbarWidth: 'none' }}>
+                {sorted.map(m => <MatchChip key={m.id} m={m} />)}
+              </div>
             </div>
           </>
         )}
