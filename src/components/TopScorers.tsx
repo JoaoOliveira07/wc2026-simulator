@@ -199,17 +199,18 @@ export function TopScorers() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
         <div style={{
           width: 46, height: 46, borderRadius: 12, flexShrink: 0,
-          background: 'linear-gradient(135deg,#f59e0b,#b45309)',
+          background: 'linear-gradient(135deg,#16a34a,#064e2e)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 24px rgba(245,158,11,0.25)',
+          boxShadow: '0 0 24px rgba(22,163,74,0.3)',
         }}>
           <Trophy size={22} color="white" />
         </div>
         <div>
           <h2 style={{
             margin: 0, fontSize: 22, fontWeight: 900,
-            letterSpacing: '-0.02em', lineHeight: 1,
-            background: 'linear-gradient(135deg,#fbbf24,#f59e0b)',
+            letterSpacing: '-0.03em', lineHeight: 1,
+            fontFamily: "'Space Grotesk', sans-serif",
+            background: 'linear-gradient(135deg,#4ade80,#16a34a)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
           }}>

@@ -12,7 +12,7 @@ body {
   margin: 0;
   background: #0f172a;
   color: #f1f5f9;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
 }
 
 .hide-scrollbar {

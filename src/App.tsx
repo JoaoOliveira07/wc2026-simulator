@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Layers, Trophy, CalendarDays, BarChart2, TrendingUp } from 'lucide-react';
+import logoImg from './assets/image-removebg-preview.png';
 import { fetchGroups, fetchMatches } from './data/api';
 import { fetchESPNToday } from './data/espnApi';
 import { usePredictions } from './store/usePredictions';
@@ -21,16 +22,6 @@ function predKey(m: Match) {
   return `${m.team1}|${m.team2}|${m.date}`;
 }
 
-function FootballIcon({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 2c0 0-2 4-2 10s2 10 2 10" />
-      <path d="M2 12h20" />
-      <path d="M4.93 6.5l14.14 11M4.93 17.5L19.07 6.5" strokeDasharray="2 3" />
-    </svg>
-  );
-}
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('groups');
@@ -111,32 +102,40 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden">
       {/* Header */}
       <header
-        className="border-b border-slate-800/60 sticky top-0 z-10 backdrop-blur-md"
-        style={{ background: 'rgba(2,6,23,0.96)' }}
+        className="border-b border-slate-800/50 sticky top-0 z-10 backdrop-blur-md"
+        style={{ background: 'rgba(2,6,23,0.97)', position: 'relative', overflow: 'hidden' }}
       >
+        {/* Ambient glow — brand signature */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 320px 80px at 10% 50%, rgba(22,163,74,0.08) 0%, transparent 100%)',
+        }} />
+
         {/* Mobile: 2-row */}
-        <div className="md:hidden px-4">
-          <div className="flex items-center h-11 gap-2.5">
-            <div
-              className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
-              style={{ background: 'linear-gradient(135deg,#16a34a,#065f46)' }}
-            >
-              <FootballIcon size={14} />
-            </div>
-            <span className="font-black text-sm" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Copa 2026</span>
-            <span className="text-slate-700 text-xs">·</span>
-            <span className="text-slate-500 text-xs font-medium">Simulador</span>
+        <div className="md:hidden px-4" style={{ position: 'relative' }}>
+          <div className="flex items-center h-11">
+            <img
+              src={logoImg}
+              alt="Copa do Mundo 2026 Simulador"
+              style={{ height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(22,163,74,0.3))' }}
+            />
           </div>
           <div className="flex justify-center pb-2">
-            <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
+            <nav className="flex gap-0.5 rounded-xl p-1" style={{ background: '#020c18', border: '1px solid rgba(30,41,59,0.8)' }}>
               {NAV_TABS.map(t => (
                 <button
                   key={t.id}
                   onClick={() => setTab(t.id)}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
                   style={tab === t.id
-                    ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                    : { color: '#475569', cursor: 'pointer' }}
+                    ? {
+                        background: 'rgba(34,197,94,0.12)',
+                        color: '#4ade80',
+                        border: '1px solid rgba(34,197,94,0.25)',
+                        boxShadow: '0 0 8px rgba(34,197,94,0.12)',
+                        cursor: 'pointer',
+                      }
+                    : { color: '#334155', cursor: 'pointer', border: '1px solid transparent' }}
                 >
                   {t.icon}
                   {t.shortLabel}
@@ -149,55 +148,61 @@ export default function App() {
         {/* Desktop: 3-col grid */}
         <div
           className="hidden md:grid max-w-screen-2xl mx-auto px-5"
-          style={{ gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', height: 56 }}
+          style={{ gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', height: 56, position: 'relative' }}
         >
-          <div className="flex items-center gap-2.5">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: 'linear-gradient(135deg,#16a34a,#065f46)', boxShadow: '0 0 12px rgba(22,163,74,0.3)' }}
-            >
-              <FootballIcon size={17} />
-            </div>
-            <div className="leading-none">
-              <span className="font-black" style={{ fontSize: 14, letterSpacing: '-0.01em', background: 'linear-gradient(135deg,#4ade80,#16a34a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Copa 2026</span>
-              <span className="ml-2 font-medium" style={{ fontSize: 11, color: '#334155' }}>·</span>
-              <span className="ml-2 font-semibold" style={{ fontSize: 11, color: '#475569' }}>Simulador</span>
-            </div>
+          {/* Wordmark */}
+          <div className="flex items-center">
+            <img
+              src={logoImg}
+              alt="Copa do Mundo 2026 Simulador"
+              style={{ height: 44, objectFit: 'contain', filter: 'drop-shadow(0 0 12px rgba(22,163,74,0.3))' }}
+            />
           </div>
-          <nav className="flex gap-1 rounded-xl p-1" style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
+
+          {/* Nav */}
+          <nav className="flex gap-0.5 rounded-xl p-1" style={{ background: '#020c18', border: '1px solid rgba(30,41,59,0.8)' }}>
             {NAV_TABS.map(t => (
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
                 className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-95"
                 style={tab === t.id
-                  ? { background: '#1e293b', color: '#f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.5)', cursor: 'pointer' }
-                  : { color: '#475569', cursor: 'pointer' }}
+                  ? {
+                      background: 'rgba(34,197,94,0.12)',
+                      color: '#4ade80',
+                      border: '1px solid rgba(34,197,94,0.25)',
+                      boxShadow: '0 0 10px rgba(34,197,94,0.1)',
+                      cursor: 'pointer',
+                    }
+                  : { color: '#334155', cursor: 'pointer', border: '1px solid transparent' }}
               >
                 {t.icon}
                 {t.label}
               </button>
             ))}
           </nav>
+
+          {/* Progress */}
           <div className="flex justify-end">
             {!loading && !error && (
               <div className="flex flex-col gap-1" style={{ width: 200 }}>
                 <div className="flex items-center justify-between">
-                  <span style={{ fontSize: 10, color: '#334155', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  <span style={{ fontSize: 9, color: '#1e3a2e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Fase de Grupos
                   </span>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: playedCount === totalGroupMatches ? '#22c55e' : '#475569' }}>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: playedCount === totalGroupMatches ? '#22c55e' : '#1e3a5f', fontFamily: "'Space Grotesk', sans-serif" }}>
                     {playedCount + predictedCount}/{totalGroupMatches}
                   </span>
                 </div>
-                <div className="h-1 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
+                <div className="h-0.5 rounded-full overflow-hidden" style={{ background: '#0d1f12' }}>
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
                       width: `${((playedCount + predictedCount) / (totalGroupMatches || 1)) * 100}%`,
                       background: playedCount === totalGroupMatches
-                        ? 'linear-gradient(90deg,#16a34a,#22c55e)'
+                        ? 'linear-gradient(90deg,#16a34a,#4ade80)'
                         : 'linear-gradient(90deg,#1d4ed8,#3b82f6)',
+                      boxShadow: playedCount === totalGroupMatches ? '0 0 6px rgba(74,222,128,0.5)' : '0 0 6px rgba(59,130,246,0.5)',
                     }}
                   />
                 </div>

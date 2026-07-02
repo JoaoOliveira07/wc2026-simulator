@@ -1,0 +1,17 @@
+{
+  "name": "Copa do Mundo 2026 · Simulador",
+  "short_name": "Copa 2026",
+  "description": "Simule o Chaveamento da Copa do Mundo 2026",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/favicon-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
