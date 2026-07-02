@@ -17,7 +17,7 @@ const ROW_H   = 108;
 const CARD_H  = 96;
 const N_ROWS  = 8;
 const TOTAL_H = N_ROWS * ROW_H; // 864px
-const CARD_W  = 162;
+const CARD_W  = 185;
 const FORK_W  = 28;
 const HLINE_W = 20;
 const CENTER_W = 220;
@@ -526,8 +526,7 @@ export function Bracket({ matches, liveMatches }: Props) {
     if (shareStatus === 'sharing') return;
     setShareStatus('sharing');
 
-    const preds = JSON.parse(localStorage.getItem('wc2026_predictions') ?? '{}');
-    const shareURL = buildShareURL(preds, us);
+    const shareURL = buildShareURL(us);
     const shareText = 'Confira minha simulação da Copa 2026';
 
     // Capacidades detectadas sincronamente (sem await)
@@ -664,7 +663,7 @@ export function Bracket({ matches, liveMatches }: Props) {
           display: 'flex', alignItems: 'flex-start',
           marginLeft: 'auto', marginRight: 'auto',
           paddingTop: 32, paddingBottom: 20, paddingLeft: 20, paddingRight: 20,
-          gap: 0, minWidth: 1280,
+          gap: 0, minWidth: 1500,
           background: '#020617',
         }}>
           <BracketCol nums={L_R32} byNum={byNum} us={us} onScore={handleScore} label="Fase 16" liveMatches={liveMatches} />
